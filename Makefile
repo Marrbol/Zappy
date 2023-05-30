@@ -11,9 +11,9 @@ INC			=	./includes/					\
 
 SRC			=	./src_server
 
-CMD_AI		=	/cmd_AI/
+CMD_AI		=	cmd_AI
 
-CMD_GUI		=	/cmd_GUI/
+CMD_GUI		=	cmd_GUI
 
 COMPIL 		= 	$(SRC)/main.c						\
 				$(SRC)/print_usage.c				\
@@ -69,12 +69,16 @@ NAME	=	zappy_server
 
 OBJ	=	$(COMPIL:.c=.o)
 
-CFLAGS	=   -Wall -Wextra -luuid $(foreach INCL,$(INC),-I$(INCL))
+CFLAGS	=   -Wall -Wextra $(foreach INCL,$(INC),-I$(INCL))
 
 all: $(NAME)
 
+.c.o:
+	@echo "$(notdir $(CURDIR)): C '$<'"
+	@$(CC) $(CFLAGS) -c -o $*.o $<
+
 $(NAME): $(OBJ)
-	gcc -o $(NAME) $(OBJ) $(CFLAGS)
+	@$(CC) -o $(NAME) $(OBJ) $(CFLAGS)
 
 clean:
 	rm -f $(OBJ)
