@@ -27,13 +27,8 @@ class INetwork {
         virtual void sendMessage(int fd, std::string message) = 0;
         virtual std::string receiveMessage(int fd) = 0;
         virtual int connectSocketClient(std::string IP, int PORT) = 0;
-        virtual int connectSocketServer(int port) = 0;
         virtual int selectSocket(int fd, fd_set *readfds) = 0;
-        virtual int selectClient(int client_socket, fd_set *readfds, int socket_descriptor) = 0;
         virtual bool fdReady(int fd, fd_set *readfds) = 0;
-
-    protected:
-    private:
 };
 
 #endif /* !INETWORK_HPP_ */

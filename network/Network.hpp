@@ -17,10 +17,7 @@ class Network : public INetwork {
         void sendMessage(int fd, std::string message);
         std::string receiveMessage(int fd);
         int connectSocketClient(std::string ip, int port);
-        int connectSocketServer(int port);
         int selectSocket(int fd, fd_set *readfds);
-        int acceptSocket(int fd, struct sockaddr_in address);
-        int selectClient(int client_socket, fd_set *readfds, int socket_descriptor);
         bool fdReady(int fd, fd_set *readfds);
 
     protected:
