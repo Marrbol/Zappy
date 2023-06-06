@@ -17,9 +17,32 @@
 #include <map>
 
 class Display {
+    private:
+        typedef struct ressourcesS {
+            size_t food = 0;
+            size_t linemate = 0;
+            size_t deraumere = 0;
+            size_t sibur = 0;
+            size_t mendiane = 0;
+            size_t phiras = 0;
+            size_t thystame = 0;
+        } ressourcesT;
     public:
         Display(int port, std::string machine);
         ~Display();
+
+        //send to server
+        void askMapSize();
+        void askTileContent(size_t x, size_t y);
+        void askAllTileContent();
+        void askTeamsNames();
+        void askPlayerPosition(size_t id);
+        void askPlayerLevel(size_t id);
+        void askPlayerInventory(size_t id);
+        void askTimeUnit();
+        void askTimeUnitModification(size_t time);
+
+        //Receive from server
         void communicateWithServer();
         bool parseCommande();
         void connection();
@@ -47,6 +70,7 @@ class Display {
         void playerInventory();
         void timeUnit();
         void timeUnitModification();
+        void modifInventory(size_t id_player, size_t id_ressource, int nb);
 
     protected:
     private:
@@ -62,15 +86,6 @@ class Display {
             CommandFunction func;
         } allCmdT;
 
-        typedef struct ressourcesS {
-            size_t food = 0;
-            size_t linemate = 0;
-            size_t deraumere = 0;
-            size_t sibur = 0;
-            size_t mendiane = 0;
-            size_t phiras = 0;
-            size_t thystame = 0;
-        } ressourcesT;
         std::map<std::pair<size_t, size_t>, ressourcesT> _map; // x, y -> ressources
 
         typedef struct playerS {

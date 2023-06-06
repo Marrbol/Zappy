@@ -17,6 +17,90 @@ Display::~Display()
 {
 }
 
+void Display::askMapSize()
+{
+    _network.sendMessage(_socket, "msz\n");
+}
+
+void Display::askTileContent(size_t x, size_t y)
+{
+    std::string message = "bct " + std::to_string(x) + " " + std::to_string(y) + "\n";
+    _network.sendMessage(_socket, message);
+}
+
+void Display::askAllTileContent()
+{
+    _network.sendMessage(_socket, "mct\n");
+}
+
+void Display::askTeamsNames()
+{
+    _network.sendMessage(_socket, "tna\n");
+}
+
+void Display::askPlayerPosition(size_t id)
+{
+    std::string message = "ppo " + std::to_string(id) + "\n";
+    _network.sendMessage(_socket, message);
+}
+
+void Display::askPlayerLevel(size_t id)
+{
+    std::string message = "plv " + std::to_string(id) + "\n";
+    _network.sendMessage(_socket, message);
+}
+
+void Display::askPlayerInventory(size_t id)
+{
+    std::string message = "pin " + std::to_string(id) + "\n";
+    _network.sendMessage(_socket, message);
+}
+
+void Display::askTimeUnit()
+{
+    _network.sendMessage(_socket, "sgt\n");
+}
+
+void Display::askTimeUnitModification(size_t time)
+{
+    std::string message = "sst " + std::to_string(time) + "\n";
+    _network.sendMessage(_socket, message);
+}
+
+void Display::communicateWithServer()
+{
+    while (1) {
+        if (_network.selectSocket(_socket, &_readfds) == -1)
+            throw std::runtime_error("Error: select failed");
+        if (_network.fdReady(_socket, &_readfds)) {
+            _commande = _network.receiveMessage(_socket);
+            if (!parseCommande())
+                std::cout << "Unknown command" << std::endl;
+        }
+    }
+}
+
+bool Display::parseCommande()
+{
+    bool isParsed = false;
+    while (_commande.find("\n") != std::string::npos) {
+        _line.clear();
+        _line = _commande.substr(0, _commande.find("\n"));
+        _commande.erase(0, _commande.find("\n") + 1);
+        std::string cmd = _line.substr(0, _line.find(" "));
+        std::cout << "commande: " << _line << std::endl; // "x y n
+        std::cout << "cmd: " << cmd << std::endl;
+        for (size_t i = 0; _cmd[i].cmd.compare("NULL"); i++) {
+            if (_cmd[i].cmd == cmd) {
+                isParsed = true;
+                _cmd[i].func();
+                break;
+            }
+        }
+    }
+    return isParsed;
+}
+
 void Display::connection()
 {
     _network.sendMessage(_socket, "GRAPHIC\n");
@@ -269,7 +353,33 @@ void Display::ressourceDropping()
     size_t ressource = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
 
-    // _player[idPlayer].inventory[ressource]--;
+    modifInventory(idPlayer, ressource, -1);
+    switch (ressource)
+    {
+        case 0:
+             _map[std::pair<size_t, size_t>(_player[idPlayer].x, _player[idPlayer].y)].food += 1;
+            break;
+        case 1:
+             _map[std::pair<size_t, size_t>(_player[idPlayer].x, _player[idPlayer].y)].linemate += 1;
+            break;
+
+        case 2:
+             _map[std::pair<size_t, size_t>(_player[idPlayer].x, _player[idPlayer].y)].deraumere += 1;
+            break;
+        case 3:
+             _map[std::pair<size_t, size_t>(_player[idPlayer].x, _player[idPlayer].y)].sibur += 1;
+            break;
+
+        case 4:
+             _map[std::pair<size_t, size_t>(_player[idPlayer].x, _player[idPlayer].y)].mendiane += 1;
+            break;
+
+        case 5:
+             _map[std::pair<size_t, size_t>(_player[idPlayer].x, _player[idPlayer].y)].phiras += 1;
+            break;
+        default:
+        break;
+    }
 }
 
 void Display::ressourceTaking()
@@ -279,7 +389,37 @@ void Display::ressourceTaking()
     size_t ressource = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
 
-    // _player[idPlayer].inventory[ressource]++;
+    modifInventory(idPlayer, ressource, 1);
+}
+
+void Display::modifInventory(size_t idPlayer, size_t ressource, int value)
+{
+    switch (ressource)
+    {
+        case 0:
+            _player[idPlayer].inventory.food += value;
+            break;
+        case 1:
+            _player[idPlayer].inventory.linemate += value;
+            break;
+
+        case 2:
+            _player[idPlayer].inventory.deraumere += value;
+            break;
+        case 3:
+            _player[idPlayer].inventory.sibur += value;
+            break;
+
+        case 4:
+            _player[idPlayer].inventory.mendiane += value;
+            break;
+
+        case 5:
+            _player[idPlayer].inventory.phiras += value;
+            break;
+        default:
+        break;
+    }
 }
 
 void Display::playerDeath()
