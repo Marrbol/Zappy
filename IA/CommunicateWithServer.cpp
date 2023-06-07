@@ -212,5 +212,3 @@ void IA::getIncantation()
 {
     _actualCommand.clear();
 }
-
-//quand on fait un call on rempli une variable puis pointeur sur fonction apres avoir la réponse
