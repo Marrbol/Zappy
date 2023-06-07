@@ -1,0 +1,34 @@
+name: Check compliation
+
+on:
+  workflow_run:
+    workflows: [Check linter]
+    types:
+      - completed
+
+jobs:
+  compilation:
+    runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker:devel
+    steps:
+    - uses: actions/checkout@v2
+    - name: Make a projet
+      run: make
+    - name: Check file existence (Zappy Server)
+      id: check_files
+      uses: andstor/file-existence-action@v1
+      with:
+        allow_failure: true
+        files: "zappy_server"
+    - name: Check file existence (Zappy AI)
+      id: check_files
+      uses: andstor/file-existence-action@v1
+      with:
+        allow_failure: true
+        files: "zappy_ai"
+    - name: Check file existence (Zappy Gui)
+      id: check_files
+      uses: andstor/file-existence-action@v1
+      with:
+        allow_failure: true
+        files: "zappy_gui"
