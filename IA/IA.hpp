@@ -6,11 +6,18 @@
 */
 
 #ifndef IA_HPP_
-#define IA_HPP_
+    #define IA_HPP_
+
 #include <iostream>
 #include <map>
 #include <vector>
 #include "../Materiaux/Materiaux.hpp"
+#include <string>
+#include <list>
+#include <functional>
+#include "../network/Network.hpp"
+#include <iostream>
+#include <error.h>
 #define FOODRARETY 0.5
 #define LINEMATERARETY 0.3
 #define DERAUMERERARETY 0.15
@@ -21,12 +28,86 @@
 
 class IA {
     public:
-        IA();
         ~IA();
         void calculeMateriauxPoids();
         void calculeTilesPoids();
+
+        IA(int port, std::string name, std::string machine);
+        void communicateWithServer();
+        void parseCommande();
+        void loopIA();
+
+        //send command
+        void forward();
+        void turnLeft();
+        void turnRight();
+        void look();
+        void broadcast(std::string message);
+        void inventory();
+        void connectNbr();
+        void fork();
+        void eject();
+        void take(std::string object);
+        void set(std::string object);
+        void incantation();
+
+        //get command
+        void getForward();
+        void getTurnLeft();
+        void getTurnRight();
+        void getLook();
+        void getBroadcast();
+        void getInventory();
+        void getConnectNbr();
+        void getFork();
+        void getEject();
+        void getTake();
+        void getSet();
+        void getIncantation();
+
+    protected:
     private:
-        size_t _level;
+        std::string _commande;
+        std::string _machine;
+        std::string _line;
+        std::pair<size_t, size_t> _mapSize;
+        size_t _level = 1;
+        std::string _teamName;
+        size_t _clientName;
+        std::string _actualCommand;
+        bool _isDead = false;
+
+        bool _validate = false;
+        bool _start = false;
+        bool _name = false;
+        fd_set _readfds;
+        Network _network;
+        int _socket;
+        std::list<std::string> _responce;
+        std::list<std::string> _ask;
+
+        using CommandFunction = std::function<void(void)>;
+
+        typedef struct allCmdS {
+            std::string cmd;
+            CommandFunction func;
+        } allCmdT;
+
+         std::vector<allCmdT> _cmd = {
+            {"forward", std::bind(&IA::getForward, this)},
+            {"right", std::bind(&IA::getTurnRight, this)},
+            {"left", std::bind(&IA::getTurnLeft, this)},
+            {"look", std::bind(&IA::getLook, this)},
+            {"broadcast", std::bind(&IA::getBroadcast, this)},
+            {"inventory", std::bind(&IA::getInventory, this)},
+            {"connect_nbr", std::bind(&IA::getConnectNbr, this)},
+            {"fork", std::bind(&IA::getFork, this)},
+            {"eject", std::bind(&IA::getEject, this)},
+            {"take", std::bind(&IA::getTake, this)},
+            {"set", std::bind(&IA::getSet, this)},
+            {"incantation", std::bind(&IA::getIncantation, this)},
+        };
+    private:
         size_t _food;
         std::map<size_t, Materiaux> _rituels = {
             {1, Materiaux(1,0,0,0,0,0)},
@@ -139,7 +220,6 @@ class IA {
         };
 };
 
-#endif /* !IA_HPP_ */
 // classe materiaux pour l'inventaire et les rituels (map <size_t(niveau), materiaux>)
 // faire des opérateurs pour les materiaux (-=, ==, >=)
 //l'inventaire sera une classe materiaux
@@ -165,3 +245,5 @@ class IA {
 // faire une liste de priorité pour les materiaux avec des poids (metreriaux les plus importants et plus lourd)
 //recalculer le poids de la liste de priorité a chaque fois que je recois un look
 //calculer le chemin le plus court pour aller chercher le materiaux le plus important
+
+#endif /* !IA_HPP_ */

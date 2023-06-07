@@ -11,6 +11,7 @@ SRCENCAPS = network/Network.cpp\
 
 SRCIA = IA/IA.cpp\
 		Materiaux/Materiaux.cpp\
+		IA/CommunicateWithServer.cpp
 
 SRCGUI = GUI/GUI.cpp\
 
