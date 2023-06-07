@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  compilation:
+    runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker:devel
+    steps:
+    - uses: actions/checkout@v2
+    - name: Make a projet
+      run: make
+    - name: Check file existence (Zappy Server)
+      id: check_files
+      uses: andstor/file-existence-action@v1
+      with:
+        allow_failure: true
+        files: "zappy_server"
+    - name: Check file existence (Zappy AI)
+      id: check_files
+      uses: andstor/file-existence-action@v1
+      with:
+        allow_failure: true
+        files: "zappy_ai"
+    - name: Check file existence (Zappy Gui)
+      id: check_files
+      uses: andstor/file-existence-action@v1
+      with:
+        allow_failure: true
+        files: "zappy_gui"
+    - name: 'Upload Zappy Server'
+      uses: actions/upload-artifact@v3
+      with:
+        name: zappy_server
+        path: zappy_server
+        retention-days: 1
+    - name: 'Upload Zappy AI'
+      uses: actions/upload-artifact@v3
+      with:
+        name: zappy_ai
+        path: zappy_ai
+        retention-days: 1
+    - name: 'Upload Zappy Gui'
+      uses: actions/upload-artifact@v3
+      with:
+        name: zappy_gui
+        path: zappy_gui
+        retention-days: 1
+  release:
+    name: Release Generator
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get Zappy Server
+        uses: actions/download-artifact@v3
+        with:
+          name: zappy_server
+      - name: Get Zappy AI
+        uses: actions/download-artifact@v3
+        with:
+          name: zappy_ai
+      - name: Get Zappy Gui
+        uses: actions/download-artifact@v3
+        with:
+          name: zappy_gui
+      - name: Generate Changelog
+        run: echo "# Zappy Release" > ${{ github.workspace }}-CHANGELOG.txt
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body_path: ${{ github.workspace }}-CHANGELOG.txt
+          files: |
+            zappy_server
+            zappy_ai
+            zappy_gui
