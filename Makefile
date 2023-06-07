@@ -28,6 +28,7 @@ COMPIL 		= 	$(SRC)/main.c						\
 				$(SRC)/utils2.c						\
 				$(SRC)/delete.c						\
 				$(SRC)/inventory.c					\
+				$(SRC)/set_coord_client.c			\
 				$(SRC)/$(CMD_AI)/broadcast.c		\
 				$(SRC)/$(CMD_AI)/connect_to.c		\
 				$(SRC)/$(CMD_AI)/eject.c			\

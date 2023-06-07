@@ -14,7 +14,7 @@ typedef enum inv_s {food, deraumere, sibur, mendiane, phiras, thystame, none} in
 
 typedef struct inventory_s {
     char *name;
-    inv_t id;
+    int id;
 } inventory_t;
 
 static const inventory_t allInv[LENINV] = {
@@ -48,6 +48,6 @@ static const inventory_t allInv[LENINV] = {
     }
 };
 
-void set_inventory(size_t *inv);
+void set_inventory(int *inv);
 
 #endif /* !INVENTORY_H_ */

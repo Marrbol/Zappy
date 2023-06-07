@@ -52,7 +52,7 @@
 
 typedef enum type_s {NONE, AI, GUI} type_t;
 
-typedef enum dir_s {NORTH, SUD, EAST, OUEST} dir_t;
+typedef enum dir_s {NONE1, NORTH, EAST, SUD, OUEST, NONE2} dir_t;
 
 typedef struct coord_s {
     int x;
@@ -69,11 +69,12 @@ typedef struct server_s {
 typedef struct client_s {
     type_t type;
     dir_t d;
+    coord_t *coord;
     int client_socket;
     bool isauth;
     bool new_connection;
     char *team;
-    size_t *inv;
+    int *inv;
 } client_t;
 
 typedef struct client_manager_s {
@@ -106,12 +107,14 @@ size_t nb_state_def(client_manager_t *c, int nbClient);
 char *cat(char *tmp, char *name);
 void list_folder(char *where, client_manager_t *c, int nbClient);
 bool issearch(char *name, char *uid);
+void set_client_coord(coord_t *c);
 
 void forward(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff);
 void right(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff);
-void left(client_manager_t *c, int nbClient, char *buff);
+void left(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff);
 void look(client_manager_t *c, int nbClient, char *buff);
 void invent(client_manager_t *c, int nbClient, char *buff);
 void broadcast(client_manager_t *c, int nbClient, char *buff);

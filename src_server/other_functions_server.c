@@ -36,12 +36,16 @@ void set_clients(client_manager_t *c)
     c->client_infos = malloc(sizeof(client_t) * NB_CLIENTS);
 
     for (size_t i = 0; i < NB_CLIENTS; i++) {
+        c->client_infos[i].coord = malloc(sizeof(coord_t));
+        c->client_infos[i].inv = malloc(sizeof(int) * LENINV);
+        c->client_infos[i].d = NORTH;
         c->client_infos[i].type = NONE;
         c->client_infos[i].client_socket = 0;
         c->client_infos[i].isauth = false;
         c->client_infos[i].new_connection = true;
         c->client_infos[i].team = NULL;
         set_inventory(c->client_infos[i].inv);
+        set_client_coord(c->client_infos[i].coord);
     };
     c->maxsd = 0;
 }
@@ -68,12 +72,12 @@ void set_teams(client_manager_t *c, int ac, char **argv)
     int index = 0;
 
     c->nb_teams = count_team(argv, ac);
-    c->teamsp = malloc(sizeof(char *) * c->nb_teams + 1);
+    c->teamsp = malloc(sizeof(char *) * (c->nb_teams + 1));
     while (index < c->nb_teams) {
         c->teamsp[index++] = argv[i];
         i++;
     }
-    c->teamsp[i] = NULL;
+    c->teamsp[index] = NULL;
     c->nb_clients = atoi(argv[9 + c->nb_teams]);
     c->freq = atoi(argv[11 + count_team(argv, ac)]);
 }
@@ -89,6 +93,6 @@ void set_coord(client_manager_t *c, char **argv)
     strcat(c->coord->coord, " ");
     strcat(c->coord->coord, argv[6]);
     strcat(c->coord->coord, "\n");
-    c->coord->x = atoi(argv[3]);
-    c->coord->y = atoi(argv[5]);
+    c->coord->x = atoi(argv[4]);
+    c->coord->y = atoi(argv[6]);
 }
