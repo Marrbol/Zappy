@@ -25,7 +25,6 @@ class IA {
         ~IA();
         void calculeMateriauxPoids();
         void calculeTilesPoids();
-        size_t caseMaxViewLevel(size_t level);
     private:
         size_t _level;
         size_t _food;
@@ -37,6 +36,16 @@ class IA {
             {5, Materiaux(1,2,1,3,0,0)},
             {6, Materiaux(1,2,3,0,1,0)},
             {7, Materiaux(2,2,2,2,2,1)}
+        };
+        std::map<size_t, size_t> _maxCaseViewLevel = {
+            {1, 3},
+            {2, 8},
+            {3, 15},
+            {4, 24},
+            {5, 35},
+            {6, 48},
+            {7, 63},
+            {8, 80}
         };
         Materiaux _inventaire;
         std::map<size_t, std::string> _materiauxPriority;

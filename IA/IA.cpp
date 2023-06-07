@@ -43,7 +43,7 @@ void IA::calculeMateriauxPoids()
 
 void IA::calculeTilesPoids()
 {
-    for (size_t i = 0; i < caseMaxViewLevel(_level); i++) {
+    for (size_t i = 0; i < _maxCaseViewLevel[_level]; i++) {
         size_t poidTmp = 0;
         if (_view[i].find("food") != std::string::npos)
             poidTmp += _poidMateriaux.getFood();
@@ -62,27 +62,6 @@ void IA::calculeTilesPoids()
         _tilesPoid[i] = poidTmp;
         // std::cout << " poid de case " << i << " = " << _tilesPoid[i] << std::endl;
     }
-}
-
-size_t IA::caseMaxViewLevel(size_t level)
-{
-    if (level == 1)
-        return 3;
-    if (level == 2)
-        return 8;
-    if (level == 3)
-        return 15;
-    if (level == 4)
-        return 24;
-    if (level == 5)
-        return 35;
-    if (level == 6)
-        return 48;
-    if (level == 7)
-        return 63;
-    if (level == 8)
-        return 80;
-    return 0;
 }
 
 // trouver un moyen de savoir quelles ressources sont sur quelles cases et de stocker ça
