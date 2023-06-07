@@ -5,10 +5,11 @@
 ## Makefile
 ##
 
-SRCSERV = network/Network.cpp\
+SRCSERV = Server/Server.cpp\
+
+SRCENCAPS = network/Network.cpp\
 
 SRCIA = IA/IA.cpp\
-		Materiaux/Materiaux.cpp\
 
 SRCGUI = GUI/GUI.cpp\
 
@@ -17,6 +18,8 @@ OBJSERV = $(SRCSERV:.cpp=.o)
 OBJIA = $(SRCIA:.cpp=.o)
 
 OBJGUI = $(SRCGUI:.cpp=.o)
+
+OBJENCAPS = $(SRCENCAPS:.cpp=.o)
 
 NAMESERV = zappy_server
 
@@ -40,7 +43,7 @@ $(NAMESERV): $(OBJSERV)
 	$(CXX) $(OBJSERV) -o $(NAMESERV) $(CXXFLAGS)
 
 $(NAMEIA): $(OBJIA)
-	$(CXX) $(OBJIA) -o $(NAMEIA) $(CXXFLAGS)
+	$(CXX) $(OBJIA) $(OBJENCAPS) -o $(NAMEIA) $(CXXFLAGS)
 
 $(NAMEGUI): $(OBJGUI)
 	$(CXX) $(OBJGUI) -o $(NAMEGUI) $(CXXFLAGS)
