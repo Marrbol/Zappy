@@ -24,6 +24,7 @@ class IA {
         ~IA();
         void communicateWithServer();
         void parseCommande();
+        void loopIA();
 
         //send command
         void forward();
