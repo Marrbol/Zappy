@@ -69,14 +69,12 @@ void Display::askTimeUnitModification(size_t time)
 
 void Display::communicateWithServer()
 {
-    while (1) {
-        if (_network.selectSocket(_socket, &_readfds) == -1)
-            throw std::runtime_error("Error: select failed");
-        if (_network.fdReady(_socket, &_readfds)) {
-            _commande = _network.receiveMessage(_socket);
-            if (!parseCommande())
-                std::cout << "Unknown command" << std::endl;
-        }
+    if (_network.selectSocket(_socket, &_readfds) == -1)
+        throw std::runtime_error("Error: select failed");
+    if (_network.fdReady(_socket, &_readfds)) {
+        _commande = _network.receiveMessage(_socket);
+        if (!parseCommande())
+            std::cout << "Unknown command" << std::endl;
     }
 }
 
