@@ -1,0 +1,23 @@
+name: Check linter
+
+on:
+  workflow_run:
+    workflows: [Commit Check]
+    types:
+      - completed
+
+jobs:
+  run-linters:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Install ClangFormat
+        run: sudo apt-get install -y clang-format
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
+        with:
+          clang_format: true

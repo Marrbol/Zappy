@@ -1,0 +1,17 @@
+name: Author check
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+    check-author:
+        name: Check Author
+        runs-on: ubuntu-latest
+        steps:
+        - name: Check Author
+          run: |
+            if [[ "${{ github.actor }}" != "CHANGEME" ]]; then
+              echo "You are not allowed to push on this repository."
+              exit 1
+            fi
