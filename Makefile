@@ -10,6 +10,7 @@ SRCSERV = Server/Server.cpp\
 SRCENCAPS = network/Network.cpp\
 
 SRCIA = IA/IA.cpp\
+		IA/CommunicateWithServer.cpp
 
 SRCGUI = GUI/GUI.cpp\
 
