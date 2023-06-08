@@ -111,6 +111,9 @@ ia : $(NAMEIA)
 
 gui : $(NAMEGUI)
 
+debug: CFLAGS += -g
+debug: serv
+
 $(NAMESERV): $(OBJSERV)
 	$(CXX) $(OBJSERV) -o $(NAMESERV) $(CFLAGS)
 
