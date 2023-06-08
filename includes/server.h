@@ -28,6 +28,7 @@
     #include <uuid/uuid.h>
     #include <dirent.h>
     #include "utils.h"
+    #include "map.h"
     #include "protocol.h"
     #define _GNU_SOURCE
     #define BUFFER_LEN (200)
@@ -81,6 +82,7 @@ typedef struct client_manager_s {
     fd_set read_fds;
     client_t *client_infos;
     coord_t *coord;
+    map_t **map;
     char **teamsp;
     int nb_teams;
     int nb_clients;
@@ -108,6 +110,8 @@ char *cat(char *tmp, char *name);
 void list_folder(char *where, client_manager_t *c, int nbClient);
 bool issearch(char *name, char *uid);
 void set_client_coord(coord_t *c);
+void set_map(client_manager_t *c);
+void comete(client_manager_t *c);
 
 void forward(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff);
