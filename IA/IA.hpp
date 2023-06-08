@@ -72,8 +72,8 @@ class IA {
         void getTake();
         void getSet();
         void getIncantation();
+        size_t countSubStr(std::string str, std::string subStr);
 
-    protected:
     private:
         std::string _commande;
         std::string _machine;
@@ -115,8 +115,6 @@ class IA {
             {"set", std::bind(&IA::getSet, this)},
             {"incantation", std::bind(&IA::getIncantation, this)},
         };
-        size_t countSubStr(std::string str, std::string subStr);
-    private:
         size_t _food;
         std::map<size_t, Materiaux> _rituels = {
             {1, Materiaux(1,0,0,0,0,0)},
