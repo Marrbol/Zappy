@@ -131,14 +131,12 @@ void IA::parseCommande()
 
 void IA::communicateWithServer()
 {
-    while (1) {
-        if (_network.selectSocket(_socket, &_readfds) == -1)
-            throw std::runtime_error("Error: select failed");
-        if (_network.fdReady(_socket, &_readfds)) {
-            _commande = _network.receiveMessage(_socket);
-            parseCommande();
-            std::cout << "commande: " << _commande << std::endl;
-        }
+    if (_network.selectSocket(_socket, &_readfds) == -1)
+        throw std::runtime_error("Error: select failed");
+    if (_network.fdReady(_socket, &_readfds)) {
+        _commande = _network.receiveMessage(_socket);
+        parseCommande();
+        std::cout << "commande: " << _commande << std::endl;
     }
 }
 

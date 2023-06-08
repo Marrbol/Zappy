@@ -81,8 +81,8 @@ void IA::calculeTilesPoids()
 // }
 void IA::loopIA()
 {
-    IA::communicateWithServer();
     while (1) {
+        IA::communicateWithServer();
     }
 }
 
