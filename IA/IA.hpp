@@ -35,7 +35,7 @@ class IA {
         void calculeTilesPoids();
         size_t countSubStr(std::string str, std::string subStr);
     private:
-        size_t _level = 3;
+        size_t _level;
         size_t _food;
         std::map<size_t, Materiaux> _rituels = {
             {1, Materiaux(1,0,0,0,0,0)},
@@ -56,7 +56,7 @@ class IA {
             {7, 63},
             {8, 80}
         };
-        Materiaux _inventaire = Materiaux(0,0,0,0,1,0);
+        Materiaux _inventaire = Materiaux(0,0,0,0,0,0);
         std::map<size_t, std::string> _materiauxPriority;
         std::map<std::string, size_t> _tilesPriority; // index de la case et poid de la case
         std::map<size_t, std::string> _view;
