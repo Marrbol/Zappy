@@ -17,13 +17,13 @@ IA::~IA()
 
 void IA::calculeMateriauxPoids()
 {
-    size_t _poidFood = (_inventaire.getFood() - _inventaire.getFood()) / FOODRARETY;
-    size_t _poidLinemate = (_rituels[_level].getLinemate() - _inventaire.getLinemate()) / LINEMATERARETY;
-    size_t _poidDeraumere = (_rituels[_level].getDeraumere() - _inventaire.getDeraumere()) / DERAUMERERARETY;
-    size_t _poidSibur = (_rituels[_level].getSibur() - _inventaire.getSibur()) / SIBURRARETY;
-    size_t _poidMendiane = (_rituels[_level].getMendiane() - _inventaire.getMendiane()) / MENDIANERARETY;
-    size_t _poidPhiras = (_rituels[_level].getPhiras() - _inventaire.getPhiras()) / PHIRASRARETY;
-    size_t _poidThystame = (_rituels[_level].getThystame() - _inventaire.getThystame()) / THYSTAMERARETY;
+    size_t _poidFood = (_inventaire.getFood() - _inventaire.getFood()) * (1 / FOODRARETY);
+    size_t _poidLinemate = (_rituels[_level].getLinemate() - _inventaire.getLinemate()) * (1 / LINEMATERARETY);
+    size_t _poidDeraumere = (_rituels[_level].getDeraumere() - _inventaire.getDeraumere()) * (1 / DERAUMERERARETY);
+    size_t _poidSibur = (_rituels[_level].getSibur() - _inventaire.getSibur()) * (1 / SIBURRARETY);
+    size_t _poidMendiane = (_rituels[_level].getMendiane() - _inventaire.getMendiane()) * (1 / MENDIANERARETY);
+    size_t _poidPhiras = (_rituels[_level].getPhiras() - _inventaire.getPhiras()) * (1 / PHIRASRARETY);
+    size_t _poidThystame = (_rituels[_level].getThystame() - _inventaire.getThystame()) * (1 / THYSTAMERARETY);
 
     _poidMateriaux.setDeraumere(_poidDeraumere);
     _poidMateriaux.setFood(_poidFood);
@@ -41,35 +41,44 @@ void IA::calculeMateriauxPoids()
     // std::cout << "poid thystame = " << _poidThystame << std::endl;
 }
 
+size_t IA::countSubStr(std::string str, std::string subStr)
+{
+    size_t pos = 0;
+    size_t count = 0;
+    while ((pos = str.find(subStr, pos)) != std::string::npos) {
+        count++;
+        pos += subStr.length();
+    }
+    return count;
+}
+
 void IA::calculeTilesPoids()
 {
     for (size_t i = 0; i < _maxCaseViewLevel[_level]; i++) {
         size_t poidTmp = 0;
-        if (_view[i].find("food") != std::string::npos)
-            poidTmp += _poidMateriaux.getFood();
-        if (_view[i].find("linemate") != std::string::npos)
-            poidTmp += _poidMateriaux.getLinemate();
-        if (_view[i].find("deraumere") != std::string::npos)
-            poidTmp += _poidMateriaux.getDeraumere();
-        if (_view[i].find("sibur") != std::string::npos)
-            poidTmp += _poidMateriaux.getSibur();
-        if (_view[i].find("mendiane") != std::string::npos)
-            poidTmp += _poidMateriaux.getMendiane();
-        if (_view[i].find("phiras") != std::string::npos)
-            poidTmp += _poidMateriaux.getPhiras();
-        if (_view[i].find("thystame") != std::string::npos)
-            poidTmp += _poidMateriaux.getThystame();
+        if (_view[i].find(FOOD) != std::string::npos)
+            poidTmp += countSubStr(_view[i], FOOD) * _poidMateriaux.getFood();
+        if (_view[i].find(LINEMATE) != std::string::npos)
+            poidTmp += countSubStr(_view[i], LINEMATE) * _poidMateriaux.getLinemate();
+        if (_view[i].find(DERAUMERE) != std::string::npos)
+            poidTmp += countSubStr(_view[i], DERAUMERE) * _poidMateriaux.getDeraumere();
+        if (_view[i].find(SIBUR) != std::string::npos)
+            poidTmp += countSubStr(_view[i], SIBUR) * _poidMateriaux.getSibur();
+        if (_view[i].find(MENDIANE) != std::string::npos)
+            poidTmp += countSubStr(_view[i], MENDIANE) * _poidMateriaux.getMendiane();
+        if (_view[i].find(PHIRAS) != std::string::npos)
+            poidTmp += countSubStr(_view[i], PHIRAS) * _poidMateriaux.getPhiras();
+        if (_view[i].find(THYSTAME) != std::string::npos)
+            poidTmp += countSubStr(_view[i], THYSTAME) * _poidMateriaux.getThystame();
         _tilesPoid[i] = poidTmp;
         // std::cout << " poid de case " << i << " = " << _tilesPoid[i] << std::endl;
     }
 }
 
-// trouver un moyen de savoir quelles ressources sont sur quelles cases et de stocker ça
 
 // int main()
 // {
 //     IA ia;
-//     ia.look();
 //     std::cout << std::endl;
 //     ia.calculeMateriauxPoids();
 //     std::cout << std::endl;

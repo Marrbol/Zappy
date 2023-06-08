@@ -18,6 +18,14 @@
 #define MENDIANERARETY 0.1
 #define PHIRASRARETY 0.08
 #define THYSTAMERARETY 0.05
+#define MAXLEVEL 8
+#define FOOD "food"
+#define LINEMATE "linemate"
+#define DERAUMERE "deraumere"
+#define SIBUR "sibur"
+#define MENDIANE "mendiane"
+#define PHIRAS "phiras"
+#define THYSTAME "thystame"
 
 class IA {
     public:
@@ -25,8 +33,9 @@ class IA {
         ~IA();
         void calculeMateriauxPoids();
         void calculeTilesPoids();
+        size_t countSubStr(std::string str, std::string subStr);
     private:
-        size_t _level;
+        size_t _level = 3;
         size_t _food;
         std::map<size_t, Materiaux> _rituels = {
             {1, Materiaux(1,0,0,0,0,0)},
@@ -47,7 +56,7 @@ class IA {
             {7, 63},
             {8, 80}
         };
-        Materiaux _inventaire;
+        Materiaux _inventaire = Materiaux(0,0,0,0,1,0);
         std::map<size_t, std::string> _materiauxPriority;
         std::map<std::string, size_t> _tilesPriority; // index de la case et poid de la case
         std::map<size_t, std::string> _view;
@@ -165,3 +174,5 @@ class IA {
 // faire une liste de priorité pour les materiaux avec des poids (metreriaux les plus importants et plus lourd)
 //recalculer le poids de la liste de priorité a chaque fois que je recois un look
 //calculer le chemin le plus court pour aller chercher le materiaux le plus important
+
+//si une IA rammasse un materiaux elle le dit et on enleve pour savoir ce qui manque
