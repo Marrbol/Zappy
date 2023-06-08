@@ -25,6 +25,14 @@
 #define MENDIANERARETY 0.1
 #define PHIRASRARETY 0.08
 #define THYSTAMERARETY 0.05
+#define MAXLEVEL 8
+#define FOOD "food"
+#define LINEMATE "linemate"
+#define DERAUMERE "deraumere"
+#define SIBUR "sibur"
+#define MENDIANE "mendiane"
+#define PHIRAS "phiras"
+#define THYSTAME "thystame"
 
 class IA {
     public:
@@ -64,8 +72,8 @@ class IA {
         void getTake();
         void getSet();
         void getIncantation();
+        size_t countSubStr(std::string str, std::string subStr);
 
-    protected:
     private:
         std::string _commande;
         std::string _machine;
@@ -107,7 +115,6 @@ class IA {
             {"set", std::bind(&IA::getSet, this)},
             {"incantation", std::bind(&IA::getIncantation, this)},
         };
-    private:
         size_t _food;
         std::map<size_t, Materiaux> _rituels = {
             {1, Materiaux(1,0,0,0,0,0)},
@@ -128,7 +135,7 @@ class IA {
             {7, 63},
             {8, 80}
         };
-        Materiaux _inventaire;
+        Materiaux _inventaire = Materiaux(0,0,0,0,0,0);
         std::map<size_t, std::string> _materiauxPriority;
         std::map<std::string, size_t> _tilesPriority; // index de la case et poid de la case
         std::map<size_t, std::string> _view;
