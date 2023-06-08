@@ -34,6 +34,7 @@ void IA::look()
     _actualCommand = "look";
     _network.sendMessage(_socket, "Look\n");
     _ask.push_back("Look");
+    _view.clear();
 }
 
 void IA::broadcast(std::string message)
@@ -164,49 +165,75 @@ void IA::getTurnRight()
 void IA::getLook()
 {
     std::cout << "look: " << _line << std::endl;
-    _actualCommand.clear();
+    if (_line[0] == '[')
+        _line.erase(0, 1);
+    if (_line[_line.size() - 1] == ']')
+        _line.erase(_line.size() - 1, 1);
+    if (_line[0] == ' ')
+        _line.erase(0, 1);
+    if (_line[_line.size() - 1] == ' ')
+        _line.erase(_line.size() - 1, 1);
+    for (size_t x = 0; ; x++) {
+        std::string tmp = _line.substr(0, _line.find(","));
+        if (tmp[0] == ' ')
+            tmp.erase(0, 1);
+        if (tmp[tmp.size() - 1] == ' ')
+            tmp.erase(tmp.size() - 1, 1);
+        _line.erase(0, _line.find(",") + 1);
+        if (_line[0] == ' ')
+            _line.erase(0, 1);
+        _view[x] = tmp;
+        if (_line.find(",") == std::string::npos) {
+            _view[x + 1] = _line;
+            break;
+        }
+    }
+    for (size_t i = 0; _view[i] != ""; i++) {
+        std::cout << _view[i] << std::endl;
+    }
+    _line.clear();
 }
 
 void IA::getBroadcast()
 {
     if (_line == "ok")
         _validate = true;
-    _actualCommand.clear();
+    _line.clear();
 }
 
 void IA::getInventory()
 {
-    _actualCommand.clear();
+    _line.clear();
 }
 
 void IA::getConnectNbr()
 {
-    _actualCommand.clear();
+    _line.clear();
 }
 
 void IA::getFork()
 {
     if (_line == "ok")
         _validate = true;
-    _actualCommand.clear();
+    _line.clear();
 }
 
 void IA::getEject()
 {
-    _actualCommand.clear();
+    _line.clear();
 }
 
 void IA::getTake()
 {
-    _actualCommand.clear();
+    _line.clear();
 }
 
 void IA::getSet()
 {
-    _actualCommand.clear();
+    _line.clear();
 }
 
 void IA::getIncantation()
 {
-    _actualCommand.clear();
+    _line.clear();
 }

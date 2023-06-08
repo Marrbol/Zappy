@@ -79,7 +79,7 @@ class IA {
         std::string _machine;
         std::string _line;
         std::pair<size_t, size_t> _mapSize;
-        size_t _level = 1;
+        size_t _level = 3;
         std::string _teamName;
         size_t _clientName;
         std::string _actualCommand;
