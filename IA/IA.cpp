@@ -91,11 +91,20 @@ void IA::calculeTilesPoids()
 // }
 void IA::loopIA()
 {
+    bool sendlook = false;
     while (1) {
-        IA::communicateWithServer();
-        if (_view.size() > 0) {
+        do {
+            IA::communicateWithServer();
+        } while (_name == false);
+        if (!_view.empty()) {
             IA::calculeTilesPoids();
             _view.clear();
+            sendlook = false;
+        } else {
+            if (!sendlook && _ask.size() < 10) {
+                IA::look();
+                sendlook = true;
+            }
         }
     }
 }
