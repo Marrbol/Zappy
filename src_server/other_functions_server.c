@@ -44,6 +44,7 @@ void set_clients(client_manager_t *c)
         c->client_infos[i].isauth = false;
         c->client_infos[i].new_connection = true;
         c->client_infos[i].team = NULL;
+        c->client_infos[i].lvl = 1;
         set_inventory(c->client_infos[i].inv);
         set_client_coord(c->client_infos[i].coord);
     };

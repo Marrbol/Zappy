@@ -76,6 +76,7 @@ typedef struct client_s {
     bool new_connection;
     char *team;
     int *inv;
+    size_t lvl;
 } client_t;
 
 typedef struct client_manager_s {
