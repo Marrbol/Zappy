@@ -56,6 +56,7 @@ size_t IA::countSubStr(std::string str, std::string subStr)
 
 void IA::calculeTilesPoids()
 {
+    calculeMateriauxPoids();
     for (size_t i = 0; i < _maxCaseViewLevel[_level]; i++) {
         size_t poidTmp = 0;
         if (_view[i].find(FOOD) != std::string::npos)
@@ -92,6 +93,10 @@ void IA::loopIA()
 {
     while (1) {
         IA::communicateWithServer();
+        if (_view.size() > 0) {
+            IA::calculeTilesPoids();
+            _view.clear();
+        }
     }
 }
 
