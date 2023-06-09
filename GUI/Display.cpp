@@ -1,6 +1,9 @@
-//
-// Created by emonnier on 6/2/23.
-//
+/*
+** EPITECH PROJECT, 2023
+** B-YEP-400-REN-4-1-zappy-martin.boucault
+** File description:
+** Display
+*/
 
 #include "Display.hpp"
 
