@@ -13,7 +13,7 @@
     #define LFT ("Left")
     #define LK  ("Look")
     #define INVT ("Inventory")
-    #define BRDTXT ("Broadcast text")
+    #define BRDTXT ("Broadcast")
     #define CNCTNB ("Connect_nbr")
     #define FRK ("Fork")
     #define EJCT ("Eject")

@@ -36,8 +36,10 @@ bool check_req(client_manager_t *c, int nbClient, char *buff)
 void exec_cmd(client_manager_t *c, int nbClient, char *buff)
 {
     if (!check_req(c, nbClient, buff)) {
+        //TODO ==> SEND COMMAND FALSE
         return;
     }
+    //BUFFFERIZED
     for (size_t i = 0; i < NB_COM_AI; i++) {
         if (strncmp(buff, allcoms_AI[i].name, strlen(allcoms_AI[i].name)) == 0)
             allcoms_AI[i].findcoms(c, nbClient, buff);
