@@ -7,67 +7,67 @@
 
 #include "Display.hpp"
 
-Display::Display(int port, std::string machine) : _machine(machine)
+GameWindow::GameWindow(int port, std::string machine) : _machine(machine)
 {
     _network = Network();
     _socket = _network.connectSocketClient(machine, port);
 }
 
-Display::~Display()
+GameWindow::~GameWindow()
 {
 }
 
-void Display::askMapSize()
+void GameWindow::askMapSize()
 {
     _network.sendMessage(_socket, "msz\n");
 }
 
-void Display::askTileContent(size_t x, size_t y)
+void GameWindow::askTileContent(size_t x, size_t y)
 {
     std::string message = "bct " + std::to_string(x) + " " + std::to_string(y) + "\n";
     _network.sendMessage(_socket, message);
 }
 
-void Display::askAllTileContent()
+void GameWindow::askAllTileContent()
 {
     _network.sendMessage(_socket, "mct\n");
 }
 
-void Display::askTeamsNames()
+void GameWindow::askTeamsNames()
 {
     _network.sendMessage(_socket, "tna\n");
 }
 
-void Display::askPlayerPosition(size_t id)
+void GameWindow::askPlayerPosition(size_t id)
 {
     std::string message = "ppo " + std::to_string(id) + "\n";
     _network.sendMessage(_socket, message);
 }
 
-void Display::askPlayerLevel(size_t id)
+void GameWindow::askPlayerLevel(size_t id)
 {
     std::string message = "plv " + std::to_string(id) + "\n";
     _network.sendMessage(_socket, message);
 }
 
-void Display::askPlayerInventory(size_t id)
+void GameWindow::askPlayerInventory(size_t id)
 {
     std::string message = "pin " + std::to_string(id) + "\n";
     _network.sendMessage(_socket, message);
 }
 
-void Display::askTimeUnit()
+void GameWindow::askTimeUnit()
 {
     _network.sendMessage(_socket, "sgt\n");
 }
 
-void Display::askTimeUnitModification(size_t time)
+void GameWindow::askTimeUnitModification(size_t time)
 {
     std::string message = "sst " + std::to_string(time) + "\n";
     _network.sendMessage(_socket, message);
 }
 
-void Display::communicateWithServer()
+void GameWindow::communicateWithServer()
 {
     if (_network.selectSocket(_socket, &_readfds) == -1)
         throw std::runtime_error("Error: select failed");
@@ -78,7 +78,7 @@ void Display::communicateWithServer()
     }
 }
 
-bool Display::parseCommande()
+bool GameWindow::parseCommande()
 {
     bool isParsed = false;
     while (_commande.find("\n") != std::string::npos) {
@@ -99,14 +99,14 @@ bool Display::parseCommande()
     return isParsed;
 }
 
-void Display::connection()
+void GameWindow::connection()
 {
     _network.sendMessage(_socket, "GRAPHIC\n");
     std::cout << "Connection to server" << std::endl;
 }
 
 //message = X Y food linemate deraumere sibur mendiane phiras thystame
-void Display::tileContent()
+void GameWindow::tileContent()
 {
     size_t x = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -129,7 +129,7 @@ void Display::tileContent()
     _map[std::pair<size_t, size_t>(x, y)] = {food, linemate, deraumere, sibur, mendiane, phiras, thystame};
 }
 
-void Display::mapSize()
+void GameWindow::mapSize()
 {
     size_t x = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -138,7 +138,7 @@ void Display::mapSize()
     _mapSize = std::pair<size_t, size_t>(x, y);
 }
 
-void Display::TeamName()
+void GameWindow::TeamName()
 {
     std::string name = _line.substr(0, _line.find(" "));
     _line.erase(0, _line.find(" ") + 1);
@@ -148,7 +148,7 @@ void Display::TeamName()
     _teamName.push_back(name);
 }
 
-void Display::newPlayer()
+void GameWindow::newPlayer()
 {
     size_t id = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -166,7 +166,7 @@ void Display::newPlayer()
     _player[id] = {id, x, y, orientation, level, team, inventory, false};
 }
 
-void Display::playerPosition()
+void GameWindow::playerPosition()
 {
     size_t id = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -179,7 +179,7 @@ void Display::playerPosition()
     _player[id] = {id, x, y, orientation, _player[id].level, _player[id].team, _player[id].inventory, _player[id].laying};
 }
 
-void Display::playerLevel()
+void GameWindow::playerLevel()
 {
     size_t id = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -188,7 +188,7 @@ void Display::playerLevel()
     _player[id].level = level;
 }
 
-void Display::playerInventory()
+void GameWindow::playerInventory()
 {
     size_t id = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -209,14 +209,14 @@ void Display::playerInventory()
     _player[id] = {id, _player[id].x, _player[id].y, _player[id].orientation, _player[id].level, _player[id].team, {food, linemate, deraumere, sibur, mendiane, phiras, thystame}};
 }
 
-void Display::broadcast()
+void GameWindow::broadcast()
 {
     size_t id = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
     _messageBroadcast = std::pair<size_t, std::string>(id, _line);
 }
 
-void Display::startIncantation()
+void GameWindow::startIncantation()
 {
     size_t x = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -232,7 +232,7 @@ void Display::startIncantation()
     _incantation[_incantation.size()] = {x, y, level, players};
 }
 
-void Display::endIncantation()
+void GameWindow::endIncantation()
 {
     size_t x = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -253,7 +253,7 @@ void Display::endIncantation()
     _incantation.erase(id);
 }
 
-void Display::startLaying()
+void GameWindow::startLaying()
 {
     size_t id = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -265,7 +265,7 @@ void Display::startLaying()
     _line.erase(0, _line.find(" ") + 1);
 }
 
-void Display::eggLaid()
+void GameWindow::eggLaid()
 {
     size_t idEgg = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -279,7 +279,7 @@ void Display::eggLaid()
     _egg.push_back({idEgg, x, y});
 }
 
-void Display::playerConnectionEgg()
+void GameWindow::playerConnectionEgg()
 {
     size_t idEgg = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -292,7 +292,7 @@ void Display::playerConnectionEgg()
     //peux etre créer un player ici
 }
 
-void Display::deathEgg()
+void GameWindow::deathEgg()
 {
     size_t idEgg = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -304,13 +304,13 @@ void Display::deathEgg()
     }
 }
 
-void Display::expulsion()
+void GameWindow::expulsion()
 {
     size_t idPlayer = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
 }
 
-void Display::ressourceDropping()
+void GameWindow::ressourceDropping()
 {
     size_t idPlayer = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -346,7 +346,7 @@ void Display::ressourceDropping()
     }
 }
 
-void Display::ressourceTaking()
+void GameWindow::ressourceTaking()
 {
     size_t idPlayer = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -356,7 +356,7 @@ void Display::ressourceTaking()
     modifInventory(idPlayer, ressource, 1);
 }
 
-void Display::modifInventory(size_t idPlayer, size_t ressource, int value)
+void GameWindow::modifInventory(size_t idPlayer, size_t ressource, int value)
 {
     switch (ressource)
     {
@@ -386,7 +386,7 @@ void Display::modifInventory(size_t idPlayer, size_t ressource, int value)
     }
 }
 
-void Display::playerDeath()
+void GameWindow::playerDeath()
 {
     size_t idPlayer = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
@@ -394,32 +394,32 @@ void Display::playerDeath()
     // _player[idPlayer].
 }
 
-void Display::endGame()
+void GameWindow::endGame()
 {
 
 }
 
-void Display::messageFromServer()
+void GameWindow::messageFromServer()
 {
 
 }
 
-void Display::unknownCommand()
+void GameWindow::unknownCommand()
 {
 
 }
 
-void Display::CommandParameter()
+void GameWindow::CommandParameter()
 {
 
 }
 
-void Display::timeUnit()
+void GameWindow::timeUnit()
 {
 
 }
 
-void Display::timeUnitModification()
+void GameWindow::timeUnitModification()
 {
 
 }

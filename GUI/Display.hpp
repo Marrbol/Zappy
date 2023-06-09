@@ -15,8 +15,10 @@
 #include <iostream>
 #include <error.h>
 #include <map>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 
-class Display {
+class GameWindow {
     private:
         typedef struct ressourcesS {
             size_t food = 0;
@@ -28,8 +30,10 @@ class Display {
             size_t thystame = 0;
         } ressourcesT;
     public:
-        Display(int port, std::string machine);
-        ~Display();
+        GameWindow(int port, std::string machine);
+        GameWindow(int width, int height, const std::string& title);
+        ~GameWindow();
+        void run();
 
         //send to server
         void askMapSize();
@@ -74,6 +78,7 @@ class Display {
 
     protected:
     private:
+        sf::RenderWindow window;
         //GUI variable
         std::pair<size_t, size_t> _mapSize; // x, y
         std::vector<std::string> _teamName;
@@ -134,33 +139,33 @@ class Display {
         };
 
         std::vector<allCmdT> _cmd = {
-            {"WELCOME", std::bind(&Display::connection, this)},
-            {"pnw", std::bind(&Display::newPlayer, this)},
-            {"pex", std::bind(&Display::expulsion, this)},
-            {"pbc", std::bind(&Display::broadcast, this)},
-            {"pic", std::bind(&Display::startIncantation, this)},
-            {"pie", std::bind(&Display::endIncantation, this)},
-            {"pfk", std::bind(&Display::startLaying, this)},
-            {"pdr", std::bind(&Display::ressourceDropping, this)},
-            {"pgt", std::bind(&Display::ressourceTaking, this)},
-            {"pdi", std::bind(&Display::playerDeath, this)},
-            {"enw", std::bind(&Display::eggLaid, this)},
-            {"ebo", std::bind(&Display::playerConnectionEgg, this)},
-            {"edi", std::bind(&Display::deathEgg, this)},
-            {"seg", std::bind(&Display::endGame, this)},
-            {"smg", std::bind(&Display::messageFromServer, this)},
-            {"suc", std::bind(&Display::unknownCommand, this)},
-            {"sbp", std::bind(&Display::CommandParameter, this)},
-            {"msz", std::bind(&Display::mapSize, this)},
-            {"bct", std::bind(&Display::tileContent, this)},
-            {"tna", std::bind(&Display::TeamName, this)},
-            {"ppo", std::bind(&Display::playerPosition, this)},
-            {"plv", std::bind(&Display::playerLevel, this)},
-            {"pin", std::bind(&Display::playerInventory, this)},
-            {"sgt", std::bind(&Display::timeUnit, this)},
-            {"sst", std::bind(&Display::timeUnitModification, this)},
+            {"WELCOME", std::bind(&GameWindow::connection, this)},
+            {"pnw", std::bind(&GameWindow::newPlayer, this)},
+            {"pex", std::bind(&GameWindow::expulsion, this)},
+            {"pbc", std::bind(&GameWindow::broadcast, this)},
+            {"pic", std::bind(&GameWindow::startIncantation, this)},
+            {"pie", std::bind(&GameWindow::endIncantation, this)},
+            {"pfk", std::bind(&GameWindow::startLaying, this)},
+            {"pdr", std::bind(&GameWindow::ressourceDropping, this)},
+            {"pgt", std::bind(&GameWindow::ressourceTaking, this)},
+            {"pdi", std::bind(&GameWindow::playerDeath, this)},
+            {"enw", std::bind(&GameWindow::eggLaid, this)},
+            {"ebo", std::bind(&GameWindow::playerConnectionEgg, this)},
+            {"edi", std::bind(&GameWindow::deathEgg, this)},
+            {"seg", std::bind(&GameWindow::endGame, this)},
+            {"smg", std::bind(&GameWindow::messageFromServer, this)},
+            {"suc", std::bind(&GameWindow::unknownCommand, this)},
+            {"sbp", std::bind(&GameWindow::CommandParameter, this)},
+            {"msz", std::bind(&GameWindow::mapSize, this)},
+            {"bct", std::bind(&GameWindow::tileContent, this)},
+            {"tna", std::bind(&GameWindow::TeamName, this)},
+            {"ppo", std::bind(&GameWindow::playerPosition, this)},
+            {"plv", std::bind(&GameWindow::playerLevel, this)},
+            {"pin", std::bind(&GameWindow::playerInventory, this)},
+            {"sgt", std::bind(&GameWindow::timeUnit, this)},
+            {"sst", std::bind(&GameWindow::timeUnitModification, this)},
             {"NULL", NULL}
         };
 };
 
-#endif /* !Display_HPP_ */
+#endif //B_YEP_400_REN_4_1_ZAPPY_MARTIN_BOUCAULT_DISPLAY_H
