@@ -33,6 +33,8 @@
 #define MENDIANE "mendiane"
 #define PHIRAS "phiras"
 #define THYSTAME "thystame"
+#define OK "ok"
+#define KO "ko"
 
 class IA {
     public:
@@ -66,12 +68,14 @@ class IA {
         void getLook();
         void getBroadcast();
         void getInventory();
+        void changeTheInventory(std::string str, int nb);
         void getConnectNbr();
         void getFork();
         void getEject();
         void getTake();
         void getSet();
         void getIncantation();
+        void ReceiveMessage();
         size_t countSubStr(std::string str, std::string subStr);
 
     private:
@@ -82,16 +86,18 @@ class IA {
         size_t _level = 3;
         std::string _teamName;
         size_t _clientName;
-        std::string _actualCommand;
+        std::list<std::string> _actualCommand;
         bool _isDead = false;
+        size_t connectNbrLeft = 0;
+        std::list<std::pair<size_t, std::string>> _messageReceived; //first = direction, second = message
 
         bool _validate = false;
+        bool _probleme = false;
         bool _start = false;
         bool _name = false;
-        fd_set _readfds;
+        fd_set _readfds = {0};
         Network _network;
-        int _socket;
-        std::list<std::string> _responce;
+        int _socket = 0;
         std::list<std::string> _ask;
 
         using CommandFunction = std::function<void(void)>;
@@ -102,28 +108,28 @@ class IA {
         } allCmdT;
 
          std::vector<allCmdT> _cmd = {
-            {"forward", std::bind(&IA::getForward, this)},
-            {"right", std::bind(&IA::getTurnRight, this)},
-            {"left", std::bind(&IA::getTurnLeft, this)},
-            {"look", std::bind(&IA::getLook, this)},
-            {"broadcast", std::bind(&IA::getBroadcast, this)},
-            {"inventory", std::bind(&IA::getInventory, this)},
-            {"connect_nbr", std::bind(&IA::getConnectNbr, this)},
-            {"fork", std::bind(&IA::getFork, this)},
-            {"eject", std::bind(&IA::getEject, this)},
-            {"take", std::bind(&IA::getTake, this)},
-            {"set", std::bind(&IA::getSet, this)},
-            {"incantation", std::bind(&IA::getIncantation, this)},
+            {"Forward", std::bind(&IA::getForward, this)},
+            {"Right", std::bind(&IA::getTurnRight, this)},
+            {"Left", std::bind(&IA::getTurnLeft, this)},
+            {"Look", std::bind(&IA::getLook, this)},
+            {"Broadcast", std::bind(&IA::getBroadcast, this)},
+            {"Inventory", std::bind(&IA::getInventory, this)},
+            {"Connect_nbr", std::bind(&IA::getConnectNbr, this)},
+            {"Fork", std::bind(&IA::getFork, this)},
+            {"Eject", std::bind(&IA::getEject, this)},
+            {"Take", std::bind(&IA::getTake, this)},
+            {"Set", std::bind(&IA::getSet, this)},
+            {"Incantation", std::bind(&IA::getIncantation, this)},
+            {"NULL", NULL},
         };
-        size_t _food;
         std::map<size_t, Materiaux> _rituels = {
-            {1, Materiaux(1,0,0,0,0,0)},
-            {2, Materiaux(1,1,1,0,0,0)},
-            {3, Materiaux(2,0,1,0,2,0)},
-            {4, Materiaux(1,1,2,0,1,0)},
-            {5, Materiaux(1,2,1,3,0,0)},
-            {6, Materiaux(1,2,3,0,1,0)},
-            {7, Materiaux(2,2,2,2,2,1)}
+            {1, Materiaux(0,1,0,0,0,0,0)},
+            {2, Materiaux(0,1,1,1,0,0,0)},
+            {3, Materiaux(0,2,0,1,0,2,0)},
+            {4, Materiaux(0,1,1,2,0,1,0)},
+            {5, Materiaux(0,1,2,1,3,0,0)},
+            {6, Materiaux(0,1,2,3,0,1,0)},
+            {7, Materiaux(0,2,2,2,2,2,1)}
         };
         std::map<size_t, size_t> _maxCaseViewLevel = {
             {1, 3},
@@ -135,7 +141,7 @@ class IA {
             {7, 63},
             {8, 80}
         };
-        Materiaux _inventaire = Materiaux(0,0,0,0,0,0);
+        Materiaux _inventaire = Materiaux(0,0,0,0,0,0,0);
         std::map<size_t, std::string> _materiauxPriority;
         std::map<std::string, size_t> _tilesPriority; // index de la case et poid de la case
         std::map<size_t, std::string> _view;

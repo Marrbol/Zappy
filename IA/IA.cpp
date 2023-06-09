@@ -74,7 +74,7 @@ void IA::calculeTilesPoids()
         if (_view[i].find(THYSTAME) != std::string::npos)
             poidTmp += countSubStr(_view[i], THYSTAME) * _poidMateriaux.getThystame();
         _tilesPoid[i] = poidTmp;
-        std::cout << " poid de case " << i << " = " << _tilesPoid[i] << std::endl;
+        // std::cout << " poid de case " << i << " = " << _tilesPoid[i] << std::endl;
     }
 }
 
