@@ -60,4 +60,5 @@ __attribute__((unused)) int nbClient, char *buff)
         index++;
     }
     send_all(c, nbClient, buff);
+    write(c->client_infos[nbClient].client_socket, "ok\n", 3);
 }
