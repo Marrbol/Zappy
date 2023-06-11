@@ -47,8 +47,7 @@ void send_all(client_manager_t *c, int nbClient, char *buff)
     }   
 }
 
-void broadcast(__attribute__((unused)) client_manager_t *c,
-__attribute__((unused)) int nbClient, char *buff)
+void broadcast(client_manager_t *c, int nbClient, char *buff)
 {
     int len = len_txt(buff);
     char *tmp = malloc(sizeof(char) * (len + 1));
