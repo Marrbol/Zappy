@@ -19,16 +19,6 @@ size_t len_obj(char *buff)
     return res;
 }
 
-inv_t search_type(char *tmp)
-{
-    for (inv_t i = food; i < none; i++)
-        if (strcmp(allInv[i].name, tmp) == 0) {
-            printf("search find %s\n", tmp);
-            return allInv[i].id;
-        }
-    return none;
-}
-
 void take(client_manager_t *c, int nbClient, char *buff)
 {
     int len = len_obj(buff);

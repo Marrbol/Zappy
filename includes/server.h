@@ -113,6 +113,7 @@ bool issearch(char *name, char *uid);
 void set_client_coord(coord_t *c);
 void set_map(client_manager_t *c);
 void comete(client_manager_t *c);
+inv_t search_type(char *tmp);
 
 void forward(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff);

@@ -49,3 +49,12 @@ char *my_atoi(int nb)
     snprintf(buff, (len + 1), "%d", nb);
     return buff;
 }
+
+inv_t search_type(char *tmp)
+{
+    for (inv_t i = food; i < none; i++)
+        if (strcmp(allInv[i].name, tmp) == 0) {
+            return allInv[i].id;
+        }
+    return none;
+}
