@@ -29,9 +29,7 @@ inv_t search_type(char *tmp)
     return none;
 }
 
-void take(__attribute__((unused)) client_manager_t *c,
-__attribute__((unused)) int nbClient,
-__attribute__((unused)) char *buff)
+void take(client_manager_t *c, int nbClient, char *buff)
 {
     int len = len_obj(buff);
     char *tmp = malloc(sizeof(char) * (len + 1));
