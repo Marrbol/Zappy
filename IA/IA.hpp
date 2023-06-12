@@ -46,6 +46,7 @@ class IA {
         void communicateWithServer();
         void parseCommande();
         void loopIA();
+        void calculateCoordBestCase();
 
         //send command
         void forward();
@@ -83,14 +84,13 @@ class IA {
         std::string _machine;
         std::string _line;
         std::pair<size_t, size_t> _mapSize;
-        size_t _level = 3;
+        size_t _level = 1;
         std::string _teamName;
         size_t _clientName;
         std::list<std::string> _actualCommand;
         bool _isDead = false;
         size_t connectNbrLeft = 0;
         std::list<std::pair<size_t, std::string>> _messageReceived; //first = direction, second = message
-
         bool _validate = false;
         bool _probleme = false;
         bool _start = false;
@@ -143,9 +143,10 @@ class IA {
         };
         Materiaux _inventaire = Materiaux(0,0,0,0,0,0,0);
         std::map<size_t, std::string> _materiauxPriority;
-        std::map<std::string, size_t> _tilesPriority; // index de la case et poid de la case
+        size_t _numTilesPriority;
         std::map<size_t, std::string> _view;
         Materiaux _poidMateriaux;
+        std::pair<int, size_t> _coordBestCase;
         std::map<size_t, size_t> _tilesPoid;
         std::map<size_t, size_t> _tilesDistance = { // index de la case et distance de la case
             {0,0},
