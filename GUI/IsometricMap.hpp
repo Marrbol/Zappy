@@ -5,7 +5,7 @@
 #ifndef B_YEP_400_REN_4_1_ZAPPY_MARTIN_BOUCAULT_ISOMETRICMAP_H
 #define B_YEP_400_REN_4_1_ZAPPY_MARTIN_BOUCAULT_ISOMETRICMAP_H
 
-#include "Cube.h"
+#include "Cube.hpp"
 
 // Forward declaration of Cube class
 class Cube;
@@ -20,7 +20,10 @@ private:
 public:
     IsometricMap(float size, int i, int j);
     ~IsometricMap();
-    void draw(sf::RenderWindow& window, int i, int j);
+
+    Cube* getCube(int x, int y) const;
+    void draw(sf::RenderWindow& window);
 };
+
 
 #endif //B_YEP_400_REN_4_1_ZAPPY_MARTIN_BOUCAULT_ISOMETRICMAP_H
