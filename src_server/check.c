@@ -42,6 +42,8 @@ bool check_other(char **argv, int ac)
     if (!is_nb(argv[9 + count_team(argv, ac)]) ||
     !is_nb(argv[11 + count_team(argv, ac)]))
         return false;
+    if (atoi((argv[11 + count_team(argv, ac)])) < 2)
+        return false;
     return true;
 }
 
