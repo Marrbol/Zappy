@@ -11,6 +11,7 @@ IA::IA(int port, std::string name, std::string machine) : _machine(machine), _te
 {
     _network = Network();
     _socket = _network.connectSocketClient(machine, port);
+    _view.clear();
 }
 
 IA::~IA()
@@ -19,7 +20,7 @@ IA::~IA()
 
 void IA::calculeMateriauxPoids()
 {
-    size_t _poidFood = (_inventaire.getFood() - _inventaire.getFood()) * (1 / FOODRARETY);
+    size_t _poidFood =  (1 / FOODRARETY);
     size_t _poidLinemate = (_rituels[_level].getLinemate() - _inventaire.getLinemate()) * (1 / LINEMATERARETY);
     size_t _poidDeraumere = (_rituels[_level].getDeraumere() - _inventaire.getDeraumere()) * (1 / DERAUMERERARETY);
     size_t _poidSibur = (_rituels[_level].getSibur() - _inventaire.getSibur()) * (1 / SIBURRARETY);
@@ -41,6 +42,7 @@ void IA::calculeMateriauxPoids()
     // std::cout << "poid mendiane = " << _poidMendiane << std::endl;
     // std::cout << "poid phiras = " << _poidPhiras << std::endl;
     // std::cout << "poid thystame = " << _poidThystame << std::endl;
+    // std::cout << std::endl;
 }
 
 size_t IA::countSubStr(std::string str, std::string subStr)
@@ -74,21 +76,12 @@ void IA::calculeTilesPoids()
         if (_view[i].find(THYSTAME) != std::string::npos)
             poidTmp += countSubStr(_view[i], THYSTAME) * _poidMateriaux.getThystame();
         _tilesPoid[i] = poidTmp;
-        // std::cout << " poid de case " << i << " = " << _tilesPoid[i] << std::endl;
     }
+    for (size_t i = 0; i < _maxCaseViewLevel[_level]; i++)
+        if (_tilesPoid[i] > _tilesPoid[_numTilesPriority])
+            _numTilesPriority = i;
 }
 
-
-// int main()
-// {
-//     IA ia;
-//     std::cout << std::endl;
-//     ia.calculeMateriauxPoids();
-//     std::cout << std::endl;
-//     ia.calculeTilesPoids();
-//     std::cout << "fini" <<std::endl;
-//     return 0;
-// }
 void IA::loopIA()
 {
     bool sendlook = false;
@@ -97,7 +90,7 @@ void IA::loopIA()
             IA::communicateWithServer();
         } while (_name == false);
         if (!_view.empty()) {
-            IA::calculeTilesPoids();
+            IA::calculateCoordBestCase();
             _view.clear();
             sendlook = false;
         } else {
@@ -107,6 +100,21 @@ void IA::loopIA()
             }
         }
     }
+}
+
+void IA::calculateCoordBestCase()
+{
+    IA::calculeTilesPoids();
+    for (size_t i = 1; i <= MAXLEVEL; i++) {
+        if ((_numTilesPriority >= i * i) && (_numTilesPriority <= ((i + 1) * (i + 1) - 1) )) {
+            _coordBestCase.second = i;
+            size_t middleCase = _coordBestCase.second * (_coordBestCase.second + 1);
+            _coordBestCase.first = abs(int(middleCase - _numTilesPriority));
+            if (middleCase > _numTilesPriority)
+                _coordBestCase.first *= -1;
+        }
+    }
+    std::cout << "the case and the coord for the best case are " << _numTilesPriority << " and the coord are " <<_coordBestCase.second << " and " << _coordBestCase.first << std::endl;
 }
 
 void printUsage() {
