@@ -35,14 +35,14 @@ void IA::calculeMateriauxPoids()
     _poidMateriaux.setPhiras(_poidPhiras);
     _poidMateriaux.setSibur(_poidSibur);
     _poidMateriaux.setThystame(_poidThystame);
-    std::cout << "poid food = " << _poidFood << std::endl;
-    std::cout << "poid linemate = " << _poidLinemate << std::endl;
-    std::cout << "poid deraumere = " << _poidDeraumere << std::endl;
-    std::cout << "poid sibur = " << _poidSibur << std::endl;
-    std::cout << "poid mendiane = " << _poidMendiane << std::endl;
-    std::cout << "poid phiras = " << _poidPhiras << std::endl;
-    std::cout << "poid thystame = " << _poidThystame << std::endl;
-    std::cout << std::endl;
+    // std::cout << "poid food = " << _poidFood << std::endl;
+    // std::cout << "poid linemate = " << _poidLinemate << std::endl;
+    // std::cout << "poid deraumere = " << _poidDeraumere << std::endl;
+    // std::cout << "poid sibur = " << _poidSibur << std::endl;
+    // std::cout << "poid mendiane = " << _poidMendiane << std::endl;
+    // std::cout << "poid phiras = " << _poidPhiras << std::endl;
+    // std::cout << "poid thystame = " << _poidThystame << std::endl;
+    // std::cout << std::endl;
 }
 
 size_t IA::countSubStr(std::string str, std::string subStr)
@@ -76,7 +76,6 @@ void IA::calculeTilesPoids()
         if (_view[i].find(THYSTAME) != std::string::npos)
             poidTmp += countSubStr(_view[i], THYSTAME) * _poidMateriaux.getThystame();
         _tilesPoid[i] = poidTmp;
-        std::cout << "case " << i << " have a poid of " << poidTmp << std::endl;
     }
     for (size_t i = 0; i < _maxCaseViewLevel[_level]; i++)
         if (_tilesPoid[i] > _tilesPoid[_numTilesPriority])
@@ -95,14 +94,13 @@ bool IA::GetAllRessourcesTile()
     size_t nbPhiras = countSubStr(tile, PHIRAS);
     size_t nbThystame = countSubStr(tile, THYSTAME);
     size_t nbMaterials = nbFood + nbLinemate + nbDeraumere + nbSibur + nbMendiane + nbPhiras + nbThystame;
-    std::cout << "nbMaterials = " << nbMaterials << std::endl;
-
 
     for (; nbCommandLeft > 0 && nbMaterials > 0; nbCommandLeft--) {
         if (nbFood > 0) {
             take(FOOD);
             nbFood--;
             nbMaterials--;
+            _takeObject.push_back(FOOD);
             _view[_numTilesPriority].erase(_view[_numTilesPriority].find(FOOD), 4);
             continue;
         }
@@ -110,6 +108,7 @@ bool IA::GetAllRessourcesTile()
             take(LINEMATE);
             nbLinemate--;
             nbMaterials--;
+            _takeObject.push_back(LINEMATE);
             _view[_numTilesPriority].erase(_view[_numTilesPriority].find(LINEMATE), 8);
             continue;
         }
@@ -117,6 +116,7 @@ bool IA::GetAllRessourcesTile()
             take(DERAUMERE);
             nbDeraumere--;
             nbMaterials--;
+            _takeObject.push_back(DERAUMERE);
             _view[_numTilesPriority].erase(_view[_numTilesPriority].find(DERAUMERE), 9);
             continue;
         }
@@ -124,6 +124,7 @@ bool IA::GetAllRessourcesTile()
             take(SIBUR);
             nbSibur--;
             nbMaterials--;
+            _takeObject.push_back(SIBUR);
             _view[_numTilesPriority].erase(_view[_numTilesPriority].find(SIBUR), 5);
             continue;
         }
@@ -131,6 +132,7 @@ bool IA::GetAllRessourcesTile()
             take(MENDIANE);
             nbMendiane--;
             nbMaterials--;
+            _takeObject.push_back(MENDIANE);
             _view[_numTilesPriority].erase(_view[_numTilesPriority].find(MENDIANE), 8);
             continue;
         }
@@ -138,6 +140,7 @@ bool IA::GetAllRessourcesTile()
             take(PHIRAS);
             nbPhiras--;
             nbMaterials--;
+            _takeObject.push_back(PHIRAS);
             _view[_numTilesPriority].erase(_view[_numTilesPriority].find(PHIRAS), 6);
             continue;
         }
@@ -145,6 +148,7 @@ bool IA::GetAllRessourcesTile()
             take(THYSTAME);
             nbThystame--;
             nbMaterials--;
+            _takeObject.push_back(THYSTAME);
             _view[_numTilesPriority].erase(_view[_numTilesPriority].find(THYSTAME), 8);
             continue;
         }
@@ -160,7 +164,6 @@ bool IA::moveTheIAToTheBestCase()
 
     while (nbCommandLeft > 0 && _coordBestCase.second > 0) {
         forward();
-        std::cout << "I avance\n";
         _coordBestCase.second--;
         nbCommandLeft--;
     }
@@ -175,12 +178,13 @@ bool IA::moveTheIAToTheBestCase()
     }
     while (nbCommandLeft > 0 && _coordBestCase.first > 0) {
         forward();
-        std::cout << "I avance\n";
         _coordBestCase.first--;
         nbCommandLeft--;
     }
-    if (_coordBestCase.first == 0 && _coordBestCase.second == 0)
+    if (_coordBestCase.first == 0 && _coordBestCase.second == 0) {
+        isTurned = false;
         return !false;
+    }
     return !true;
 }
 
@@ -192,14 +196,9 @@ void IA::loopIA()
         do {
             IA::communicateWithServer();
         } while (_name == false);
-        std::cout << "c'est le print de avant le if et apres le while pour voir si le do while se fait\n";
-        std::cout << "ask size = " << _ask.size() << " and send look = " << sendlook << std::endl;
-        if (_ask.size() > 0)
-            std::cout << "ask i = " << _ask.front() << std::endl;
         if (_isDead)
             break;
         if (!_view.empty()) {
-            std::cout << "estc e qu'il rentre dans le if\n";
             if (!calculated) {
                 IA::calculateCoordBestCase();
                 calculated = true;
@@ -209,10 +208,7 @@ void IA::loopIA()
                     forward();
                 }
             }
-            std::cout << "avant le move\n";
             bool here = moveTheIAToTheBestCase();
-            std::cout << "cest pour que ca marche\n";
-            std::cout << _ask.size() << std::endl;
             if (here) {
                 if (GetAllRessourcesTile()) {
                     std::cout << _inventaire.getFood() << std::endl;
@@ -224,9 +220,6 @@ void IA::loopIA()
                     std::cout << _inventaire.getThystame() << std::endl;
                     _view.clear();
                     sendlook = false;
-                    std::cout << "je suis dans le if\n";
-                } else {
-                    std::cout << "je suis dans le else\n";
                 }
             }
         } else {
@@ -235,7 +228,6 @@ void IA::loopIA()
                 sendlook = true;
                 _numTilesPriority = 0;
                 calculated = false;
-                std::cout << "il est là?\n";
             }
         }
     }

@@ -147,6 +147,7 @@ class IA {
         std::map<size_t, std::string> _materiauxPriority;
         size_t _numTilesPriority = 0;
         std::map<size_t, std::string> _view;
+        std::list<std::string> _takeObject;
         Materiaux _poidMateriaux;
         bool isTurned = false;
         std::pair<int, size_t> _coordBestCase;

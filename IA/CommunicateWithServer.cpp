@@ -31,7 +31,6 @@ void IA::look()
     _network.sendMessage(_socket, "Look\n");
     _ask.push_back("Look");
     _view.clear();
-    std::cout << "je print ce que je veux\n";
 }
 
 void IA::broadcast(std::string message)
@@ -67,7 +66,7 @@ void IA::eject()
 void IA::take(std::string object)
 {
     _network.sendMessage(_socket, "Take " + object + "\n");
-    _ask.push_back("Take," + object);
+    _ask.push_back("Take");
 }
 
 void IA::set(std::string object)
@@ -136,7 +135,6 @@ void IA::communicateWithServer()
         _commande = _network.receiveMessage(_socket);
         parseCommande();
     }
-    std::cout << "c'est le print juste apres\n";
 }
 
 void IA::ReceiveMessage()
@@ -190,6 +188,10 @@ void IA::getLook()
         std::string tmp = _line.substr(0, _line.find(","));
         if (tmp[0] == ' ')
             tmp.erase(0, 1);
+        if (tmp.size() == 0) {
+            _view[x + 1] = "";
+            continue;
+        }
         if (tmp[tmp.size() - 1] == ' ')
             tmp.erase(tmp.size() - 1, 1);
         _line.erase(0, _line.find(",") + 1);
@@ -201,9 +203,6 @@ void IA::getLook()
             break;
         }
     }
-    // for (size_t i = 0; _view[i] != ""; i++) {
-    //     std::cout << _view[i] << std::endl;
-    // }
     _validate = true;
     _line.clear();
     _ask.pop_front();
@@ -304,8 +303,8 @@ void IA::getTake()
         _ask.pop_front();
         return;
     }
-    std::string object = _ask.front();
-    object.erase(0, object.find(',') + 1);
+    std::string object = _takeObject.front();
+    _takeObject.pop_front();
     if (object == FOOD)
         _inventaire.setFood(_inventaire.getFood() + 1);
     if (object == LINEMATE)
