@@ -11,4 +11,5 @@ void set_inventory(int *inv)
 {
     for (size_t i = food; i < none; i++)
         inv[i] = 0;
+    inv[food] = 9;
 }
