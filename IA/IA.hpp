@@ -41,12 +41,14 @@ class IA {
         ~IA();
         void calculeMateriauxPoids();
         void calculeTilesPoids();
+        bool moveTheIAToTheBestCase();
 
         IA(int port, std::string name, std::string machine);
         void communicateWithServer();
         void parseCommande();
         void loopIA();
         void calculateCoordBestCase();
+        // void GetAllRessourcesTile();
 
         //send command
         void forward();
@@ -146,6 +148,7 @@ class IA {
         size_t _numTilesPriority;
         std::map<size_t, std::string> _view;
         Materiaux _poidMateriaux;
+        bool isTurned = false;
         std::pair<int, size_t> _coordBestCase;
         std::map<size_t, size_t> _tilesPoid;
         std::map<size_t, size_t> _tilesDistance = { // index de la case et distance de la case
