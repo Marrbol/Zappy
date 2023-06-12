@@ -66,7 +66,7 @@ void IA::eject()
 void IA::take(std::string object)
 {
     _network.sendMessage(_socket, "Take " + object + "\n");
-    _ask.push_back("Take");
+    _ask.push_back("Take," + object);
 }
 
 void IA::set(std::string object)
@@ -109,6 +109,7 @@ void IA::parseCommande()
         }
         if (_line == "dead") {
             std::cout << "Dead" << std::endl;
+            _isDead = true;
             break;
         }
         if (_line.substr(0, _line.find(" ")) == "Current") {
@@ -298,8 +299,25 @@ void IA::getTake()
     else if (_line == KO) {
         _probleme = true;
         _line.clear();
+        _ask.pop_front();
         return;
     }
+    std::string object = _ask.front();
+    object.erase(0, object.find(',') + 1);
+    if (object == FOOD)
+        _inventaire.setFood(_inventaire.getFood() + 1);
+    if (object == LINEMATE)
+        _inventaire.setLinemate(_inventaire.getLinemate() + 1);
+    if (object == DERAUMERE)
+        _inventaire.setDeraumere(_inventaire.getDeraumere() + 1);
+    if (object == SIBUR)
+        _inventaire.setSibur(_inventaire.getSibur() + 1);
+    if (object == MENDIANE)
+        _inventaire.setMendiane(_inventaire.getMendiane() + 1);
+    if (object == PHIRAS)
+        _inventaire.setPhiras(_inventaire.getPhiras() + 1);
+    if (object == THYSTAME)
+        _inventaire.setThystame(_inventaire.getThystame() + 1);
     _line.clear();
     _ask.pop_front();
 }
