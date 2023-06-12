@@ -12,7 +12,7 @@ __attribute__((unused)) char *buff)
 {
     size_t i = 0;
 
-    write(c->client_infos[nbClient].client_socket, "[", 1);
+    write(c->client_infos[nbClient].client_socket, "[ ", 2);
     write(c->client_infos[nbClient].client_socket, allInv[i].name,
     strlen(allInv[i].name));
     write(c->client_infos[nbClient].client_socket, " ", 1);
@@ -31,5 +31,5 @@ __attribute__((unused)) char *buff)
 
         i++;
     }
-    write(c->client_infos[nbClient].client_socket, "]\n", 2);
+    write(c->client_infos[nbClient].client_socket, " ]\n", 3);
 }
