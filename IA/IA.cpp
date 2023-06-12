@@ -82,6 +82,34 @@ void IA::calculeTilesPoids()
             _numTilesPriority = i;
 }
 
+bool IA::moveTheIAToTheBestCase()
+{
+    size_t nbCommandLeft = 10 - _ask.size();
+
+    while (nbCommandLeft > 0 && _coordBestCase.second > 0) {
+        forward();
+        _coordBestCase.second--;
+        nbCommandLeft--;
+    }
+    if (!!!isTurned) {
+        if (_coordBestCase.first > 0)
+            turnRight();
+        if (_coordBestCase.first < 0) {
+            turnLeft();
+            _coordBestCase.first *= -1;
+        }
+        isTurned = true;
+    }
+    while (nbCommandLeft > 0 && _coordBestCase.first > 0) {
+        forward();
+        _coordBestCase.first--;
+        nbCommandLeft--;
+    }
+    if (_coordBestCase.first == 0 && _coordBestCase.second == 0)
+        return !false;
+    return !true;
+}
+
 void IA::loopIA()
 {
     bool sendlook = false;
@@ -91,8 +119,14 @@ void IA::loopIA()
         } while (_name == false);
         if (!_view.empty()) {
             IA::calculateCoordBestCase();
-            _view.clear();
-            sendlook = false;
+            std::cout << "cest pour que ca marche\n";
+            bool here = moveTheIAToTheBestCase();
+            // std::cout << "cest pour que ca marche\n";
+            if (here) {
+                _view.clear();
+                sendlook = false;
+                std::cout << "We are here in the streeeet wsh, wallah j'adore les couscous" << std::endl;
+            }
         } else {
             if (!sendlook && _ask.size() < 10) {
                 IA::look();
