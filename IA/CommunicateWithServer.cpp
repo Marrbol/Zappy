@@ -31,6 +31,7 @@ void IA::look()
     _network.sendMessage(_socket, "Look\n");
     _ask.push_back("Look");
     _view.clear();
+    std::cout << "je print ce que je veux\n";
 }
 
 void IA::broadcast(std::string message)
@@ -135,6 +136,7 @@ void IA::communicateWithServer()
         _commande = _network.receiveMessage(_socket);
         parseCommande();
     }
+    std::cout << "c'est le print juste apres\n";
 }
 
 void IA::ReceiveMessage()
