@@ -7,11 +7,13 @@
 
 #include "Display.hpp"
 
-GameWindow::GameWindow(int width, int height, const std::string& title) {
+GameWindow::GameWindow(int width, int height, const std::string& title)
+{
     window.create(sf::VideoMode(width, height), title);
 }
 
-void GameWindow::run() {
+void GameWindow::run()
+{
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -21,12 +23,4 @@ void GameWindow::run() {
         window.clear(sf::Color::Black);
         window.display();
     }
-}
-
-int main()
-{
-    GameWindow game(800, 600, "SFML Window");
-    game.run();
-
-    return 0;
 }
