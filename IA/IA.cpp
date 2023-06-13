@@ -59,7 +59,7 @@ size_t IA::countSubStr(std::string str, std::string subStr)
 void IA::calculeTilesPoids()
 {
     calculeMateriauxPoids();
-    for (size_t i = 0; i < _maxCaseViewLevel[_level]; i++) {
+    for (size_t i = 0; i <= _maxCaseViewLevel[_level]; i++) {
         size_t poidTmp = 0;
         if (_view[i].find(FOOD) != std::string::npos)
             poidTmp += countSubStr(_view[i], FOOD) * _poidMateriaux.getFood();
@@ -76,6 +76,7 @@ void IA::calculeTilesPoids()
         if (_view[i].find(THYSTAME) != std::string::npos)
             poidTmp += countSubStr(_view[i], THYSTAME) * _poidMateriaux.getThystame();
         _tilesPoid[i] = poidTmp;
+        // std::cout << "poid de la case " << i << " = " << _tilesPoid[i] << std::endl;
     }
     for (size_t i = 0; i < _maxCaseViewLevel[_level]; i++)
         if (_tilesPoid[i] > _tilesPoid[_numTilesPriority])
