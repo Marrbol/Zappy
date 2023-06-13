@@ -22,8 +22,9 @@ void Network::sendMessage(int fd, std::string message)
 
 std::string Network::receiveMessage(int fd)
 {
-    char buffer[1024] = {0};
-    read(fd, buffer, 1024);
+    char buffer[9999] = {0};
+    if (read(fd, buffer, 9999) == -1)
+        return "";
     std::string message = buffer;
 
     return message;
@@ -54,7 +55,7 @@ int Network::selectSocket(int fd, fd_set *readfds)
     FD_SET(fd, readfds);
     FD_SET(STDIN_FILENO, readfds);
     struct timeval tv;
-    tv.tv_sec = 1;
+    tv.tv_sec = 0.01;
     tv.tv_usec = 0;
     max_sd = fd;
     sd = fd;

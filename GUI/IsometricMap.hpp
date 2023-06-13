@@ -6,6 +6,7 @@
 #define B_YEP_400_REN_4_1_ZAPPY_MARTIN_BOUCAULT_ISOMETRICMAP_H
 
 #include "Cube.hpp"
+#include <map>
 
 // Forward declaration of Cube class
 class Cube;
@@ -13,13 +14,15 @@ class Cube;
 // IsometricMap.h
 class IsometricMap {
 private:
-    static const int MAP_SIZE = 10;
-    Cube* map[MAP_SIZE][MAP_SIZE];
+    std::map <std::pair<size_t, size_t>, Cube*> map;
     float cubeSize;
+    size_t _i;
+    size_t _j;
 
 public:
-    IsometricMap(float size, int i, int j);
+    IsometricMap(float size);
     ~IsometricMap();
+    void setSize(float x, float y);
 
     Cube* getCube(int x, int y) const;
     void draw(sf::RenderWindow& window);

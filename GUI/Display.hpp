@@ -17,6 +17,8 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include "Camera.hpp"
+#include "IsometricMap.hpp"
 
 class GameWindow {
     private:
@@ -30,8 +32,7 @@ class GameWindow {
             size_t thystame = 0;
         } ressourcesT;
     public:
-        GameWindow(int port, std::string machine);
-        GameWindow(int width, int height, const std::string& title);
+        GameWindow(int width, int height, const std::string& title, int port, std::string machine);
         ~GameWindow();
         void run();
 

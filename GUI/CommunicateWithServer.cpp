@@ -7,12 +7,6 @@
 
 #include "Display.hpp"
 
-GameWindow::GameWindow(int port, std::string machine) : _machine(machine)
-{
-    _network = Network();
-    _socket = _network.connectSocketClient(machine, port);
-}
-
 GameWindow::~GameWindow()
 {
 }
@@ -86,8 +80,9 @@ bool GameWindow::parseCommande()
         _line = _commande.substr(0, _commande.find("\n"));
         _commande.erase(0, _commande.find("\n") + 1);
         std::string cmd = _line.substr(0, _line.find(" "));
-        std::cout << "commande: " << _line << std::endl; // "x y n
-        std::cout << "cmd: " << cmd << std::endl;
+        _line.erase(0, _line.find(" ") + 1);
+        // std::cout << "commande: " << _line << std::endl; // "x y n
+        // std::cout << "cmd: " << cmd << std::endl;
         for (size_t i = 0; _cmd[i].cmd.compare("NULL"); i++) {
             if (_cmd[i].cmd == cmd) {
                 isParsed = true;
