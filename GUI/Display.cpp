@@ -52,10 +52,42 @@ void GameWindow::run()
     }
 }
 
+void printUsage() {
+    std::cout << "USAGE: ./zappy_gui -p port -h machine\n"
+              << "port is the port number\n"
+              << "machine is the name of the machine; localhost by default\n";
+}
 
-int main()
+int main(int ac, char **av)
 {
-    GameWindow display(1600, 900, "Zappy", 35000, "127.0.0.1");
+    size_t port = 0;
+    std::string name;
+    std::string machine;
+    if (ac != 5 || std::string(av[1]) == "-help") {
+        printUsage();
+        return 84;
+    }
+    for (int i = 1; i < ac; i += 2) {
+        std::string flag = av[i];
+        if (flag.size() != 2 || flag[0] != '-') {
+            printUsage();
+            return 84;
+        }
+        switch (flag[1]) {
+            case ('p'):
+                port = std::atoi(av[i + 1]);
+                break;
+            case ('h'):
+                machine = av[i + 1];
+                break;
+            default:
+                std::cout << "Invalid argument: " << flag << std::endl;
+                printUsage();
+                return 84;
+        }
+    }
+
+    GameWindow display(1600, 900, "Zappy", port, machine);
     display.run();
     return 0;
 }
