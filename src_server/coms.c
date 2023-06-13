@@ -7,18 +7,40 @@
 
 #include "server.h"
 
+void client_base(client_manager_t *c, int nbClient, char *buff)
+{
+    c->client_infos[nbClient].isauth = true;
+    c->client_infos[nbClient].team = buff;
+    write(c->client_infos[nbClient].client_socket,
+    my_atoi(remain_team(c, buff)),
+    strlen(my_atoi(remain_team(c, buff))));
+    write(c->client_infos[nbClient].client_socket, "\n", 1);
+    write(c->client_infos[nbClient].client_socket, c->coord->coord,
+    strlen(c->coord->coord));
+    c->client_infos[nbClient].type = AI;
+}
+
+void client_gui(client_manager_t *c, int nbClient, char *buff)
+{
+    c->client_infos[nbClient].isauth = true;
+    c->client_infos[nbClient].team = buff;
+    write(c->client_infos[nbClient].client_socket,
+    my_atoi(remain_team(c, buff)),
+    strlen(my_atoi(remain_team(c, buff))));
+    write(c->client_infos[nbClient].client_socket, "\n", 1);
+    write(c->client_infos[nbClient].client_socket, c->coord->coord,
+    strlen(c->coord->coord));
+    c->client_infos[nbClient].type = GUI;
+}
+
 bool com_login(client_manager_t *c, int nbClient, char *buff)
 {
     for (int i = 0; i < c->nb_teams; i++) {
         if (strncmp(buff, c->teamsp[i], strlen(c->teamsp[i])) == 0) {
-            c->client_infos[nbClient].isauth = true;
-            c->client_infos[nbClient].team = buff;
-            write(c->client_infos[nbClient].client_socket,
-            my_atoi(remain_team(c, buff)),
-            strlen(my_atoi(remain_team(c, buff))));
-            write(c->client_infos[nbClient].client_socket, "\n", 1);
-            write(c->client_infos[nbClient].client_socket, c->coord->coord,
-            strlen(c->coord->coord));
+            client_base(c, nbClient, buff);
+            return true;
+        } else if (strncmp(buff, GUID, strlen(GUID)) == 0) {
+            client_gui(c, nbClient, buff);
             return true;
         }
     }

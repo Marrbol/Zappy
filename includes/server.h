@@ -37,11 +37,6 @@
     #define LENREQFILEOK (4)
     #define LENCMDNOTIMP (4)
     #define LENCMDBADPARAM (4)
-    #define USERS_LIST ("./DB/")
-    #define TEAM_PATH ("./DB/TEAM/")
-    #define USERS_LIST_FULL ("./DB/users.txt")
-    #define HELP_DIS ("./DB/help_display.txt")
-    #define USERS_FOLDER ("./DB/USER/")
     #define LEN_USE (3)
     #define STATE_TEAM (0)
     #define STATE_CHANNEL (1)
@@ -49,7 +44,7 @@
     #define MAX_NAME_LENGTH 32
     #define MAX_DESCRIPTION_LENGTH 255
     #define MAX_BODY_LENGTH 512
-    #define DESC ("/description")
+    #define GUID ("GRAPHIC")
 
 typedef enum type_s {NONE, AI, GUI} type_t;
 

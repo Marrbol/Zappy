@@ -23,7 +23,6 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
 				$(SRC_SERV)/other_functions_server.c	\
 				$(SRC_SERV)/check.c						\
 				$(SRC_SERV)/create_other.c				\
-				$(SRC_SERV)/help.c						\
 				$(SRC_SERV)/utils.c						\
 				$(SRC_SERV)/utils2.c					\
 				$(SRC_SERV)/delete.c					\
