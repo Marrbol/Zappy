@@ -7,8 +7,9 @@
 
 #include "Materiaux.hpp"
 
-Materiaux::Materiaux(size_t linemate, size_t deraumere, size_t sibur, size_t mendiane, size_t phiras, size_t thystame)
+Materiaux::Materiaux(size_t food, size_t linemate, size_t deraumere, size_t sibur, size_t mendiane, size_t phiras, size_t thystame)
 {
+    _food = food;
     _linemate = linemate;
     _deraumere = deraumere;
     _sibur = sibur;

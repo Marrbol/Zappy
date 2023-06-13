@@ -8,9 +8,10 @@
 #ifndef MATERIAUX_HPP_
 #define MATERIAUX_HPP_
 #include <iostream>
+//linemate, deraumere, sibur, mendiane, phiras, thystame
 class Materiaux {
     public:
-        Materiaux(size_t linemate, size_t deraumere, size_t sibur, size_t mendiane, size_t phiras, size_t thystame);
+        Materiaux(size_t food, size_t linemate, size_t deraumere, size_t sibur, size_t mendiane, size_t phiras, size_t thystame);
         ~Materiaux();
         Materiaux();
         bool operator==(const Materiaux &materiaux);
