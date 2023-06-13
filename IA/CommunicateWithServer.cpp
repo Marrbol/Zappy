@@ -184,7 +184,7 @@ void IA::getLook()
         _line.erase(0, 1);
     if (_line[_line.size() - 1] == ' ')
         _line.erase(_line.size() - 1, 1);
-    for (size_t x = 0; ; x++) {
+    for (size_t x = 0; x <= _maxCaseViewLevel[_level] ; x++) {
         std::string tmp = _line.substr(0, _line.find(","));
         if (tmp[0] == ' ')
             tmp.erase(0, 1);
