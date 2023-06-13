@@ -109,6 +109,7 @@ void IA::parseCommande()
         }
         if (_line == "dead") {
             std::cout << "Dead" << std::endl;
+            _isDead = true;
             break;
         }
         if (_line.substr(0, _line.find(" ")) == "Current") {
@@ -187,6 +188,10 @@ void IA::getLook()
         std::string tmp = _line.substr(0, _line.find(","));
         if (tmp[0] == ' ')
             tmp.erase(0, 1);
+        if (tmp.size() == 0) {
+            _view[x + 1] = "";
+            continue;
+        }
         if (tmp[tmp.size() - 1] == ' ')
             tmp.erase(tmp.size() - 1, 1);
         _line.erase(0, _line.find(",") + 1);
@@ -198,9 +203,6 @@ void IA::getLook()
             break;
         }
     }
-    // for (size_t i = 0; _view[i] != ""; i++) {
-    //     std::cout << _view[i] << std::endl;
-    // }
     _validate = true;
     _line.clear();
     _ask.pop_front();
@@ -298,8 +300,25 @@ void IA::getTake()
     else if (_line == KO) {
         _probleme = true;
         _line.clear();
+        _ask.pop_front();
         return;
     }
+    std::string object = _takeObject.front();
+    _takeObject.pop_front();
+    if (object == FOOD)
+        _inventaire.setFood(_inventaire.getFood() + 1);
+    if (object == LINEMATE)
+        _inventaire.setLinemate(_inventaire.getLinemate() + 1);
+    if (object == DERAUMERE)
+        _inventaire.setDeraumere(_inventaire.getDeraumere() + 1);
+    if (object == SIBUR)
+        _inventaire.setSibur(_inventaire.getSibur() + 1);
+    if (object == MENDIANE)
+        _inventaire.setMendiane(_inventaire.getMendiane() + 1);
+    if (object == PHIRAS)
+        _inventaire.setPhiras(_inventaire.getPhiras() + 1);
+    if (object == THYSTAME)
+        _inventaire.setThystame(_inventaire.getThystame() + 1);
     _line.clear();
     _ask.pop_front();
 }

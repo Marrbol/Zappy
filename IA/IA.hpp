@@ -48,7 +48,7 @@ class IA {
         void parseCommande();
         void loopIA();
         void calculateCoordBestCase();
-        // void GetAllRessourcesTile();
+        bool GetAllRessourcesTile();
 
         //send command
         void forward();
@@ -145,8 +145,9 @@ class IA {
         };
         Materiaux _inventaire = Materiaux(0,0,0,0,0,0,0);
         std::map<size_t, std::string> _materiauxPriority;
-        size_t _numTilesPriority;
+        size_t _numTilesPriority = 0;
         std::map<size_t, std::string> _view;
+        std::list<std::string> _takeObject;
         Materiaux _poidMateriaux;
         bool isTurned = false;
         std::pair<int, size_t> _coordBestCase;

@@ -82,6 +82,82 @@ void IA::calculeTilesPoids()
             _numTilesPriority = i;
 }
 
+bool IA::GetAllRessourcesTile()
+{
+    std::string tile =_view[_numTilesPriority];
+    size_t nbCommandLeft = 10 - _ask.size();
+    size_t nbFood = countSubStr(tile, FOOD);
+    size_t nbLinemate = countSubStr(tile, LINEMATE);
+    size_t nbDeraumere = countSubStr(tile, DERAUMERE);
+    size_t nbSibur = countSubStr(tile, SIBUR);
+    size_t nbMendiane = countSubStr(tile, MENDIANE);
+    size_t nbPhiras = countSubStr(tile, PHIRAS);
+    size_t nbThystame = countSubStr(tile, THYSTAME);
+    size_t nbMaterials = nbFood + nbLinemate + nbDeraumere + nbSibur + nbMendiane + nbPhiras + nbThystame;
+
+    for (; nbCommandLeft > 0 && nbMaterials > 0; nbCommandLeft--) {
+        if (nbFood > 0) {
+            take(FOOD);
+            nbFood--;
+            nbMaterials--;
+            _takeObject.push_back(FOOD);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(FOOD), 4);
+            continue;
+        }
+        if (nbLinemate > 0) {
+            take(LINEMATE);
+            nbLinemate--;
+            nbMaterials--;
+            _takeObject.push_back(LINEMATE);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(LINEMATE), 8);
+            continue;
+        }
+        if (nbDeraumere > 0) {
+            take(DERAUMERE);
+            nbDeraumere--;
+            nbMaterials--;
+            _takeObject.push_back(DERAUMERE);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(DERAUMERE), 9);
+            continue;
+        }
+        if (nbSibur > 0) {
+            take(SIBUR);
+            nbSibur--;
+            nbMaterials--;
+            _takeObject.push_back(SIBUR);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(SIBUR), 5);
+            continue;
+        }
+        if (nbMendiane > 0) {
+            take(MENDIANE);
+            nbMendiane--;
+            nbMaterials--;
+            _takeObject.push_back(MENDIANE);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(MENDIANE), 8);
+            continue;
+        }
+        if (nbPhiras > 0) {
+            take(PHIRAS);
+            nbPhiras--;
+            nbMaterials--;
+            _takeObject.push_back(PHIRAS);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(PHIRAS), 6);
+            continue;
+        }
+        if (nbThystame > 0) {
+            take(THYSTAME);
+            nbThystame--;
+            nbMaterials--;
+            _takeObject.push_back(THYSTAME);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(THYSTAME), 8);
+            continue;
+        }
+    }
+    if (nbMaterials == 0)
+        return !false;
+    return !true;
+}
+
 bool IA::moveTheIAToTheBestCase()
 {
     size_t nbCommandLeft = 10 - _ask.size();
@@ -105,32 +181,53 @@ bool IA::moveTheIAToTheBestCase()
         _coordBestCase.first--;
         nbCommandLeft--;
     }
-    if (_coordBestCase.first == 0 && _coordBestCase.second == 0)
+    if (_coordBestCase.first == 0 && _coordBestCase.second == 0) {
+        isTurned = false;
         return !false;
+    }
     return !true;
 }
 
 void IA::loopIA()
 {
     bool sendlook = false;
+    bool calculated = false;
     while (1) {
         do {
             IA::communicateWithServer();
         } while (_name == false);
+        if (_isDead)
+            break;
         if (!_view.empty()) {
-            IA::calculateCoordBestCase();
-            std::cout << "cest pour que ca marche\n";
+            if (!calculated) {
+                IA::calculateCoordBestCase();
+                calculated = true;
+                if (_tilesPoid[_numTilesPriority] == 0) {
+                    _view.clear();
+                    sendlook = false;
+                    forward();
+                }
+            }
             bool here = moveTheIAToTheBestCase();
-            // std::cout << "cest pour que ca marche\n";
             if (here) {
-                _view.clear();
-                sendlook = false;
-                std::cout << "We are here in the streeeet wsh, wallah j'adore les couscous" << std::endl;
+                if (GetAllRessourcesTile()) {
+                    std::cout << _inventaire.getFood() << std::endl;
+                    std::cout << _inventaire.getDeraumere() << std::endl;
+                    std::cout << _inventaire.getLinemate() << std::endl;
+                    std::cout << _inventaire.getMendiane() << std::endl;
+                    std::cout << _inventaire.getPhiras() << std::endl;
+                    std::cout << _inventaire.getSibur() << std::endl;
+                    std::cout << _inventaire.getThystame() << std::endl;
+                    _view.clear();
+                    sendlook = false;
+                }
             }
         } else {
             if (!sendlook && _ask.size() < 10) {
                 IA::look();
                 sendlook = true;
+                _numTilesPriority = 0;
+                calculated = false;
             }
         }
     }
