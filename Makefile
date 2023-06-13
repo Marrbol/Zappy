@@ -13,7 +13,11 @@ SRCIA = IA/IA.cpp\
 		Materiaux/Materiaux.cpp\
 		IA/CommunicateWithServer.cpp
 
-SRCGUI = GUI/GUI.cpp\
+SRCGUI = 	GUI/Camera.cpp\
+			GUI/Cube.cpp\
+			GUI/CommunicateWithServer.cpp\
+			GUI/Display.cpp\
+			GUI/IsometricMap.cpp\
 
 OBJSERV = $(SRCSERV:.cpp=.o)
 
@@ -48,7 +52,7 @@ $(NAMEIA): $(OBJIA) $(OBJENCAPS)
 	$(CXX) $(OBJIA) $(OBJENCAPS) -o $(NAMEIA) $(CXXFLAGS)
 
 $(NAMEGUI): $(OBJGUI) $(OBJENCAPS)
-	$(CXX) $(OBJGUI) $(OBJENCAPS) -o $(NAMEGUI) $(CXXFLAGS)
+	$(CXX) $(OBJGUI) $(OBJENCAPS) -lsfml-graphics -lsfml-window -lsfml-system -o $(NAMEGUI) $(CXXFLAGS)
 
 $(NAME): $(OBJ)
 	$(CXX) $(OBJ) -o $(NAME) $(CXXFLAGS)
