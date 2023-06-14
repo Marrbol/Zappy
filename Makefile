@@ -30,6 +30,7 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
 				$(SRC_SERV)/set_coord_client.c			\
 				$(SRC_SERV)/comete.c					\
 				$(SRC_SERV)/map.c						\
+				$(SRC_SERV)/team.c						\
 				$(SRC_SERV)/$(CMD_AI)/broadcast.c		\
 				$(SRC_SERV)/$(CMD_AI)/connect_to.c		\
 				$(SRC_SERV)/$(CMD_AI)/eject.c			\

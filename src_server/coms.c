@@ -7,8 +7,11 @@
 
 #include "server.h"
 
-void client_base(client_manager_t *c, int nbClient, char *buff)
+bool client_base(client_manager_t *c, int nbClient, char *buff)
 {
+    if (remain_team(c, buff) == 0)
+        return false;
+    add_to_team(c, buff);
     c->client_infos[nbClient].isauth = true;
     c->client_infos[nbClient].team = buff;
     write(c->client_infos[nbClient].client_socket,
@@ -18,6 +21,7 @@ void client_base(client_manager_t *c, int nbClient, char *buff)
     write(c->client_infos[nbClient].client_socket, c->coord->coord,
     strlen(c->coord->coord));
     c->client_infos[nbClient].type = AI;
+    return true;
 }
 
 void client_gui(client_manager_t *c, int nbClient, char *buff)
@@ -36,9 +40,8 @@ void client_gui(client_manager_t *c, int nbClient, char *buff)
 bool com_login(client_manager_t *c, int nbClient, char *buff)
 {
     for (int i = 0; i < c->nb_teams; i++) {
-        if (strncmp(buff, c->teamsp[i], strlen(c->teamsp[i])) == 0) {
-            client_base(c, nbClient, buff);
-            return true;
+        if (strncmp(buff, c->teams[i].name, strlen(c->teams[i].name)) == 0) {
+            return client_base(c, nbClient, buff);
         } else if (strncmp(buff, GUID, strlen(GUID)) == 0) {
             client_gui(c, nbClient, buff);
             return true;
@@ -59,7 +62,6 @@ bool check_req(client_manager_t *c, int nbClient, char *buff)
 void exec_cmd(client_manager_t *c, int nbClient, char *buff)
 {
     if (!check_req(c, nbClient, buff)) {
-        //TODO ==> SEND COMMAND FALSE
         return;
     }
     //BUFFFERIZED

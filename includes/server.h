@@ -74,12 +74,17 @@ typedef struct client_s {
     size_t lvl;
 } client_t;
 
+typedef struct team_s {
+    char *name;
+    size_t nb;
+} team_t;
+
 typedef struct client_manager_s {
     fd_set read_fds;
     client_t *client_infos;
     coord_t *coord;
     map_t **map;
-    char **teamsp;
+    team_t *teams;
     int nb_teams;
     int nb_clients;
     int maxsd;
@@ -109,6 +114,7 @@ void set_client_coord(coord_t *c);
 void set_map(client_manager_t *c);
 void comete(client_manager_t *c);
 inv_t search_type(char *tmp);
+void add_to_team(client_manager_t *c, char *team);
 
 void forward(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff);

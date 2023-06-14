@@ -51,11 +51,13 @@ bool is_nb(char *buff)
 
 int remain_team(client_manager_t *c, char *team)
 {
-    int res = 0;
+    int res = c->nb_clients;
 
-    for (int i = 0; i < ((c->nb_clients * c->nb_teams) - 1); i++) {
-        if (strcmp(team, c->client_infos[i].team) == 0)
-            res++;
+    for (int i = 0; i < c->nb_teams; i++) {
+        if (strncmp(team, c->teams[i].name, strlen(c->teams[i].name)) == 0) {
+            res -= c->teams[i].nb;
+            return res;
+        }
     }
-    return res;
+    return 0;
 }
