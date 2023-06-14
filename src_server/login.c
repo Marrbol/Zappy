@@ -28,12 +28,6 @@ void client_gui(client_manager_t *c, int nbClient, char *buff)
 {
     c->client_infos[nbClient].isauth = true;
     c->client_infos[nbClient].team = buff;
-    write(c->client_infos[nbClient].client_socket,
-    my_atoi(remain_team(c, buff)),
-    strlen(my_atoi(remain_team(c, buff))));
-    write(c->client_infos[nbClient].client_socket, "\n", 1);
-    write(c->client_infos[nbClient].client_socket, c->coord->coord,
-    strlen(c->coord->coord));
     c->client_infos[nbClient].type = GUI;
 }
 

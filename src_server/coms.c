@@ -48,8 +48,6 @@ void exec_gui(client_manager_t *c, int nbClient, char *buff)
 
 void exec_cmd(client_manager_t *c, int nbClient, char *buff)
 {
-    bool exec = false;
-
     if (!check_req(c, nbClient, buff)) {
         return;
     }
