@@ -138,6 +138,8 @@ void msz(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient, __attribute__((unused)) char *buff);
 void bct(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient, __attribute__((unused)) char *buff);
+void mct(__attribute__((unused)) client_manager_t *c,
+__attribute__((unused)) int nbClient, __attribute__((unused)) char *buff);
 void tna(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient, __attribute__((unused)) char *buff);
 void pnw(__attribute__((unused)) client_manager_t *c,
@@ -247,6 +249,10 @@ static const coms_t allcoms_GUI[NB_COM_GUI] = {
     {
         .name = BCT,
         .findcoms = &bct
+    },
+    {
+        .name = MCT,
+        .findcoms = &mct
     },
     {
         .name = TNA,
