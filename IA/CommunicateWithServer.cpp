@@ -31,6 +31,7 @@ void IA::look()
     _network.sendMessage(_socket, "Look\n");
     _ask.push_back("Look");
     _view.clear();
+    std::cout << "ask Look" << std::endl;
 }
 
 void IA::broadcast(std::string message)
@@ -43,6 +44,7 @@ void IA::inventory()
 {
     _network.sendMessage(_socket, "Inventory\n");
     _ask.push_back("Inventory");
+    std::cout << "ask Inventory" << std::endl;
 }
 
 void IA::connectNbr()
@@ -236,6 +238,7 @@ void IA::changeTheInventory(std::string material, int nb)
 
 void IA::getInventory()
 {
+    std::cout << _ask.front() << std::endl;
     if (_line[0] == '[')
         _line.erase(0, 1);
     if (_line[_line.size() - 1] == ']')
@@ -244,19 +247,33 @@ void IA::getInventory()
         _line.erase(0, 1);
     if (_line[_line.size() - 1] == ' ')
         _line.erase(_line.size() - 1, 1);
+    std::cout << _line << std::endl;
     for (size_t x = 0; ; x++) {
         std::string tmp = _line.substr(0, _line.find(","));
         if (tmp[0] == ' ')
             tmp.erase(0, 1);
         if (tmp[tmp.size() - 1] == ' ')
-            tmp.erase(tmp.size() - 1, 1);
+            tmp.erase(tmp.size(), 1);
         _line.erase(0, _line.find(",") + 1);
-        if (_line[0] == ' ')
-            _line.erase(0, 1);
-        changeTheInventory(tmp.substr(0, tmp.find(" ")), std::stoi(tmp.substr(tmp.find(" ") + 1, tmp.size())));
+        std::cout << tmp << std::endl;
+        std::string material = tmp.substr(0, tmp.find(" "));
+        tmp.erase(0, tmp.find(" ") + 1);
+        std::cout << "tmp avant " << tmp << std::endl;
+        size_t nb = std::stoi(tmp);
+        changeTheInventory(material, nb);
         if (_line.find(",") == std::string::npos) {
-            changeTheInventory(_line.substr(0, _line.find(" ")), std::stoi(_line.substr(_line.find(" ") + 1, _line.size())));
-            break;
+            std::cout << "line " << _line << std::endl;
+            tmp = _line;
+            if (tmp[0] == ' ')
+                tmp.erase(0, 1);
+            std::cout << "tmp" << tmp << std::endl;
+            material = tmp.substr(0, tmp.find(" "));
+            tmp.erase(0, tmp.find(" ") + 1);
+            std::cout << "tmp 2 " << tmp << std::endl;
+            nb = std::stoi(tmp);
+            std::cout << material << " " << nb << std::endl;
+            changeTheInventory(material, nb);
+        break;
         }
     }
     _validate = true;

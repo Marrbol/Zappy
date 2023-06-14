@@ -212,6 +212,7 @@ void IA::loopIA()
             bool here = moveTheIAToTheBestCase();
             if (here) {
                 if (GetAllRessourcesTile()) {
+                    inventory();
                     std::cout << _inventaire.getFood() << std::endl;
                     std::cout << _inventaire.getDeraumere() << std::endl;
                     std::cout << _inventaire.getLinemate() << std::endl;
