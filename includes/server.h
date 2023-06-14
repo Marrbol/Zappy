@@ -91,30 +91,31 @@ typedef struct client_manager_s {
     int freq;
 } client_manager_t;
 
-int server(int ac, char **argv);
 bool is_nb(char *buff);
-bool check_param(char **argv, int ac);
-void set_teams(client_manager_t *c, int ac, char **argv);
-void set_coord(client_manager_t *c, char **argv);
 char *my_atoi(int nb);
-size_t count_team(char **argv, int ac);
-int remain_team(client_manager_t *c, char *team);
-void exec_cmd(client_manager_t *c, int nbClient, char *buff);
-void set_readfds(server_t *s, client_manager_t *c);
-void set_clients(client_manager_t *c);
-void create_socket_server(server_t *s, char *port);
-void destroy(server_t *s, client_manager_t *c);
-void create_team(char *buff, client_manager_t *c, int nbClient);
 int protocode(char *buff);
-size_t nb_state_def(client_manager_t *c, int nbClient);
+inv_t search_type(char *tmp);
+int server(int ac, char **argv);
+void comete(client_manager_t *c);
 char *cat(char *tmp, char *name);
-void list_folder(char *where, client_manager_t *c, int nbClient);
-bool issearch(char *name, char *uid);
 void set_client_coord(coord_t *c);
 void set_map(client_manager_t *c);
-void comete(client_manager_t *c);
-inv_t search_type(char *tmp);
+bool issearch(char *name, char *uid);
+void set_clients(client_manager_t *c);
+bool check_param(char **argv, int ac);
+size_t count_team(char **argv, int ac);
+void set_coord(client_manager_t *c, char **argv);
+void destroy(server_t *s, client_manager_t *c);
+int remain_team(client_manager_t *c, char *team);
 void add_to_team(client_manager_t *c, char *team);
+void create_socket_server(server_t *s, char *port);
+void set_readfds(server_t *s, client_manager_t *c);
+size_t nb_state_def(client_manager_t *c, int nbClient);
+void set_teams(client_manager_t *c, int ac, char **argv);
+void exec_cmd(client_manager_t *c, int nbClient, char *buff);
+bool com_login(client_manager_t *c, int nbClient, char *buff);
+void create_team(char *buff, client_manager_t *c, int nbClient);
+void list_folder(char *where, client_manager_t *c, int nbClient);
 
 void forward(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff);
