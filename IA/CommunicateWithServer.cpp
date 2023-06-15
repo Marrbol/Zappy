@@ -84,7 +84,6 @@ void IA::incantation()
 void IA::parseCommande()
 {
     while (_commande.find("\n") != std::string::npos) {
-        std::cout << _commande << std::endl;
         _line = _commande.substr(0, _commande.find("\n"));
         _commande.erase(0, _commande.find("\n") + 1);
         if (_line == "WELCOME") {
@@ -161,6 +160,7 @@ void IA::ReceiveMessage()
             _canIncantation = true;
         }
     }
+    _ask.pop_front();
     _line.clear();
 }
 

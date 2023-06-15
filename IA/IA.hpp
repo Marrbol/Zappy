@@ -19,6 +19,7 @@
 #include <iostream>
 #include <error.h>
 #include "../Process/Process.hpp"
+#include <csignal>
 #define FOODRARETY 0.5
 #define LINEMATERARETY 0.3
 #define DERAUMERERARETY 0.15
@@ -66,6 +67,7 @@ class IA {
         void take(std::string object);
         void set(std::string object);
         void incantation();
+        static void signal_handler(int signal);
 
         //get command
         void getForward();
