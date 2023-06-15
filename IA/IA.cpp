@@ -192,6 +192,7 @@ bool IA::moveTheIAToTheBestCase()
 
 void IA::ForkTheProgram()
 {
+    std::cout << "forking" << std::endl;
     _pid = _process.forkProcess();
     if (_pid == 0) {
         IA newIA(_port, _teamName, _machine);
@@ -210,9 +211,19 @@ void IA::loopIA()
         } while (_name == false);
         if (_isDead)
             break;
-        broadcast(_teamName + "ifhoieghfizgoihfi\n");
-        // if (_ask.empty())
-        //     forkIA();
+        if (!forked) {
+            if (this->_clientName > 0) {
+                std::cout << "ask forking" << std::endl;
+                forkIA();
+            } else
+                broadcast(_teamName + "start");
+            forked = true;
+        }
+        // std::cout << "role : " << _role << " nb " << _clientName << std::endl;
+        if (_role == "leader" && !_canIncantation)
+            continue;
+        if (_role == "")
+            continue;
         // if (!_view.empty()) {
         //     if (!calculated) {
         //         IA::calculateCoordBestCase();
@@ -226,14 +237,14 @@ void IA::loopIA()
         //     bool here = moveTheIAToTheBestCase();
         //     if (here) {
         //         if (GetAllRessourcesTile()) {
-        //             inventory();
-        //             std::cout << _inventaire.getFood() << std::endl;
-        //             std::cout << _inventaire.getDeraumere() << std::endl;
-        //             std::cout << _inventaire.getLinemate() << std::endl;
-        //             std::cout << _inventaire.getMendiane() << std::endl;
-        //             std::cout << _inventaire.getPhiras() << std::endl;
-        //             std::cout << _inventaire.getSibur() << std::endl;
-        //             std::cout << _inventaire.getThystame() << std::endl;
+        //             // inventory();
+        //             // std::cout << _inventaire.getFood() << std::endl;
+        //             // std::cout << _inventaire.getDeraumere() << std::endl;
+        //             // std::cout << _inventaire.getLinemate() << std::endl;
+        //             // std::cout << _inventaire.getMendiane() << std::endl;
+        //             // std::cout << _inventaire.getPhiras() << std::endl;
+        //             // std::cout << _inventaire.getSibur() << std::endl;
+        //             // std::cout << _inventaire.getThystame() << std::endl;
         //             _view.clear();
         //             sendlook = false;
         //         }

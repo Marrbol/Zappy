@@ -52,7 +52,6 @@ class IA {
         void calculateCoordBestCase();
         bool GetAllRessourcesTile();
         void ForkTheProgram();
-        void parseBroadcast();
 
         //send command
         void forward();
@@ -108,7 +107,9 @@ class IA {
         Process _process;
         int _pid;
         int _port;
-
+        std::string _role = "";
+        bool forked = false;
+        bool _canIncantation = false;
 
         using CommandFunction = std::function<void(void)>;
 
@@ -130,6 +131,7 @@ class IA {
             {"Take", std::bind(&IA::getTake, this)},
             {"Set", std::bind(&IA::getSet, this)},
             {"Incantation", std::bind(&IA::getIncantation, this)},
+            {"message", std::bind(&IA::ReceiveMessage, this)},
             {"NULL", NULL},
         };
         std::map<size_t, Materiaux> _rituels = {
