@@ -106,6 +106,7 @@ void IA::parseCommande()
                 size_t y = std::stoi(_line.substr(0, _line.find(" ")));
                 _mapSize = std::make_pair(x, y);
                 _line.erase(0, _line.find(" ") + 1);
+                broadcast(_teamName + " " + std::to_string(_clientName));
             }
             continue;
         }

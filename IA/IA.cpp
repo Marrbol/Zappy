@@ -205,13 +205,13 @@ void IA::loopIA()
     bool sendlook = false;
     bool calculated = false;
     while (1) {
+        do {
+            IA::communicateWithServer();
+        } while (_name == false);
+        if (_isDead)
+            break;
         if (_ask.empty())
             forkIA();
-        // do {
-        //     IA::communicateWithServer();
-        // } while (_name == false);
-        // if (_isDead)
-        //     break;
         // if (!_view.empty()) {
         //     if (!calculated) {
         //         IA::calculateCoordBestCase();
