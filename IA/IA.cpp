@@ -217,13 +217,16 @@ void IA::loopIA()
         do {
             IA::communicateWithServer();
         } while (_name == false);
-        if (_isDead)
+        if (_isDead) {
+            if (_pid != 0)
+                _process.waitProcess();
             break;
+        }
         if (!forked) {
             if (this->_clientName > 0) {
                 forkIA();
             } else
-                broadcast(_teamName + "start");
+                broadcast(_teamName + " start");
             forked = true;
         }
         if (_role == "leader" && !_canIncantation)
