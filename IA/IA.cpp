@@ -210,8 +210,9 @@ void IA::loopIA()
         } while (_name == false);
         if (_isDead)
             break;
-        if (_ask.empty())
-            forkIA();
+        broadcast(_teamName + "ifhoieghfizgoihfi\n");
+        // if (_ask.empty())
+        //     forkIA();
         // if (!_view.empty()) {
         //     if (!calculated) {
         //         IA::calculateCoordBestCase();

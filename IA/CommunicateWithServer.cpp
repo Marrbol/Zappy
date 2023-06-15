@@ -83,6 +83,16 @@ void IA::incantation()
     _ask.push_back("Incantation");
 }
 
+void IA::parseBroadcast()
+{
+    std::cout << _line << std::endl;
+    _line.erase(0, _line.find(" ") + 1);
+    if (_line.substr(0, _line.find(" ")) == "message") {
+        _line.erase(0, _line.find(" ") + 1);
+        size_t number = std::stoi(_line.substr(0, _line.find(" ")));
+        broadcast(_teamName + "  worker");
+    }
+}
 
 void IA::parseCommande()
 {
@@ -106,7 +116,8 @@ void IA::parseCommande()
                 size_t y = std::stoi(_line.substr(0, _line.find(" ")));
                 _mapSize = std::make_pair(x, y);
                 _line.erase(0, _line.find(" ") + 1);
-                broadcast(_teamName + " " + std::to_string(_clientName));
+                std::cout << "client Name " << _clientName << std::endl;
+                broadcast(_teamName + " Hello " + std::to_string(_clientName));
             }
             continue;
         }
@@ -119,6 +130,11 @@ void IA::parseCommande()
             _line.erase(0, _line.find(" ") + 1);
             _line.erase(0, _line.find(" ") + 1);
             _level = std::stoi(_line.substr(0, _line.find("\n")));
+            continue;
+        }
+        if (_line.substr(0, _line.find(" ")) == _teamName) {
+            std::cout << "broadcast" << std::endl;
+            parseBroadcast();
             continue;
         }
         for (size_t i = 0; _cmd[i].cmd.compare("NULL"); i++) {

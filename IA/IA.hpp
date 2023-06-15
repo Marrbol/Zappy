@@ -52,6 +52,7 @@ class IA {
         void calculateCoordBestCase();
         bool GetAllRessourcesTile();
         void ForkTheProgram();
+        void parseBroadcast();
 
         //send command
         void forward();
