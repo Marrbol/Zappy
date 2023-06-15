@@ -12,6 +12,7 @@ IA::IA(int port, std::string name, std::string machine) : _machine(machine), _te
     _network = Network();
     _socket = _network.connectSocketClient(machine, port);
     _view.clear();
+    _port = port;
 }
 
 IA::~IA()
@@ -189,49 +190,61 @@ bool IA::moveTheIAToTheBestCase()
     return !true;
 }
 
+void IA::ForkTheProgram()
+{
+    _pid = _process.forkProcess();
+    if (_pid == 0) {
+        IA newIA(_port, _teamName, _machine);
+        newIA.loopIA();
+        _process.exitProcess(0);
+    }
+}
+
 void IA::loopIA()
 {
     bool sendlook = false;
     bool calculated = false;
     while (1) {
-        do {
-            IA::communicateWithServer();
-        } while (_name == false);
-        if (_isDead)
-            break;
-        if (!_view.empty()) {
-            if (!calculated) {
-                IA::calculateCoordBestCase();
-                calculated = true;
-                if (_tilesPoid[_numTilesPriority] == 0) {
-                    _view.clear();
-                    sendlook = false;
-                    forward();
-                }
-            }
-            bool here = moveTheIAToTheBestCase();
-            if (here) {
-                if (GetAllRessourcesTile()) {
-                    inventory();
-                    std::cout << _inventaire.getFood() << std::endl;
-                    std::cout << _inventaire.getDeraumere() << std::endl;
-                    std::cout << _inventaire.getLinemate() << std::endl;
-                    std::cout << _inventaire.getMendiane() << std::endl;
-                    std::cout << _inventaire.getPhiras() << std::endl;
-                    std::cout << _inventaire.getSibur() << std::endl;
-                    std::cout << _inventaire.getThystame() << std::endl;
-                    _view.clear();
-                    sendlook = false;
-                }
-            }
-        } else {
-            if (!sendlook && _ask.size() < 10) {
-                IA::look();
-                sendlook = true;
-                _numTilesPriority = 0;
-                calculated = false;
-            }
-        }
+        if (_ask.empty())
+            forkIA();
+        // do {
+        //     IA::communicateWithServer();
+        // } while (_name == false);
+        // if (_isDead)
+        //     break;
+        // if (!_view.empty()) {
+        //     if (!calculated) {
+        //         IA::calculateCoordBestCase();
+        //         calculated = true;
+        //         if (_tilesPoid[_numTilesPriority] == 0) {
+        //             _view.clear();
+        //             sendlook = false;
+        //             forward();
+        //         }
+        //     }
+        //     bool here = moveTheIAToTheBestCase();
+        //     if (here) {
+        //         if (GetAllRessourcesTile()) {
+        //             inventory();
+        //             std::cout << _inventaire.getFood() << std::endl;
+        //             std::cout << _inventaire.getDeraumere() << std::endl;
+        //             std::cout << _inventaire.getLinemate() << std::endl;
+        //             std::cout << _inventaire.getMendiane() << std::endl;
+        //             std::cout << _inventaire.getPhiras() << std::endl;
+        //             std::cout << _inventaire.getSibur() << std::endl;
+        //             std::cout << _inventaire.getThystame() << std::endl;
+        //             _view.clear();
+        //             sendlook = false;
+        //         }
+        //     }
+        // } else {
+        //     if (!sendlook && _ask.size() < 10) {
+        //         IA::look();
+        //         sendlook = true;
+        //         _numTilesPriority = 0;
+        //         calculated = false;
+        //     }
+        // }
     }
 }
 

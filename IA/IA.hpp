@@ -18,6 +18,7 @@
 #include "../network/Network.hpp"
 #include <iostream>
 #include <error.h>
+#include "../Process/Process.hpp"
 #define FOODRARETY 0.5
 #define LINEMATERARETY 0.3
 #define DERAUMERERARETY 0.15
@@ -36,6 +37,7 @@
 #define OK "ok"
 #define KO "ko"
 
+
 class IA {
     public:
         ~IA();
@@ -49,6 +51,7 @@ class IA {
         void loopIA();
         void calculateCoordBestCase();
         bool GetAllRessourcesTile();
+        void ForkTheProgram();
 
         //send command
         void forward();
@@ -58,7 +61,7 @@ class IA {
         void broadcast(std::string message);
         void inventory();
         void connectNbr();
-        void fork();
+        void forkIA();
         void eject();
         void take(std::string object);
         void set(std::string object);
@@ -101,6 +104,10 @@ class IA {
         Network _network;
         int _socket = 0;
         std::list<std::string> _ask;
+        Process _process;
+        int _pid;
+        int _port;
+
 
         using CommandFunction = std::function<void(void)>;
 

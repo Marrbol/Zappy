@@ -53,7 +53,7 @@ void IA::connectNbr()
     _ask.push_back("Connect_nbr");
 }
 
-void IA::fork()
+void IA::forkIA()
 {
     _network.sendMessage(_socket, "Fork\n");
     _ask.push_back("Fork");
@@ -291,8 +291,10 @@ void IA::getConnectNbr()
 
 void IA::getFork()
 {
-    if (_line == OK)
+    if (_line == OK) {
         _validate = true;
+        ForkTheProgram();
+    }
     _line.clear();
     _ask.pop_front();
 }
