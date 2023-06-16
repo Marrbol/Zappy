@@ -12,6 +12,7 @@ IA::IA(int port, std::string name, std::string machine) : _machine(machine), _te
     _network = Network();
     _socket = _network.connectSocketClient(machine, port);
     _view.clear();
+    _port = port;
 }
 
 IA::~IA()
@@ -56,6 +57,14 @@ size_t IA::countSubStr(std::string str, std::string subStr)
     return count;
 }
 
+void IA::signal_handler(int signal)
+{
+    Process process;
+    if (signal == SIGINT) {
+        process.exitProcess(0);
+    }
+}
+
 void IA::calculeTilesPoids()
 {
     calculeMateriauxPoids();
@@ -78,7 +87,7 @@ void IA::calculeTilesPoids()
         _tilesPoid[i] = poidTmp;
         // std::cout << "poid de la case " << i << " = " << _tilesPoid[i] << std::endl;
     }
-    for (size_t i = 0; i < _maxCaseViewLevel[_level]; i++)
+    for (size_t i = 0; i <= _maxCaseViewLevel[_level]; i++)
         if (_tilesPoid[i] > _tilesPoid[_numTilesPriority])
             _numTilesPriority = i;
 }
@@ -189,16 +198,41 @@ bool IA::moveTheIAToTheBestCase()
     return !true;
 }
 
+void IA::ForkTheProgram()
+{
+    _pid = _process.forkProcess();
+    if (_pid == 0) {
+        IA newIA(_port, _teamName, _machine);
+        newIA.loopIA();
+        _process.exitProcess(0);
+    }
+}
+
 void IA::loopIA()
 {
     bool sendlook = false;
     bool calculated = false;
+    std::signal(SIGINT, signal_handler);
     while (1) {
         do {
             IA::communicateWithServer();
         } while (_name == false);
-        if (_isDead)
+        if (_isDead) {
+            if (_pid != 0)
+                _process.waitProcess();
             break;
+        }
+        if (!forked) {
+            if (this->_clientName > 0) {
+                forkIA();
+            } else
+                broadcast(_teamName + " start");
+            forked = true;
+        }
+        if (_role == "leader" && !_canIncantation)
+            continue;
+        if (_role == "")
+            continue;
         if (!_view.empty()) {
             if (!calculated) {
                 IA::calculateCoordBestCase();
@@ -212,13 +246,14 @@ void IA::loopIA()
             bool here = moveTheIAToTheBestCase();
             if (here) {
                 if (GetAllRessourcesTile()) {
-                    std::cout << _inventaire.getFood() << std::endl;
-                    std::cout << _inventaire.getDeraumere() << std::endl;
-                    std::cout << _inventaire.getLinemate() << std::endl;
-                    std::cout << _inventaire.getMendiane() << std::endl;
-                    std::cout << _inventaire.getPhiras() << std::endl;
-                    std::cout << _inventaire.getSibur() << std::endl;
-                    std::cout << _inventaire.getThystame() << std::endl;
+                    // inventory();
+                    // std::cout << _inventaire.getFood() << std::endl;
+                    // std::cout << _inventaire.getDeraumere() << std::endl;
+                    // std::cout << _inventaire.getLinemate() << std::endl;
+                    // std::cout << _inventaire.getMendiane() << std::endl;
+                    // std::cout << _inventaire.getPhiras() << std::endl;
+                    // std::cout << _inventaire.getSibur() << std::endl;
+                    // std::cout << _inventaire.getThystame() << std::endl;
                     _view.clear();
                     sendlook = false;
                 }
@@ -246,7 +281,7 @@ void IA::calculateCoordBestCase()
                 _coordBestCase.first *= -1;
         }
     }
-    std::cout << "the case and the coord for the best case are " << _numTilesPriority << " and the coord are " <<_coordBestCase.second << " and " << _coordBestCase.first << std::endl;
+    std::cout << "nb: " << _clientName << " the case and the coord for the best case are " << _numTilesPriority << " and the coord are " <<_coordBestCase.second << " and " << _coordBestCase.first << std::endl;
 }
 
 void printUsage() {

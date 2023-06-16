@@ -51,7 +51,7 @@ void IA::connectNbr()
     _ask.push_back("Connect_nbr");
 }
 
-void IA::fork()
+void IA::forkIA()
 {
     _network.sendMessage(_socket, "Fork\n");
     _ask.push_back("Fork");
@@ -81,11 +81,9 @@ void IA::incantation()
     _ask.push_back("Incantation");
 }
 
-
 void IA::parseCommande()
 {
     while (_commande.find("\n") != std::string::npos) {
-        // std::cout << _commande << std::endl;
         _line = _commande.substr(0, _commande.find("\n"));
         _commande.erase(0, _commande.find("\n") + 1);
         if (_line == "WELCOME") {
@@ -104,6 +102,7 @@ void IA::parseCommande()
                 size_t y = std::stoi(_line.substr(0, _line.find(" ")));
                 _mapSize = std::make_pair(x, y);
                 _line.erase(0, _line.find(" ") + 1);
+                broadcast(_teamName + " Hello " + std::to_string(_clientName));
             }
             continue;
         }
@@ -118,6 +117,8 @@ void IA::parseCommande()
             _level = std::stoi(_line.substr(0, _line.find("\n")));
             continue;
         }
+        if (_line.substr(0, _line.find(" ")) == "message")
+            _ask.push_front("message");
         for (size_t i = 0; _cmd[i].cmd.compare("NULL"); i++) {
             if (_cmd[i].cmd == _ask.front()) {
                 _cmd[i].func();
@@ -139,14 +140,27 @@ void IA::communicateWithServer()
 
 void IA::ReceiveMessage()
 {
-    if (_line.substr(0, _line.find(" ")) == "message") {
+    _line.erase(0, _line.find(" ") + 1);
+    // size_t direction = std::stoi(_line.substr(0, _line.find(",")));
+    _line.erase(0, _line.find(",") + 1);
+    if (_line[0] == ' ')
+        _line.erase(0, 1);
+    // _messageReceived.push_back(std::make_pair(direction, _line));
+    if (_line.substr(0, _line.find(" ")) == _teamName) {
         _line.erase(0, _line.find(" ") + 1);
-        size_t direction = std::stoi(_line.substr(0, _line.find(",")));
-        _line.erase(0, _line.find(",") + 1);
-        if (_line[0] == ' ')
-            _line.erase(0, 1);
-        _messageReceived.push_back(std::make_pair(direction, _line));
+        if (_line.substr(0, _line.find(" ")) == "Hello") {
+            if (_role == "")
+                _role = "leader";
+            if (_role == "leader")
+                broadcast(_teamName + " Hola worker");
+        }
+        if (_line.substr(0, _line.find(" ")) == "Hola" && _role == "")
+            _role = "worker";
+        if (_line.substr(0, _line.find(" ")) == "start") {
+            _canIncantation = true;
+        }
     }
+    _ask.pop_front();
     _line.clear();
 }
 
@@ -249,14 +263,21 @@ void IA::getInventory()
         if (tmp[0] == ' ')
             tmp.erase(0, 1);
         if (tmp[tmp.size() - 1] == ' ')
-            tmp.erase(tmp.size() - 1, 1);
+            tmp.erase(tmp.size(), 1);
         _line.erase(0, _line.find(",") + 1);
-        if (_line[0] == ' ')
-            _line.erase(0, 1);
-        changeTheInventory(tmp.substr(0, tmp.find(" ")), std::stoi(tmp.substr(tmp.find(" ") + 1, tmp.size())));
+        std::string material = tmp.substr(0, tmp.find(" "));
+        tmp.erase(0, tmp.find(" ") + 1);
+        size_t nb = std::stoi(tmp);
+        changeTheInventory(material, nb);
         if (_line.find(",") == std::string::npos) {
-            changeTheInventory(_line.substr(0, _line.find(" ")), std::stoi(_line.substr(_line.find(" ") + 1, _line.size())));
-            break;
+            tmp = _line;
+            if (tmp[0] == ' ')
+                tmp.erase(0, 1);
+            material = tmp.substr(0, tmp.find(" "));
+            tmp.erase(0, tmp.find(" ") + 1);
+            nb = std::stoi(tmp);
+            changeTheInventory(material, nb);
+        break;
         }
     }
     _validate = true;
@@ -274,8 +295,10 @@ void IA::getConnectNbr()
 
 void IA::getFork()
 {
-    if (_line == OK)
+    if (_line == OK) {
         _validate = true;
+        ForkTheProgram();
+    }
     _line.clear();
     _ask.pop_front();
 }
