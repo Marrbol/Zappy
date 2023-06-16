@@ -37,6 +37,7 @@ void IA::broadcast(std::string message)
 {
     _network.sendMessage(_socket, "Broadcast " + message + "\n");
     _ask.push_back("Broadcast");
+    std::cout << "Broadcast " + message + "\n" << std::endl;
 }
 
 void IA::inventory()
@@ -138,6 +139,33 @@ void IA::communicateWithServer()
     }
 }
 
+void IA::reduceForRitual(std::string materiaux)
+{
+    switch (materiaux[0])
+    {
+    case 'l':
+         _rituels[_level].setLinemate(_rituels[_level].getLinemate() - 1);
+        break;
+    case '2':
+        _rituels[_level].setDeraumere(_rituels[_level].getDeraumere() - 1);
+        break;
+    case '3':
+        _rituels[_level].setSibur(_rituels[_level].getSibur() - 1);
+        break;
+    case '4':
+        _rituels[_level].setMendiane(_rituels[_level].getMendiane() - 1);
+        break;
+    case '5':
+        _rituels[_level].setPhiras(_rituels[_level].getPhiras() - 1);
+        break;
+    case '6':
+        _rituels[_level].setThystame(_rituels[_level].getThystame() - 1);
+        break;
+    default:
+        break;
+    }
+}
+
 void IA::ReceiveMessage()
 {
     _line.erase(0, _line.find(" ") + 1);
@@ -148,18 +176,23 @@ void IA::ReceiveMessage()
     // _messageReceived.push_back(std::make_pair(direction, _line));
     if (_line.substr(0, _line.find(" ")) == _teamName) {
         _line.erase(0, _line.find(" ") + 1);
-        if (_line.substr(0, _line.find(" ")) == "Hello") {
+        std::string cmd = _line.substr(0, _line.find(" "));
+        if (cmd == "Hello") {
             if (_role == "")
                 _role = "leader";
             if (_role == "leader")
                 broadcast(_teamName + " Hola worker");
         }
-        if (_line.substr(0, _line.find(" ")) == "Hola" && _role == "")
+        if (cmd == "Hola" && _role == "")
             _role = "worker";
-        if (_line.substr(0, _line.find(" ")) == "start") {
+        if (cmd == "start") {
             _canIncantation = true;
         }
-    }
+        if (cmd == "f")
+            reduceForRitual(_line.substr(_line.find(" ") + 1, _line.size()));
+
+    } else if (_role == "leader")
+        broadcast(_line);
     _ask.pop_front();
     _line.clear();
 }
@@ -328,8 +361,9 @@ void IA::getTake()
     }
     std::string object = _takeObject.front();
     _takeObject.pop_front();
-    if (object == FOOD)
+    if (object == FOOD) {
         _inventaire.setFood(_inventaire.getFood() + 1);
+    }
     if (object == LINEMATE)
         _inventaire.setLinemate(_inventaire.getLinemate() + 1);
     if (object == DERAUMERE)
@@ -342,6 +376,7 @@ void IA::getTake()
         _inventaire.setPhiras(_inventaire.getPhiras() + 1);
     if (object == THYSTAME)
         _inventaire.setThystame(_inventaire.getThystame() + 1);
+    isItForRitual(object);
     _line.clear();
     _ask.pop_front();
 }

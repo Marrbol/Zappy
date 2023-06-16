@@ -53,6 +53,8 @@ class IA {
         void calculateCoordBestCase();
         bool GetAllRessourcesTile();
         void ForkTheProgram();
+        void isItForRitual(std::string materiaux);
+        void reduceForRitual(std::string materiaux);
 
         //send command
         void forward();

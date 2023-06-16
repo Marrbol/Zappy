@@ -87,7 +87,7 @@ void IA::calculeTilesPoids()
         _tilesPoid[i] = poidTmp;
         // std::cout << "poid de la case " << i << " = " << _tilesPoid[i] << std::endl;
     }
-    for (size_t i = 0; i <= _maxCaseViewLevel[_level]; i++)
+    for (size_t i = 1; i <= _maxCaseViewLevel[_level]; i++)
         if (_tilesPoid[i] > _tilesPoid[_numTilesPriority])
             _numTilesPriority = i;
 }
@@ -208,12 +208,42 @@ void IA::ForkTheProgram()
     }
 }
 
+void IA::isItForRitual(std::string materiaux)
+{
+    if (!_canIncantation)
+        return;
+    if (materiaux == LINEMATE && _rituels[_level].getLinemate() > 0) {
+        _rituels[_level].setLinemate(_rituels[_level].getLinemate() - 1);
+        broadcast(_teamName + " f 1");
+    }
+    if (materiaux == DERAUMERE && _rituels[_level].getDeraumere() > 0) {
+        _rituels[_level].setDeraumere(_rituels[_level].getDeraumere() - 1);
+        broadcast(_teamName + " f 2");
+    }
+    if (materiaux == SIBUR && _rituels[_level].getSibur() > 0) {
+        _rituels[_level].setSibur(_rituels[_level].getSibur() - 1);
+        broadcast(_teamName + " f 3");
+    }
+    if (materiaux == MENDIANE && _rituels[_level].getMendiane() > 0) {
+        _rituels[_level].setMendiane(_rituels[_level].getMendiane() - 1);
+        broadcast(_teamName + " f 4");
+    }
+    if (materiaux == PHIRAS && _rituels[_level].getPhiras() > 0) {
+        _rituels[_level].setPhiras(_rituels[_level].getPhiras() - 1);
+        broadcast(_teamName + " f 5");
+    }
+    if (materiaux == THYSTAME && _rituels[_level].getThystame() > 0) {
+        _rituels[_level].setThystame(_rituels[_level].getThystame() - 1);
+        broadcast(_teamName + " f 6");
+    }
+}
+
 void IA::loopIA()
 {
     bool sendlook = false;
     bool calculated = false;
     std::signal(SIGINT, signal_handler);
-    while (1) {
+    while (!!!!!!!!1) {
         do {
             IA::communicateWithServer();
         } while (_name == false);
@@ -246,8 +276,8 @@ void IA::loopIA()
             bool here = moveTheIAToTheBestCase();
             if (here) {
                 if (GetAllRessourcesTile()) {
-                    // inventory();
-                    // std::cout << _inventaire.getFood() << std::endl;
+                    inventory();
+                    std::cout << _clientName << " : "<< _inventaire.getFood() << std::endl;
                     // std::cout << _inventaire.getDeraumere() << std::endl;
                     // std::cout << _inventaire.getLinemate() << std::endl;
                     // std::cout << _inventaire.getMendiane() << std::endl;
@@ -258,6 +288,8 @@ void IA::loopIA()
                     sendlook = false;
                 }
             }
+            if (_canIncantation)
+                incantation(); // faire une fonction qui check si on a toutes les ressources
         } else {
             if (!sendlook && _ask.size() < 10) {
                 IA::look();
