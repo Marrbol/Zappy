@@ -45,6 +45,7 @@ class IA {
         void calculeMateriauxPoids();
         void calculeTilesPoids();
         bool moveTheIAToTheBestCase();
+        void assembleAllAI();
 
         IA(int port, std::string name, std::string machine);
         void communicateWithServer();
@@ -114,6 +115,11 @@ class IA {
         std::string _role = "";
         bool forked = false;
         bool _canIncantation = false;
+        bool everyoneHere = false;
+        bool goToRitual = false;
+        int _ritualDirection = 0;
+        bool _ritualAsked = false;
+        size_t nbPlayerHere = 0;
 
         using CommandFunction = std::function<void(void)>;
 
@@ -147,6 +153,7 @@ class IA {
             {6, Materiaux(0,1,2,3,0,1,0)},
             {7, Materiaux(0,2,2,2,2,2,1)}
         };
+        std::map<size_t, Materiaux> _cpRituels = _rituels;
         std::map<size_t, size_t> _maxCaseViewLevel = {
             {1, 3},
             {2, 8},
@@ -157,7 +164,7 @@ class IA {
             {7, 63},
             {8, 80}
         };
-        Materiaux _inventaire = Materiaux(0,0,0,0,0,0,0);
+        Materiaux _inventaire = Materiaux(10,0,0,0,0,0,0);
         std::map<size_t, std::string> _materiauxPriority;
         size_t _numTilesPriority = 0;
         std::map<size_t, std::string> _view;

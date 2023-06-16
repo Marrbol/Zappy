@@ -22,6 +22,8 @@ IA::~IA()
 void IA::calculeMateriauxPoids()
 {
     size_t _poidFood =  (1 / FOODRARETY);
+    if (_inventaire.getFood() < 10)
+        _poidFood *= 10;
     size_t _poidLinemate = (_rituels[_level].getLinemate() - _inventaire.getLinemate()) * (1 / LINEMATERARETY);
     size_t _poidDeraumere = (_rituels[_level].getDeraumere() - _inventaire.getDeraumere()) * (1 / DERAUMERERARETY);
     size_t _poidSibur = (_rituels[_level].getSibur() - _inventaire.getSibur()) * (1 / SIBURRARETY);
@@ -238,6 +240,19 @@ void IA::isItForRitual(std::string materiaux)
     }
 }
 
+void IA::assembleAllAI()
+{
+    if (everyoneHere) {
+        broadcast(_teamName + " startRitual");
+        incantation();
+        return;
+    }
+    if (_rituels[_level].getLinemate() == 0 && _rituels[_level].getDeraumere() == 0 && _rituels[_level].getSibur() == 0 && _rituels[_level].getMendiane() == 0 && _rituels[_level].getPhiras() == 0 && _rituels[_level].getThystame() == 0) {
+        broadcast(_teamName + " incantation");
+        return;
+    }
+}
+
 void IA::loopIA()
 {
     bool sendlook = false;
@@ -263,17 +278,73 @@ void IA::loopIA()
             continue;
         if (_role == "")
             continue;
+        if (_ritualAsked)
+            continue;
+        if (_canIncantation && _role == "leader") {
+            assembleAllAI();
+
+        }
         if (!_view.empty()) {
-            if (!calculated) {
-                IA::calculateCoordBestCase();
-                calculated = true;
-                if (_tilesPoid[_numTilesPriority] == 0) {
-                    _view.clear();
-                    sendlook = false;
+            bool here = false;
+            if (goToRitual) {
+                here = true;
+                switch (_ritualDirection)
+                {
+                case 1:
                     forward();
+                    break;
+                case 2:
+                    forward();
+                    turnLeft();
+                    forward();
+                    break;
+                case 3:
+                    turnLeft();
+                    forward();
+                    break;
+                case 4:
+                    turnLeft();
+                    forward();
+                    turnLeft();
+                    forward();
+                    break;
+                case 5:
+                    turnLeft();
+                    turnLeft();
+                    forward();
+                    break;
+                case 6:
+                    turnRight();
+                    forward();
+                    turnRight();
+                    forward();
+                    break;
+                case 7:
+                    turnRight();
+                    forward();
+                    break;
+                case 8:
+                    forward();
+                    turnRight();
+                    forward();
+                    break;
+                case 0:
+                    continue;
+                default:
+                    break;
                 }
+            }else {
+                if (!calculated) {
+                    IA::calculateCoordBestCase();
+                    calculated = true;
+                    if (_tilesPoid[_numTilesPriority] == 0) {
+                        _view.clear();
+                        sendlook = false;
+                        forward();
+                    }
+                }
+                here = moveTheIAToTheBestCase();
             }
-            bool here = moveTheIAToTheBestCase();
             if (here) {
                 if (GetAllRessourcesTile()) {
                     inventory();
@@ -284,12 +355,13 @@ void IA::loopIA()
                     // std::cout << _inventaire.getPhiras() << std::endl;
                     // std::cout << _inventaire.getSibur() << std::endl;
                     // std::cout << _inventaire.getThystame() << std::endl;
-                    _view.clear();
-                    sendlook = false;
+                    if (!goToRitual) {
+                        _view.clear();
+                        sendlook = false;
+                    }
                 }
             }
-            if (_canIncantation)
-                incantation(); // faire une fonction qui check si on a toutes les ressources
+                 // faire une fonction qui check si on a toutes les ressources
         } else {
             if (!sendlook && _ask.size() < 10) {
                 IA::look();
