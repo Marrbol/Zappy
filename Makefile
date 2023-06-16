@@ -8,6 +8,7 @@
 SRCSERV = Server/Server.cpp\
 
 SRCENCAPS = network/Network.cpp\
+			Process/Process.cpp
 
 SRCIA = IA/IA.cpp\
 		Materiaux/Materiaux.cpp\
