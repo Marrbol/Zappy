@@ -67,7 +67,8 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
   				$(SRC_SERV)/$(CMD_GUI)/sbp.c			\
   				$(SRC_SERV)/$(CMD_GUI)/sgt.c			\
   				$(SRC_SERV)/$(CMD_GUI)/sst.c			\
-  				$(SRC_SERV)/$(CMD_GUI)/tna.c
+  				$(SRC_SERV)/$(CMD_GUI)/tna.c			\
+  				$(SRC_SERV)/$(CMD_GUI)/mct.c
 
 SRCENCAPS = network/Network.cpp\
 

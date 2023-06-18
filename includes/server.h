@@ -79,6 +79,14 @@ typedef struct team_s {
     size_t nb;
 } team_t;
 
+typedef struct egg_s {
+    int x;
+    int y;
+    int time;
+    char *team;
+    struct egg_s *next;
+} egg_t;
+
 typedef struct client_manager_s {
     fd_set read_fds;
     client_t *client_infos;
@@ -89,6 +97,7 @@ typedef struct client_manager_s {
     int nb_clients;
     int maxsd;
     int freq;
+    egg_t *egg;
 } client_manager_t;
 
 bool is_nb(char *buff);
