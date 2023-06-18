@@ -119,6 +119,7 @@ int remain_team(client_manager_t *c, char *team);
 void add_to_team(client_manager_t *c, char *team);
 void create_socket_server(server_t *s, char *port);
 void set_readfds(server_t *s, client_manager_t *c);
+char *get_content(client_manager_t *c, int x, int y);
 size_t nb_state_def(client_manager_t *c, int nbClient);
 void set_teams(client_manager_t *c, int ac, char **argv);
 void exec_cmd(client_manager_t *c, int nbClient, char *buff);

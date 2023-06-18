@@ -24,3 +24,17 @@ inv_t search_type(char *tmp)
         }
     return none;
 }
+
+char *get_content(client_manager_t *c, int x, int y)
+{
+    char *content = "";
+    inv_t i = food;
+
+    cat(content, my_atoi(c->map[x][y].cont[i++]));
+    while (i < none) {
+        printf("here\n");
+        cat(cat(content, " "), c->map[x][y].cont[i++]);
+    }
+    printf("content %s\n", content);
+    return content;
+}
