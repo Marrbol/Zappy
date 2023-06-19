@@ -144,10 +144,9 @@ void take(client_manager_t *c, int nbClient, char *buff);
 void set(client_manager_t *c, int nbClient, char *buff);
 void incantation(client_manager_t *c, int nbClient, char *buff);
 
-void msz(__attribute__((unused)) client_manager_t *c,
-__attribute__((unused)) int nbClient, __attribute__((unused)) char *buff);
-void bct(__attribute__((unused)) client_manager_t *c,
-__attribute__((unused)) int nbClient, __attribute__((unused)) char *buff);
+void msz(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff);
+void bct(client_manager_t *c, int nbClient, char *buff);
 void mct(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient, __attribute__((unused)) char *buff);
 void tna(__attribute__((unused)) client_manager_t *c,
