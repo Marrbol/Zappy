@@ -216,7 +216,9 @@ void IA::isItForRitual(std::string materiaux)
         return;
     if (materiaux == LINEMATE && _rituels[_level].getLinemate() > 0) {
         _rituels[_level].setLinemate(_rituels[_level].getLinemate() - 1);
-        broadcast(_teamName + " f 1");
+        std::cout << "Linemate left for ritual = " << _rituels[_level].getLinemate() << std::endl;
+        if (_level > 1)
+            broadcast(_teamName + " f 1");
     }
     if (materiaux == DERAUMERE && _rituels[_level].getDeraumere() > 0) {
         _rituels[_level].setDeraumere(_rituels[_level].getDeraumere() - 1);
@@ -253,6 +255,54 @@ void IA::assembleAllAI()
     }
 }
 
+void IA::removeMaterialForIncanation()
+{
+    std::cout << "remove material for incantation" << std::endl;
+    if (_rituels[_level].getLinemate() > 0 && _inventaire.getLinemate() > 0) {
+        int nbLinemate = _rituels[_level].getLinemate() - _inventaire.getLinemate();
+        if (nbLinemate < 0)
+            _rituels[_level].setLinemate(0);
+        else
+            _rituels[_level].setLinemate(nbLinemate);
+    }
+    std::cout << _clientName << "  jui " << _rituels[_level].getLinemate() << std::endl;
+    if (_rituels[_level].getDeraumere() > 0 && _inventaire.getDeraumere() > 0) {
+        int nbDeraumere = _rituels[_level].getDeraumere() - _inventaire.getDeraumere();
+        if (nbDeraumere < 0)
+            _rituels[_level].setDeraumere(0);
+        else
+            _rituels[_level].setDeraumere(nbDeraumere);
+    }
+    if (_rituels[_level].getSibur() > 0 && _inventaire.getSibur() > 0) {
+        int nbSibur = _rituels[_level].getSibur() - _inventaire.getSibur();
+        if (nbSibur < 0)
+            _rituels[_level].setSibur(0);
+        else
+            _rituels[_level].setSibur(nbSibur);
+    }
+    if (_rituels[_level].getMendiane() > 0 && _inventaire.getMendiane() > 0) {
+        int nbMendiane = _rituels[_level].getMendiane() - _inventaire.getMendiane();
+        if (nbMendiane < 0)
+            _rituels[_level].setMendiane(0);
+        else
+            _rituels[_level].setMendiane(nbMendiane);
+    }
+    if (_rituels[_level].getPhiras() > 0 && _inventaire.getPhiras() > 0) {
+        int nbPhiras = _rituels[_level].getPhiras() - _inventaire.getPhiras();
+        if (nbPhiras < 0)
+            _rituels[_level].setPhiras(0);
+        else
+            _rituels[_level].setPhiras(nbPhiras);
+    }
+    if (_rituels[_level].getThystame() > 0 && _inventaire.getThystame() > 0) {
+        int nbThystame = _rituels[_level].getThystame() - _inventaire.getThystame();
+        if (nbThystame < 0)
+            _rituels[_level].setThystame(0);
+        else
+            _rituels[_level].setThystame(nbThystame);
+    }
+}
+
 void IA::loopIA()
 {
     bool sendlook = false;
@@ -280,9 +330,14 @@ void IA::loopIA()
             continue;
         if (_ritualAsked)
             continue;
-        if (_canIncantation && _role == "leader") {
+        if (_level == 1) {
+            if (_rituels[_level].getLinemate() == 0) {
+                incantation();
+                std::cout << "oui non incantation" << std::endl;
+            }
+        }
+        if (_canIncantation && _role == "leader" && _level > 1) {
             assembleAllAI();
-
         }
         if (!_view.empty()) {
             bool here = false;
@@ -348,7 +403,7 @@ void IA::loopIA()
             if (here) {
                 if (GetAllRessourcesTile()) {
                     inventory();
-                    std::cout << _clientName << " : "<< _inventaire.getFood() << std::endl;
+                    std::cout << _clientName << " linemate : "<< _inventaire.getLinemate() << std::endl;
                     // std::cout << _inventaire.getDeraumere() << std::endl;
                     // std::cout << _inventaire.getLinemate() << std::endl;
                     // std::cout << _inventaire.getMendiane() << std::endl;

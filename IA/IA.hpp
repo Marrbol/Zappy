@@ -87,6 +87,7 @@ class IA {
         void getSet();
         void getIncantation();
         void ReceiveMessage();
+        void removeMaterialForIncanation();
         size_t countSubStr(std::string str, std::string subStr);
 
     private:
@@ -171,6 +172,7 @@ class IA {
         std::list<std::string> _takeObject;
         Materiaux _poidMateriaux;
         bool isTurned = false;
+        bool _isFather = false;
         std::pair<int, size_t> _coordBestCase;
         std::map<size_t, size_t> _tilesPoid;
         std::map<size_t, size_t> _tilesDistance = { // index de la case et distance de la case

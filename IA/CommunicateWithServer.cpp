@@ -152,6 +152,7 @@ void IA::parseCommande()
             _level = std::stoi(_line.substr(0, _line.find("\n")));
             everyoneHere = false;
             _ritualAsked = false;
+            removeMaterialForIncanation();
             continue;
         }
         if (_line.substr(0, _line.find(" ")) == "message")
@@ -222,13 +223,17 @@ void IA::ReceiveMessage()
         if (cmd == "Hello") {
             if (_role == "")
                 _role = "leader";
-            if (_role == "leader")
-                broadcast(_teamName + " Hola worker");
+            if (_role == "leader") {
+                _line.erase(0, _line.find(" ") + 1);
+                int numberWorker = std::stoi(_line.substr(_line.find(" ") + 1, _line.size()));
+                broadcast(_teamName + " Hola worker ");
+            }
         }
         if (cmd == "Hola" && _role == "")
             _role = "worker";
         if (cmd == "start") {
             _canIncantation = true;
+            removeMaterialForIncanation();
         }
         if (cmd == "f")
             reduceForRitual(_line.substr(_line.find(" ") + 1, _line.size()));
@@ -341,6 +346,12 @@ void IA::changeTheInventory(std::string material, int nb)
 
 void IA::getInventory()
 {
+    if (_line == "ok" || _line == "ko") {
+        _validate = true;
+        _line.clear();
+        _ask.pop_front();
+        return;
+    }
     if (_line[0] == '[')
         _line.erase(0, 1);
     if (_line[_line.size() - 1] == ']')
