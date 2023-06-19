@@ -152,6 +152,8 @@ void IA::parseCommande()
             _level = std::stoi(_line.substr(0, _line.find("\n")));
             everyoneHere = false;
             _ritualAsked = false;
+            std::cout << "Level: " << _level << std::endl;
+            std::cout << "currentname = " << _clientName << std::endl;
             removeMaterialForIncanation();
             continue;
         }
@@ -178,31 +180,36 @@ void IA::communicateWithServer()
 
 void IA::reduceForRitual(std::string materiaux)
 {
+    size_t level = _level;
+    if (_line.find(" ") != std::string::npos) {
+        _line.erase(0, _line.find(" ") + 1);
+        level = std::stoi(_line.substr(0, _line.find(" ")));
+    }
     switch (materiaux[0])
     {
     case '1':
-        if (_rituels[_level].getLinemate() > 0)
-            _rituels[_level].setLinemate(_rituels[_level].getLinemate() - 1);
+        if (_rituels[level].getLinemate() > 0)
+            _rituels[level].setLinemate(_rituels[level].getLinemate() - 1);
         break;
     case '2':
-        if (_rituels[_level].getDeraumere() > 0)
-            _rituels[_level].setDeraumere(_rituels[_level].getDeraumere() - 1);
+        if (_rituels[level].getDeraumere() > 0)
+            _rituels[level].setDeraumere(_rituels[level].getDeraumere() - 1);
         break;
     case '3':
-        if (_rituels[_level].getSibur() > 0)
-            _rituels[_level].setSibur(_rituels[_level].getSibur() - 1);
+        if (_rituels[level].getSibur() > 0)
+            _rituels[level].setSibur(_rituels[level].getSibur() - 1);
         break;
     case '4':
-        if (_rituels[_level].getMendiane() > 0)
-            _rituels[_level].setMendiane(_rituels[_level].getMendiane() - 1);
+        if (_rituels[level].getMendiane() > 0)
+            _rituels[level].setMendiane(_rituels[level].getMendiane() - 1);
         break;
     case '5':
-        if (_rituels[_level].getPhiras() > 0)
-            _rituels[_level].setPhiras(_rituels[_level].getPhiras() - 1);
+        if (_rituels[level].getPhiras() > 0)
+            _rituels[level].setPhiras(_rituels[level].getPhiras() - 1);
         break;
     case '6':
-        if (_rituels[_level].getThystame() > 0)
-            _rituels[_level].setThystame(_rituels[_level].getThystame() - 1);
+        if (_rituels[level].getThystame() > 0)
+            _rituels[level].setThystame(_rituels[level].getThystame() - 1);
         break;
     default:
         break;
@@ -378,6 +385,9 @@ void IA::getInventory()
             tmp.erase(0, 1);
         if (tmp[tmp.size() - 1] == ' ')
             tmp.erase(tmp.size(), 1);
+        std::cout << "erase = " << tmp << std::endl;
+        if (tmp.substr(0, tmp.find(" ")) != "linemate")
+            return getLook();
         _line.erase(0, _line.find(",") + 1);
         std::string material = tmp.substr(0, tmp.find(" "));
         tmp.erase(0, tmp.find(" ") + 1);

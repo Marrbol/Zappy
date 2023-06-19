@@ -257,15 +257,18 @@ void IA::assembleAllAI()
 
 void IA::removeMaterialForIncanation()
 {
-    std::cout << "remove material for incantation" << std::endl;
     if (_rituels[_level].getLinemate() > 0 && _inventaire.getLinemate() > 0) {
         int nbLinemate = _rituels[_level].getLinemate() - _inventaire.getLinemate();
         if (nbLinemate < 0)
             _rituels[_level].setLinemate(0);
         else
             _rituels[_level].setLinemate(nbLinemate);
+        if (_level > 1) {
+            for (int i = 0; i < nbLinemate; i++) {
+                broadcast(_teamName + " f 1 " + std::to_string(_level));
+            }
+        }
     }
-    std::cout << _clientName << "  jui " << _rituels[_level].getLinemate() << std::endl;
     if (_rituels[_level].getDeraumere() > 0 && _inventaire.getDeraumere() > 0) {
         int nbDeraumere = _rituels[_level].getDeraumere() - _inventaire.getDeraumere();
         if (nbDeraumere < 0)
@@ -320,8 +323,10 @@ void IA::loopIA()
         if (!forked) {
             if (this->_clientName > 0) {
                 forkIA();
-            } else
+            } else {
                 broadcast(_teamName + " start");
+                _canIncantation = true;
+            }
             forked = true;
         }
         if (_role == "leader" && !_canIncantation)
@@ -332,7 +337,6 @@ void IA::loopIA()
             continue;
         if (_level == 1 && _rituels[_level].getLinemate() == 0) {
             incantation();
-            std::cout << "oui non incantation" << std::endl;
         }
         if (_canIncantation && _role == "leader" && _level > 1) {
             assembleAllAI();
@@ -401,7 +405,7 @@ void IA::loopIA()
             if (here) {
                 if (GetAllRessourcesTile()) {
                     inventory();
-                    std::cout << _clientName << " linemate : "<< _inventaire.getLinemate() << std::endl;
+                    // std::cout << _clientName << " linemate : "<< _inventaire.getLinemate() << std::endl;
                     // std::cout << _inventaire.getDeraumere() << std::endl;
                     // std::cout << _inventaire.getLinemate() << std::endl;
                     // std::cout << _inventaire.getMendiane() << std::endl;

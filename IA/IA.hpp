@@ -147,10 +147,10 @@ class IA {
         };
         std::map<size_t, Materiaux> _rituels = {
             {1, Materiaux(0,1,0,0,0,0,0)},
-            {2, Materiaux(0,1,1,1,0,0,0)},
-            {3, Materiaux(0,2,0,1,0,2,0)},
-            {4, Materiaux(0,1,1,2,0,1,0)},
-            {5, Materiaux(0,1,2,1,3,0,0)},
+            {2, Materiaux(0,4,4,4,0,0,0)},
+            {3, Materiaux(0,8,0,4,0,8,0)},
+            {4, Materiaux(0,2,2,4,0,2,0)},
+            {5, Materiaux(0,2,4,2,6,0,0)},
             {6, Materiaux(0,1,2,3,0,1,0)},
             {7, Materiaux(0,2,2,2,2,2,1)}
         };
