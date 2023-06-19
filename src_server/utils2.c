@@ -33,7 +33,7 @@ char *get_content(client_manager_t *c, int x, int y)
     cat(content, my_atoi(c->map[x][y].cont[i++]));
     while (i < none) {
         printf("here\n");
-        cat(cat(content, " "), c->map[x][y].cont[i++]);
+        cat(cat(content, " "), my_atoi(c->map[x][y].cont[i++]));
     }
     printf("content %s\n", content);
     return content;

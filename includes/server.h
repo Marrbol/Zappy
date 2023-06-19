@@ -28,7 +28,6 @@
     #include <uuid/uuid.h>
     #include <dirent.h>
     #include "utils.h"
-    #include "map.h"
     #include "protocol.h"
     #define _GNU_SOURCE
     #define BUFFER_LEN (200)
@@ -91,7 +90,7 @@ typedef struct client_manager_s {
     fd_set read_fds;
     client_t *client_infos;
     coord_t *coord;
-    map_t **map;
+    int ***map;
     team_t *teams;
     int nb_teams;
     int nb_clients;
