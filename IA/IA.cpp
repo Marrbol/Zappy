@@ -330,11 +330,9 @@ void IA::loopIA()
             continue;
         if (_ritualAsked)
             continue;
-        if (_level == 1) {
-            if (_rituels[_level].getLinemate() == 0) {
-                incantation();
-                std::cout << "oui non incantation" << std::endl;
-            }
+        if (_level == 1 && _rituels[_level].getLinemate() == 0) {
+            incantation();
+            std::cout << "oui non incantation" << std::endl;
         }
         if (_canIncantation && _role == "leader" && _level > 1) {
             assembleAllAI();

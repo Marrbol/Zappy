@@ -244,8 +244,20 @@ void IA::ReceiveMessage()
             goToRitual = true;
             _ritualDirection = direction;
         }
-        if (cmd == "startRitual")
-            incantation();
+        if (cmd == "startRitual") {
+            _line.erase(0, _line.find(" ") + 1);
+            size_t number = stoi(_line);
+            if (number == _clientName)
+                incantation();
+        }
+        if (cmd == "come") {
+            _line.erase(0, _line.find(" ") + 1);
+            size_t number = stoi(_line);
+            if (number == _clientName) {
+                goToRitual = true;
+                _ritualDirection = direction;
+            }
+        }
         if (cmd == "here") {
             if (_role == "leader") {
                 nbPlayerHere++;
