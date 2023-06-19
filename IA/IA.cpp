@@ -11,6 +11,7 @@ IA::IA(int port, std::string name, std::string machine) : _machine(machine), _te
 {
     _network = Network();
     _socket = _network.connectSocketClient(machine, port);
+    _view.clear();
 }
 
 IA::~IA()
@@ -19,13 +20,13 @@ IA::~IA()
 
 void IA::calculeMateriauxPoids()
 {
-    size_t _poidFood = (_inventaire.getFood() - _inventaire.getFood()) / FOODRARETY;
-    size_t _poidLinemate = (_rituels[_level].getLinemate() - _inventaire.getLinemate()) / LINEMATERARETY;
-    size_t _poidDeraumere = (_rituels[_level].getDeraumere() - _inventaire.getDeraumere()) / DERAUMERERARETY;
-    size_t _poidSibur = (_rituels[_level].getSibur() - _inventaire.getSibur()) / SIBURRARETY;
-    size_t _poidMendiane = (_rituels[_level].getMendiane() - _inventaire.getMendiane()) / MENDIANERARETY;
-    size_t _poidPhiras = (_rituels[_level].getPhiras() - _inventaire.getPhiras()) / PHIRASRARETY;
-    size_t _poidThystame = (_rituels[_level].getThystame() - _inventaire.getThystame()) / THYSTAMERARETY;
+    size_t _poidFood =  (1 / FOODRARETY);
+    size_t _poidLinemate = (_rituels[_level].getLinemate() - _inventaire.getLinemate()) * (1 / LINEMATERARETY);
+    size_t _poidDeraumere = (_rituels[_level].getDeraumere() - _inventaire.getDeraumere()) * (1 / DERAUMERERARETY);
+    size_t _poidSibur = (_rituels[_level].getSibur() - _inventaire.getSibur()) * (1 / SIBURRARETY);
+    size_t _poidMendiane = (_rituels[_level].getMendiane() - _inventaire.getMendiane()) * (1 / MENDIANERARETY);
+    size_t _poidPhiras = (_rituels[_level].getPhiras() - _inventaire.getPhiras()) * (1 / PHIRASRARETY);
+    size_t _poidThystame = (_rituels[_level].getThystame() - _inventaire.getThystame()) * (1 / THYSTAMERARETY);
 
     _poidMateriaux.setDeraumere(_poidDeraumere);
     _poidMateriaux.setFood(_poidFood);
@@ -41,49 +42,211 @@ void IA::calculeMateriauxPoids()
     // std::cout << "poid mendiane = " << _poidMendiane << std::endl;
     // std::cout << "poid phiras = " << _poidPhiras << std::endl;
     // std::cout << "poid thystame = " << _poidThystame << std::endl;
+    // std::cout << std::endl;
+}
+
+size_t IA::countSubStr(std::string str, std::string subStr)
+{
+    size_t pos = 0;
+    size_t count = 0;
+    while ((pos = str.find(subStr, pos)) != std::string::npos) {
+        count++;
+        pos += subStr.length();
+    }
+    return count;
 }
 
 void IA::calculeTilesPoids()
 {
-    for (size_t i = 0; i < _maxCaseViewLevel[_level]; i++) {
+    calculeMateriauxPoids();
+    for (size_t i = 0; i <= _maxCaseViewLevel[_level]; i++) {
         size_t poidTmp = 0;
-        if (_view[i].find("food") != std::string::npos)
-            poidTmp += _poidMateriaux.getFood();
-        if (_view[i].find("linemate") != std::string::npos)
-            poidTmp += _poidMateriaux.getLinemate();
-        if (_view[i].find("deraumere") != std::string::npos)
-            poidTmp += _poidMateriaux.getDeraumere();
-        if (_view[i].find("sibur") != std::string::npos)
-            poidTmp += _poidMateriaux.getSibur();
-        if (_view[i].find("mendiane") != std::string::npos)
-            poidTmp += _poidMateriaux.getMendiane();
-        if (_view[i].find("phiras") != std::string::npos)
-            poidTmp += _poidMateriaux.getPhiras();
-        if (_view[i].find("thystame") != std::string::npos)
-            poidTmp += _poidMateriaux.getThystame();
+        if (_view[i].find(FOOD) != std::string::npos)
+            poidTmp += countSubStr(_view[i], FOOD) * _poidMateriaux.getFood();
+        if (_view[i].find(LINEMATE) != std::string::npos)
+            poidTmp += countSubStr(_view[i], LINEMATE) * _poidMateriaux.getLinemate();
+        if (_view[i].find(DERAUMERE) != std::string::npos)
+            poidTmp += countSubStr(_view[i], DERAUMERE) * _poidMateriaux.getDeraumere();
+        if (_view[i].find(SIBUR) != std::string::npos)
+            poidTmp += countSubStr(_view[i], SIBUR) * _poidMateriaux.getSibur();
+        if (_view[i].find(MENDIANE) != std::string::npos)
+            poidTmp += countSubStr(_view[i], MENDIANE) * _poidMateriaux.getMendiane();
+        if (_view[i].find(PHIRAS) != std::string::npos)
+            poidTmp += countSubStr(_view[i], PHIRAS) * _poidMateriaux.getPhiras();
+        if (_view[i].find(THYSTAME) != std::string::npos)
+            poidTmp += countSubStr(_view[i], THYSTAME) * _poidMateriaux.getThystame();
         _tilesPoid[i] = poidTmp;
-        // std::cout << " poid de case " << i << " = " << _tilesPoid[i] << std::endl;
+        // std::cout << "poid de la case " << i << " = " << _tilesPoid[i] << std::endl;
+    }
+    for (size_t i = 0; i < _maxCaseViewLevel[_level]; i++)
+        if (_tilesPoid[i] > _tilesPoid[_numTilesPriority])
+            _numTilesPriority = i;
+}
+
+bool IA::GetAllRessourcesTile()
+{
+    std::string tile =_view[_numTilesPriority];
+    size_t nbCommandLeft = 10 - _ask.size();
+    size_t nbFood = countSubStr(tile, FOOD);
+    size_t nbLinemate = countSubStr(tile, LINEMATE);
+    size_t nbDeraumere = countSubStr(tile, DERAUMERE);
+    size_t nbSibur = countSubStr(tile, SIBUR);
+    size_t nbMendiane = countSubStr(tile, MENDIANE);
+    size_t nbPhiras = countSubStr(tile, PHIRAS);
+    size_t nbThystame = countSubStr(tile, THYSTAME);
+    size_t nbMaterials = nbFood + nbLinemate + nbDeraumere + nbSibur + nbMendiane + nbPhiras + nbThystame;
+
+    for (; nbCommandLeft > 0 && nbMaterials > 0; nbCommandLeft--) {
+        if (nbFood > 0) {
+            take(FOOD);
+            nbFood--;
+            nbMaterials--;
+            _takeObject.push_back(FOOD);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(FOOD), 4);
+            continue;
+        }
+        if (nbLinemate > 0) {
+            take(LINEMATE);
+            nbLinemate--;
+            nbMaterials--;
+            _takeObject.push_back(LINEMATE);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(LINEMATE), 8);
+            continue;
+        }
+        if (nbDeraumere > 0) {
+            take(DERAUMERE);
+            nbDeraumere--;
+            nbMaterials--;
+            _takeObject.push_back(DERAUMERE);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(DERAUMERE), 9);
+            continue;
+        }
+        if (nbSibur > 0) {
+            take(SIBUR);
+            nbSibur--;
+            nbMaterials--;
+            _takeObject.push_back(SIBUR);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(SIBUR), 5);
+            continue;
+        }
+        if (nbMendiane > 0) {
+            take(MENDIANE);
+            nbMendiane--;
+            nbMaterials--;
+            _takeObject.push_back(MENDIANE);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(MENDIANE), 8);
+            continue;
+        }
+        if (nbPhiras > 0) {
+            take(PHIRAS);
+            nbPhiras--;
+            nbMaterials--;
+            _takeObject.push_back(PHIRAS);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(PHIRAS), 6);
+            continue;
+        }
+        if (nbThystame > 0) {
+            take(THYSTAME);
+            nbThystame--;
+            nbMaterials--;
+            _takeObject.push_back(THYSTAME);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(THYSTAME), 8);
+            continue;
+        }
+    }
+    if (nbMaterials == 0)
+        return !false;
+    return !true;
+}
+
+bool IA::moveTheIAToTheBestCase()
+{
+    size_t nbCommandLeft = 10 - _ask.size();
+
+    while (nbCommandLeft > 0 && _coordBestCase.second > 0) {
+        forward();
+        _coordBestCase.second--;
+        nbCommandLeft--;
+    }
+    if (!!!isTurned) {
+        if (_coordBestCase.first > 0)
+            turnRight();
+        if (_coordBestCase.first < 0) {
+            turnLeft();
+            _coordBestCase.first *= -1;
+        }
+        isTurned = true;
+    }
+    while (nbCommandLeft > 0 && _coordBestCase.first > 0) {
+        forward();
+        _coordBestCase.first--;
+        nbCommandLeft--;
+    }
+    if (_coordBestCase.first == 0 && _coordBestCase.second == 0) {
+        isTurned = false;
+        return !false;
+    }
+    return !true;
+}
+
+void IA::loopIA()
+{
+    bool sendlook = false;
+    bool calculated = false;
+    while (1) {
+        do {
+            IA::communicateWithServer();
+        } while (_name == false);
+        if (_isDead)
+            break;
+        if (!_view.empty()) {
+            if (!calculated) {
+                IA::calculateCoordBestCase();
+                calculated = true;
+                if (_tilesPoid[_numTilesPriority] == 0) {
+                    _view.clear();
+                    sendlook = false;
+                    forward();
+                }
+            }
+            bool here = moveTheIAToTheBestCase();
+            if (here) {
+                if (GetAllRessourcesTile()) {
+                    std::cout << _inventaire.getFood() << std::endl;
+                    std::cout << _inventaire.getDeraumere() << std::endl;
+                    std::cout << _inventaire.getLinemate() << std::endl;
+                    std::cout << _inventaire.getMendiane() << std::endl;
+                    std::cout << _inventaire.getPhiras() << std::endl;
+                    std::cout << _inventaire.getSibur() << std::endl;
+                    std::cout << _inventaire.getThystame() << std::endl;
+                    _view.clear();
+                    sendlook = false;
+                }
+            }
+        } else {
+            if (!sendlook && _ask.size() < 10) {
+                IA::look();
+                sendlook = true;
+                _numTilesPriority = 0;
+                calculated = false;
+            }
+        }
     }
 }
 
-// trouver un moyen de savoir quelles ressources sont sur quelles cases et de stocker ça
-
-// int main()
-// {
-//     IA ia;
-//     ia.look();
-//     std::cout << std::endl;
-//     ia.calculeMateriauxPoids();
-//     std::cout << std::endl;
-//     ia.calculeTilesPoids();
-//     std::cout << "fini" <<std::endl;
-//     return 0;
-// }
-void IA::loopIA()
+void IA::calculateCoordBestCase()
 {
-    IA::communicateWithServer();
-    while (1) {
+    IA::calculeTilesPoids();
+    for (size_t i = 1; i <= MAXLEVEL; i++) {
+        if ((_numTilesPriority >= i * i) && (_numTilesPriority <= ((i + 1) * (i + 1) - 1) )) {
+            _coordBestCase.second = i;
+            size_t middleCase = _coordBestCase.second * (_coordBestCase.second + 1);
+            _coordBestCase.first = abs(int(middleCase - _numTilesPriority));
+            if (middleCase > _numTilesPriority)
+                _coordBestCase.first *= -1;
+        }
     }
+    std::cout << "the case and the coord for the best case are " << _numTilesPriority << " and the coord are " <<_coordBestCase.second << " and " << _coordBestCase.first << std::endl;
 }
 
 void printUsage() {
