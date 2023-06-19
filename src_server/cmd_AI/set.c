@@ -24,8 +24,8 @@ void set(client_manager_t *c, int nbClient, char *buff)
     int len = len_objset(buff);
     char *tmp = malloc(sizeof(char) * (len + 1));
     size_t index = 0;
-    size_t x = c->client_infos[nbClient].coord->x;
-    size_t y = c->client_infos[nbClient].coord->y;
+    int x = c->client_infos[nbClient].coord->x;
+    int y = c->client_infos[nbClient].coord->y;
     inv_t i = none;
 
     memset(tmp, 0, (len + 1));
