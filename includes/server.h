@@ -27,6 +27,7 @@
     #include <string.h>
     #include <uuid/uuid.h>
     #include <dirent.h>
+    #include <signal.h>
     #include "utils.h"
     #include "protocol.h"
     #define _GNU_SOURCE

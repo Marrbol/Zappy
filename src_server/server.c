@@ -69,6 +69,7 @@ int server(int ac, char **argv)
     client_manager_t *c = malloc(sizeof(client_manager_t));
     time_t t;
 
+    signal(SIGPIPE, SIG_IGN);
     srand((unsigned) time(&t));
     create_socket_server(s, argv[2]);
     set_clients(c);
