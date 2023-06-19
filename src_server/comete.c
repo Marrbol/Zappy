@@ -11,7 +11,7 @@ void put_ressource(client_manager_t *c, inv_t r)
 {
     int x = (rand() % c->coord->x);
     int y = (rand() % c->coord->y);
-    c->map[x][y].cont[r]++;
+    //c->map[x][y].cont[r]++;
 }
 
 void comete(client_manager_t *c)

@@ -37,7 +37,7 @@ void set(client_manager_t *c, int nbClient, char *buff)
     if (c->client_infos[nbClient].inv[i] == 0) {
         write(c->client_infos[nbClient].client_socket, "ko\n", 3);
     } else {
-        c->map[x][y].cont[i]++;
+        //c->map[x][y].cont[i]++;
         c->client_infos[nbClient].inv[i]--;
         write(c->client_infos[nbClient].client_socket, "ok\n", 3);
     }

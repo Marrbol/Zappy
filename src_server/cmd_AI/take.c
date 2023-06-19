@@ -34,10 +34,10 @@ void take(client_manager_t *c, int nbClient, char *buff)
         index++;
     }
     i = search_type(tmp);
-    if (c->map[x][y].cont[i] != 0) {
-        c->map[x][y].cont[i]--;
-        c->client_infos[nbClient].inv[i]++;
-        write(c->client_infos[nbClient].client_socket, "ok\n", 3);
-    } else
-        write(c->client_infos[nbClient].client_socket, "ko\n", 3);
+    //if (c->map[x][y].cont[i] != 0) {
+    //    c->map[x][y].cont[i]--;
+    //    c->client_infos[nbClient].inv[i]++;
+    //    write(c->client_infos[nbClient].client_socket, "ok\n", 3);
+    //} else
+    //    write(c->client_infos[nbClient].client_socket, "ko\n", 3);
 }

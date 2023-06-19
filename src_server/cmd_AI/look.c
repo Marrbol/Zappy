@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-static map_t check_case_look(map_t **map, int x, int y)
+/*static map_t check_case_look(map_t **map, int x, int y)
 {
     return map[x][y];
 }
@@ -48,22 +48,22 @@ char *get_ob(map_t ob)
         res += sprintf(res, "%s, ", allInv[ob.cont[i]].name);
     return res;
 }
-
+*/
 void look(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient,
 __attribute__((unused)) char *buff)
 {
-    char	*items = calloc(1000, sizeof (char));
-    client_t *client = &c->client_infos[nbClient];
-    map_t data;
-
-    items += sprintf(items, "[ ");
-    for (int i = 0; i <= client->lvl; i++) {
-        for (int j = 0; j < (2 * i) + 1; j++) {
-            data = find_case(client, i, j - i, c->map);
-            items += sprintf(items, "%s, ", get_ob(data));
-        }
-    }
-    items += sprintf(items, "]\n");
-    write(c->client_infos[nbClient].client_socket, items, strlen(items));
+//    char	*items = calloc(1000, sizeof (char));
+//    client_t *client = &c->client_infos[nbClient];
+//    map_t data;
+//
+//    items += sprintf(items, "[ ");
+//    for (int i = 0; i <= client->lvl; i++) {
+//        for (int j = 0; j < (2 * i) + 1; j++) {
+//            data = find_case(client, i, j - i, c->map);
+//            items += sprintf(items, "%s, ", get_ob(data));
+//        }
+//    }
+//    items += sprintf(items, "]\n");
+//    write(c->client_infos[nbClient].client_socket, items, strlen(items));
 }
