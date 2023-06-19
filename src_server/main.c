@@ -14,7 +14,7 @@ int main(int ac, char **argv)
         print_usage();
         return 0;
     } else if (!check_param(argv, ac)) {
-        return -1;
+        return 84;
     } else {
         server(ac, argv);
         return 0;

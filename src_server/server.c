@@ -67,11 +67,14 @@ int server(int ac, char **argv)
 {
     server_t *s = malloc(sizeof(server_t));
     client_manager_t *c = malloc(sizeof(client_manager_t));
+    time_t t;
 
+    srand((unsigned) time(&t));
     create_socket_server(s, argv[2]);
     set_clients(c);
     set_teams(c, ac, argv);
     set_coord(c, argv);
+    set_map(c);
     loop_server(s, c);
     destroy(s, c);
     return 0;

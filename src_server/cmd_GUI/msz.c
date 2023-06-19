@@ -7,8 +7,10 @@
 
 #include "server.h"
 
-void msz(__attribute__((unused)) client_manager_t *c,
-__attribute__((unused)) int nbClient,
-__attribute__((unused))char *buff) {
+void msz(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff) {
+    char *message = cat(cat(cat(cat("msz ", my_atoi(c->coord->x)), " "),
+    my_atoi(c->coord->y)), "\n");
 
+    write(c->client_infos[nbClient].client_socket, message, strlen(message));
 }

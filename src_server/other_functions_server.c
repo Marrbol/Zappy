@@ -44,6 +44,7 @@ void set_clients(client_manager_t *c)
         c->client_infos[i].isauth = false;
         c->client_infos[i].new_connection = true;
         c->client_infos[i].team = NULL;
+        c->client_infos[i].lvl = 1;
         set_inventory(c->client_infos[i].inv);
         set_client_coord(c->client_infos[i].coord);
     };
@@ -71,13 +72,14 @@ void set_teams(client_manager_t *c, int ac, char **argv)
     size_t i = 8;
     int index = 0;
 
-    c->nb_teams = count_team(argv, ac);
-    c->teamsp = malloc(sizeof(char *) * (c->nb_teams + 1));
+    c->nb_teams = (int)count_team(argv, ac);
+    c->teams = malloc(sizeof(team_t) * (c->nb_teams + 1));
+    memset(c->teams, 0, sizeof(team_t) * (c->nb_teams + 1));
     while (index < c->nb_teams) {
-        c->teamsp[index++] = argv[i];
+        c->teams[index].nb = 0;
+        c->teams[index++].name = argv[i];
         i++;
     }
-    c->teamsp[index] = NULL;
     c->nb_clients = atoi(argv[9 + c->nb_teams]);
     c->freq = atoi(argv[11 + count_team(argv, ac)]);
 }

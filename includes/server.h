@@ -36,11 +36,6 @@
     #define LENREQFILEOK (4)
     #define LENCMDNOTIMP (4)
     #define LENCMDBADPARAM (4)
-    #define USERS_LIST ("./DB/")
-    #define TEAM_PATH ("./DB/TEAM/")
-    #define USERS_LIST_FULL ("./DB/users.txt")
-    #define HELP_DIS ("./DB/help_display.txt")
-    #define USERS_FOLDER ("./DB/USER/")
     #define LEN_USE (3)
     #define STATE_TEAM (0)
     #define STATE_CHANNEL (1)
@@ -48,7 +43,7 @@
     #define MAX_NAME_LENGTH 32
     #define MAX_DESCRIPTION_LENGTH 255
     #define MAX_BODY_LENGTH 512
-    #define DESC ("/description")
+    #define GUID ("GRAPHIC")
 
 typedef enum type_s {NONE, AI, GUI} type_t;
 
@@ -75,39 +70,61 @@ typedef struct client_s {
     bool new_connection;
     char *team;
     int *inv;
+    size_t lvl;
 } client_t;
+
+typedef struct team_s {
+    char *name;
+    size_t nb;
+} team_t;
+
+typedef struct egg_s {
+    int x;
+    int y;
+    int time;
+    char *team;
+    struct egg_s *next;
+} egg_t;
 
 typedef struct client_manager_s {
     fd_set read_fds;
     client_t *client_infos;
     coord_t *coord;
-    char **teamsp;
+    int ***map;
+    team_t *teams;
     int nb_teams;
     int nb_clients;
     int maxsd;
     int freq;
+    egg_t *egg;
 } client_manager_t;
 
-int server(int ac, char **argv);
 bool is_nb(char *buff);
-bool check_param(char **argv, int ac);
-void set_teams(client_manager_t *c, int ac, char **argv);
-void set_coord(client_manager_t *c, char **argv);
 char *my_atoi(int nb);
-size_t count_team(char **argv, int ac);
-int remain_team(client_manager_t *c, char *team);
-void exec_cmd(client_manager_t *c, int nbClient, char *buff);
-void set_readfds(server_t *s, client_manager_t *c);
-void set_clients(client_manager_t *c);
-void create_socket_server(server_t *s, char *port);
-void destroy(server_t *s, client_manager_t *c);
-void create_team(char *buff, client_manager_t *c, int nbClient);
 int protocode(char *buff);
-size_t nb_state_def(client_manager_t *c, int nbClient);
+inv_t search_type(char *tmp);
+int server(int ac, char **argv);
+void comete(client_manager_t *c);
 char *cat(char *tmp, char *name);
-void list_folder(char *where, client_manager_t *c, int nbClient);
-bool issearch(char *name, char *uid);
 void set_client_coord(coord_t *c);
+void set_map(client_manager_t *c);
+bool issearch(char *name, char *uid);
+void set_clients(client_manager_t *c);
+bool check_param(char **argv, int ac);
+size_t count_team(char **argv, int ac);
+void set_coord(client_manager_t *c, char **argv);
+void destroy(server_t *s, client_manager_t *c);
+int remain_team(client_manager_t *c, char *team);
+void add_to_team(client_manager_t *c, char *team);
+void create_socket_server(server_t *s, char *port);
+void set_readfds(server_t *s, client_manager_t *c);
+char *get_content(client_manager_t *c, int x, int y);
+size_t nb_state_def(client_manager_t *c, int nbClient);
+void set_teams(client_manager_t *c, int ac, char **argv);
+void exec_cmd(client_manager_t *c, int nbClient, char *buff);
+bool com_login(client_manager_t *c, int nbClient, char *buff);
+void create_team(char *buff, client_manager_t *c, int nbClient);
+void list_folder(char *where, client_manager_t *c, int nbClient);
 
 void forward(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff);
@@ -129,6 +146,8 @@ void incantation(client_manager_t *c, int nbClient, char *buff);
 void msz(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient, __attribute__((unused)) char *buff);
 void bct(__attribute__((unused)) client_manager_t *c,
+__attribute__((unused)) int nbClient, __attribute__((unused)) char *buff);
+void mct(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient, __attribute__((unused)) char *buff);
 void tna(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient, __attribute__((unused)) char *buff);
@@ -239,6 +258,10 @@ static const coms_t allcoms_GUI[NB_COM_GUI] = {
     {
         .name = BCT,
         .findcoms = &bct
+    },
+    {
+        .name = MCT,
+        .findcoms = &mct
     },
     {
         .name = TNA,
