@@ -81,8 +81,6 @@ bool GameWindow::parseCommande()
         _commande.erase(0, _commande.find("\n") + 1);
         std::string cmd = _line.substr(0, _line.find(" "));
         _line.erase(0, _line.find(" ") + 1);
-        // std::cout << "commande: " << _line << std::endl; // "x y n
-        // std::cout << "cmd: " << cmd << std::endl;
         for (size_t i = 0; _cmd[i].cmd.compare("NULL"); i++) {
             if (_cmd[i].cmd == cmd) {
                 isParsed = true;
@@ -157,9 +155,56 @@ void GameWindow::newPlayer()
     _line.erase(0, _line.find(" ") + 1);
     std::string team = _line.substr(0, _line.find(" "));
     _line.erase(0, _line.find(" ") + 1);
+
     ressourcesT inventory;
-    _player[id] = {id, x, y, orientation, level, team, inventory, false};
+    inventory.food = 0; // Initialize each member of the inventory struct
+    inventory.linemate = 0;
+    inventory.deraumere = 0;
+    inventory.sibur = 0;
+    inventory.mendiane = 0;
+    inventory.phiras = 0;
+    inventory.thystame = 0;
+
+    _player[id].id = id;
+    _player[id].x = x;
+    _player[id].y = y;
+    _player[id].orientation = orientation;
+    _player[id].level = level;
+    _player[id].team = team;
+    _player[id].inventory = inventory;
+    _player[id].laying = false;
+    _player[id].spritePlayer = sf::Sprite();
+    _player[id].textPlayer = sf::Texture();
+
+    switch (_player[id].orientation) {
+        case 1: // Orientation vers le haut
+            if (!_player[id].textPlayer.loadFromFile("assets/playerH.png")) {
+                return;
+            }
+            break;
+        case 2: // Orientation vers la droite
+            if (!_player[id].textPlayer.loadFromFile("assets/playerBD.png")) {
+                return;
+            }
+            break;
+        case 3: // Orientation vers le bas
+            if (!_player[id].textPlayer.loadFromFile("assets/playerBG.png")) {
+                return;
+            }
+            break;
+        case 4: // Orientation vers la gauche
+            if (!_player[id].textPlayer.loadFromFile("assets/playerH.png")) {
+                return;
+            }
+            break;
+        default:
+            // Gérer le cas d'une orientation invalide
+            return;
+    }
+    _player[id].spritePlayer.setTexture(_player[id].textPlayer);
+    _player[id].spritePlayer.setScale(sf::Vector2f(1.5, 1.5));
 }
+
 
 void GameWindow::playerPosition()
 {
@@ -171,8 +216,41 @@ void GameWindow::playerPosition()
     _line.erase(0, _line.find(" ") + 1);
     size_t orientation = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
-    _player[id] = {id, x, y, orientation, _player[id].level, _player[id].team, _player[id].inventory, _player[id].laying};
+    
+    _player[id].id = id;
+    _player[id].x = x;
+    _player[id].y = y;
+    _player[id].orientation = orientation;
+
+    switch (_player[id].orientation) {
+        case 1: // Orientation vers le haut
+            if (!_player[id].textPlayer.loadFromFile("assets/playerBG.png")) {
+                return;
+            }
+            break;
+        case 2: // Orientation vers la droite
+            if (!_player[id].textPlayer.loadFromFile("assets/playerBD.png")) {
+                return;
+            }
+            break;
+        case 3: // Orientation vers le bas
+            if (!_player[id].textPlayer.loadFromFile("assets/playerH.png")) {
+                return;
+            }
+            break;
+        case 4: // Orientation vers la gauche
+            if (!_player[id].textPlayer.loadFromFile("assets/playerH.png")) {
+                return;
+            }
+            break;
+        default:
+            // Gérer le cas d'une orientation invalide
+            return;
+    }
+    _player[id].spritePlayer.setTexture(_player[id].textPlayer);
+    _player[id].spritePlayer.setScale(sf::Vector2f(1.5, 1.5));
 }
+
 
 void GameWindow::playerLevel()
 {
@@ -201,7 +279,13 @@ void GameWindow::playerInventory()
     _line.erase(0, _line.find(" ") + 1);
     size_t thystame = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
-    _player[id] = {id, _player[id].x, _player[id].y, _player[id].orientation, _player[id].level, _player[id].team, {food, linemate, deraumere, sibur, mendiane, phiras, thystame}};
+    _player[id].id = id;
+    _player[id].x = _player[id].x;
+    _player[id].y = _player[id].y;
+    _player[id].orientation = _player[id].orientation;
+    _player[id].level = _player[id].level;
+    _player[id].team = _player[id].team;
+    _player[id].inventory = {food, linemate, deraumere, sibur, mendiane, phiras, thystame};
 }
 
 void GameWindow::broadcast()

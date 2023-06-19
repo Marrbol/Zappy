@@ -22,6 +22,11 @@
 
 class GameWindow {
     private:
+        typedef struct draw_s {
+            sf::Sprite spriteRessources;
+            sf::Texture textRessources;
+        } draw_t;
+
         typedef struct ressourcesS {
             size_t food = 0;
             size_t linemate = 0;
@@ -31,6 +36,20 @@ class GameWindow {
             size_t phiras = 0;
             size_t thystame = 0;
         } ressourcesT;
+
+        typedef struct playerS {
+            sf::Sprite spritePlayer;
+            sf::Texture textPlayer;
+            size_t id = 0;
+            int x = 0;
+            int y = 0;
+            int orientation = 0;
+            size_t level = 0;
+            std::string team = "";
+            ressourcesT inventory;
+            bool laying = false;
+        } playerT;
+        std::map<size_t, playerT> _player;  // id -> player
     public:
         GameWindow(int width, int height, const std::string& title, int port, std::string machine);
         ~GameWindow();
@@ -77,6 +96,12 @@ class GameWindow {
         void timeUnitModification();
         void modifInventory(size_t id_player, size_t id_ressource, int nb);
 
+        //init struct sprite
+        void initAll(draw_t food, draw_t linemate, draw_t deraumere, draw_t sibur, draw_t mendiane, draw_t phiras, draw_t thystame, playerT player);
+        //ask map pdr pgt reinitialiser la map
+
+        //draw ressources player 
+
     protected:
     private:
         sf::RenderWindow window;
@@ -94,17 +119,6 @@ class GameWindow {
 
         std::map<std::pair<size_t, size_t>, ressourcesT> _map; // x, y -> ressources
 
-        typedef struct playerS {
-            size_t id = 0;
-            size_t x = 0;
-            size_t y = 0;
-            size_t orientation = 0;
-            size_t level = 0;
-            std::string team = "";
-            ressourcesT inventory;
-            bool laying = false;
-        } playerT;
-        std::map<size_t, playerT> _player;  // id -> player
 
         typedef struct incantationS {
             size_t x = 0;

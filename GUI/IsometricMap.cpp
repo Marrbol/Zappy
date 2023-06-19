@@ -11,7 +11,6 @@ IsometricMap::IsometricMap(float size) : cubeSize(size)
 
 void IsometricMap::setSize(float i, float j) {
     // Set the size of the map
-    std::cout << "setSize" << std::endl;
     for (int x = 0; x < i; ++x) {
         for (int y = 0; y < j; ++y) {
             float posX = (x - y) * cubeSize * 0.50f;
