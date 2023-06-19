@@ -49,21 +49,19 @@ int get_y(char *buff)
     return atoi(nb);
 }
 
-void bct(client_manager_t *c,
-__attribute__((unused)) int nbClient, char *buff) {
+void bct(client_manager_t *c, int nbClient, char *buff) {
     char *message = cat("bct ", "");
     char *content = "";
     int x = get_x(buff);
     int y = get_y(buff);
 
-    printf("x = %d y = %d\n", x, y);
     if (x == -1 || y == -1 || x > c->coord->x || y > c->coord->y) {
         write(c->client_infos[nbClient].client_socket, "ko\n", 3);
         return;
     }
     content = get_content(c, x, y);
-    //buff = strtok(buff, "bct");
-    //printf("buff = %s\n", buff);
-
+    message = cat(cat(cat(cat(message, my_atoi(x)), " "),
+    my_atoi(y)), content);
+    write(c->client_infos[nbClient].client_socket, message, strlen(message));
 }
 

@@ -30,10 +30,8 @@ char *get_content(client_manager_t *c, int x, int y)
     char *content = "";
     inv_t i = food;
 
-    printf("first = %s\n", my_atoi(c->map[x][y][i++]));
-    while (i < none) {
+    while (i < none)
         content = cat(content, cat(" ", my_atoi(c->map[x][y][i++])));
-    }
-    printf("content %s\n", content);
+    content = cat(content, "\n");
     return content;
 }
