@@ -97,7 +97,11 @@ void IA::calculeTilesPoids()
 bool IA::GetAllRessourcesTile()
 {
     std::string tile =_view[_numTilesPriority];
-    size_t nbCommandLeft = 9 - _ask.size();
+    if (_ask.size() > 4)
+        return false;
+    std::cout << _clientName << " tile = " << tile << " " << _numTilesPriority << " and " <<_ask.size() << std::endl;
+    std::cout << "view[0] = " << _view[0] << std::endl;
+    size_t nbCommandLeft = 4 - _ask.size();
     size_t nbFood = countSubStr(tile, FOOD);
     size_t nbLinemate = countSubStr(tile, LINEMATE);
     size_t nbDeraumere = countSubStr(tile, DERAUMERE);
@@ -106,7 +110,6 @@ bool IA::GetAllRessourcesTile()
     size_t nbPhiras = countSubStr(tile, PHIRAS);
     size_t nbThystame = countSubStr(tile, THYSTAME);
     size_t nbMaterials = nbFood + nbLinemate + nbDeraumere + nbSibur + nbMendiane + nbPhiras + nbThystame;
-
     for (; nbCommandLeft > 0 && nbMaterials > 0; nbCommandLeft--) {
         if (nbFood > 0) {
             take(FOOD);
@@ -122,6 +125,14 @@ bool IA::GetAllRessourcesTile()
             nbMaterials--;
             _takeObject.push_back(LINEMATE);
             _view[_numTilesPriority].erase(_view[_numTilesPriority].find(LINEMATE), 8);
+            continue;
+        }
+        if (nbThystame > 0) {
+            take(THYSTAME);
+            nbThystame--;
+            nbMaterials--;
+            _takeObject.push_back(THYSTAME);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(THYSTAME), 8);
             continue;
         }
         if (nbDeraumere > 0) {
@@ -156,15 +167,8 @@ bool IA::GetAllRessourcesTile()
             _view[_numTilesPriority].erase(_view[_numTilesPriority].find(PHIRAS), 6);
             continue;
         }
-        if (nbThystame > 0) {
-            take(THYSTAME);
-            nbThystame--;
-            nbMaterials--;
-            _takeObject.push_back(THYSTAME);
-            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(THYSTAME), 8);
-            continue;
-        }
     }
+    // std::cout << "nbCommandLeft = " << _ask.size() << std::endl;
     if (nbMaterials == 0)
         return !false;
     return !true;
@@ -218,7 +222,7 @@ void IA::isItForRitual(std::string materiaux)
         return;
     if (materiaux == LINEMATE && _rituels[_level].getLinemate() > 0) {
         _rituels[_level].setLinemate(_rituels[_level].getLinemate() - 1);
-        std::cout << "Linemate left for ritual = " << _rituels[_level].getLinemate() << std::endl;
+        // std::cout << "Linemate left for ritual = " << _rituels[_level].getLinemate() << std::endl;
         if (_level > 1)
             broadcast(_teamName + " f 1");
     }
@@ -317,9 +321,9 @@ void IA::loopIA()
         do {
             IA::communicateWithServer();
         } while (_name == false);
-        if (_ask.size() >= 10) {
-            if (_ask.size() > 10) {
-                std::cout << "trop de commandes " << _ask.size() << std::endl;
+        if (_ask.size() >= 5) {
+            if (_ask.size() > 5) {
+                // std::cout << "trop de commandes " << _ask.size() << std::endl;
             }
             continue;
         }
@@ -344,12 +348,12 @@ void IA::loopIA()
         if (_ritualAsked)
             continue;
         if (_level == 1 && _rituels[_level].getLinemate() == 0) {
-            if (_ask.size() > 6)
+            if (_ask.size() > 2)
                 continue;
             incantation();
         }
         if (_canIncantation && _role == "leader" && _level > 1) {
-            if (_ask.size() > 6)
+            if (_ask.size() > 2)
                 continue;
             assembleAllAI();
         }
@@ -357,7 +361,7 @@ void IA::loopIA()
             bool here = false;
             if (goToRitual) {
                 here = true;
-                if (_ask.size() > 6)
+                if (_ask.size() > 2)
                     continue;
                 switch (_ritualDirection)
                 {
@@ -412,6 +416,7 @@ void IA::loopIA()
                         _view.clear();
                         sendlook = false;
                         forward();
+                        continue;
                     }
                 }
                 here = moveTheIAToTheBestCase();
@@ -419,13 +424,21 @@ void IA::loopIA()
             if (here) {
                 if (GetAllRessourcesTile()) {
                     inventory();
-                    // std::cout << _clientName << " linemate : "<< _inventaire.getLinemate() << std::endl;
+                    std::cout << _clientName << " linemate : "<< _inventaire.getLinemate() << std::endl;
+                    std::cout << _clientName << " deraumere : "<< _inventaire.getDeraumere() << std::endl;
+                    std::cout << _clientName << " sibur : "<< _inventaire.getSibur() << std::endl;
+                    std::cout << _clientName << " mendiane : "<< _inventaire.getMendiane() << std::endl;
+                    std::cout << _clientName << " phiras : "<< _inventaire.getPhiras() << std::endl;
+                    std::cout << _clientName << " thystame : "<< _inventaire.getThystame() << std::endl;
+                    std::cout << _clientName << " nourriture : "<< _inventaire.getFood() << std::endl;
                     // std::cout << _inventaire.getDeraumere() << std::endl;
                     // std::cout << _inventaire.getLinemate() << std::endl;
                     // std::cout << _inventaire.getMendiane() << std::endl;
                     // std::cout << _inventaire.getPhiras() << std::endl;
                     // std::cout << _inventaire.getSibur() << std::endl;
                     // std::cout << _inventaire.getThystame() << std::endl;
+                    std::cout << std::endl;
+                    std::cout << std::endl;
                     if (!goToRitual) {
                         _view.clear();
                         sendlook = false;
@@ -434,7 +447,7 @@ void IA::loopIA()
             }
                  // faire une fonction qui check si on a toutes les ressources
         } else {
-            if (!sendlook && _ask.size() < 10) {
+            if (!sendlook && _ask.size() < 4) {
                 IA::look();
                 sendlook = true;
                 _numTilesPriority = 0;
@@ -492,7 +505,7 @@ int main(int ac, char **av)
                 machine = av[i + 1];
                 break;
             default:
-                std::cout << "Invalid argument: " << flag << std::endl;
+                // std::cout << "Invalid argument: " << flag << std::endl;
                 printUsage();
                 return 84;
         }

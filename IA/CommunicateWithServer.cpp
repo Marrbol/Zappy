@@ -68,6 +68,7 @@ void IA::take(std::string object)
 {
     _network.sendMessage(_socket, "Take " + object + "\n");
     _ask.push_back("Take");
+    std::cout << _clientName << " Take " + object << std::endl;
 }
 
 void IA::set(std::string object)
@@ -83,7 +84,7 @@ void IA::incantation()
         return;
     while (_cpRituels[_level].getLinemate() > 0 && _inventaire.getLinemate() > 0) {
         set(LINEMATE);
-        std::cout << _clientName << " Linemate" << std::endl;
+        // std::cout << _clientName << " Linemate" << std::endl;
         _inventaire.setLinemate(_inventaire.getLinemate() - 1);
         _cpRituels[_level].setLinemate(_cpRituels[_level].getLinemate() - 1);
     }
@@ -112,7 +113,7 @@ void IA::incantation()
         _inventaire.setThystame(_inventaire.getThystame() - 1);
         _cpRituels[_level].setThystame(_cpRituels[_level].getThystame() - 1);
     }
-    std::cout << _clientName << " Incantation" << std::endl;
+    // std::cout << _clientName << " Incantation" << std::endl;
     _network.sendMessage(_socket, "Incantation\n");
     _ask.push_back("Incantation");
     _ritualAsked = true;
@@ -158,8 +159,8 @@ void IA::parseCommande()
             _level = std::stoi(_line.substr(0, _line.find("\n")));
             everyoneHere = false;
             _ritualAsked = false;
-            std::cout << "Level: " << _level << std::endl;
-            std::cout << "currentname = " << _clientName << std::endl;
+            // std::cout << "Level: " << _level << std::endl;
+            // std::cout << "currentname = " << _clientName << std::endl;
             removeMaterialForIncanation();
             continue;
         }
@@ -311,6 +312,7 @@ void IA::getTurnRight()
 
 void IA::getLook()
 {
+    std::cout << _clientName <<  " line = "<<  _line << std::endl;
     if (_line[0] == '[')
         _line.erase(0, 1);
     if (_line[_line.size() - 1] == ']')
@@ -321,22 +323,32 @@ void IA::getLook()
         _line.erase(_line.size() - 1, 1);
     for (size_t x = 0; x <= _maxCaseViewLevel[_level] ; x++) {
         std::string tmp = _line.substr(0, _line.find(","));
+        if (x == 0 && tmp.substr(0, _line.find(" ")) != "player"){
+            // _ask.pop_front();
+            // _ask.pop_front();
+            // _ask.push_front("Look");
+            // _ask.push_front("Inventory");
+            return getInventory();
+        }
+        _line.erase(0, _line.find(",") + 1);
+        if (_line[0] == ' ')
+            _line.erase(0, 1);
         if (tmp[0] == ' ')
             tmp.erase(0, 1);
         if (tmp.size() == 0) {
-            _view[x + 1] = "";
+            _view[x] = "";
             continue;
         }
         if (tmp[tmp.size() - 1] == ' ')
             tmp.erase(tmp.size() - 1, 1);
-        _line.erase(0, _line.find(",") + 1);
-        if (_line[0] == ' ')
-            _line.erase(0, 1);
         _view[x] = tmp;
         if (_line.find(",") == std::string::npos) {
             _view[x + 1] = _line;
             break;
         }
+    }
+    for (size_t i = 0; i < _maxCaseViewLevel[_level]; i++) {
+        std::cout  << _clientName << " view "<< _view[i] << std::endl;
     }
     _validate = true;
     _line.clear();
@@ -371,6 +383,7 @@ void IA::changeTheInventory(std::string material, int nb)
 
 void IA::getInventory()
 {
+    std::cout << _clientName << " inventory " << _line << std::endl;
     if (_line == "ok" || _line == "ko") {
         _validate = true;
         _line.clear();
@@ -391,8 +404,13 @@ void IA::getInventory()
             tmp.erase(0, 1);
         if (tmp[tmp.size() - 1] == ' ')
             tmp.erase(tmp.size(), 1);
-        if (tmp.substr(0, tmp.find(" ")) != "linemate")
+        if (tmp.substr(0, tmp.find(" ")) == "player") {
+            // _ask.pop_front();
+            // _ask.pop_front();
+            // _ask.push_front("Inventory");
+            // _ask.push_front("Look");
             return getLook();
+        }
         _line.erase(0, _line.find(",") + 1);
         std::string material = tmp.substr(0, tmp.find(" "));
         tmp.erase(0, tmp.find(" ") + 1);
@@ -406,7 +424,7 @@ void IA::getInventory()
             tmp.erase(0, tmp.find(" ") + 1);
             nb = std::stoi(tmp);
             changeTheInventory(material, nb);
-        break;
+            break;
         }
     }
     _validate = true;
@@ -492,6 +510,8 @@ void IA::getSet()
 
 void IA::getIncantation()
 {
+    if (_line == "KO")
+        _ritualAsked = false;
     if (_line == "Elevation underway")
         _validate = true;
     _line.clear();

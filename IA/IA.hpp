@@ -28,7 +28,7 @@
 #define PHIRASRARETY 0.08
 #define THYSTAMERARETY 0.05
 #define MAXLEVEL 8
-#define FOOD "food"
+#define FOOD "Food"
 #define LINEMATE "linemate"
 #define DERAUMERE "deraumere"
 #define SIBUR "sibur"
