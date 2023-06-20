@@ -71,6 +71,7 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
   				$(SRC_SERV)/$(CMD_GUI)/mct.c
 
 SRCENCAPS = network/Network.cpp\
+			Process/Process.cpp
 
 SRCIA = IA/IA.cpp\
 		Materiaux/Materiaux.cpp\
