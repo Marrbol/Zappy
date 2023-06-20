@@ -97,7 +97,7 @@ void IA::calculeTilesPoids()
 bool IA::GetAllRessourcesTile()
 {
     std::string tile =_view[_numTilesPriority];
-    size_t nbCommandLeft = 10 - _ask.size();
+    size_t nbCommandLeft = 9 - _ask.size();
     size_t nbFood = countSubStr(tile, FOOD);
     size_t nbLinemate = countSubStr(tile, LINEMATE);
     size_t nbDeraumere = countSubStr(tile, DERAUMERE);
@@ -186,6 +186,8 @@ bool IA::moveTheIAToTheBestCase()
             turnLeft();
             _coordBestCase.first *= -1;
         }
+        if (_coordBestCase.first != 0)
+            nbCommandLeft--;
         isTurned = true;
     }
     while (nbCommandLeft > 0 && _coordBestCase.first > 0) {
@@ -315,6 +317,12 @@ void IA::loopIA()
         do {
             IA::communicateWithServer();
         } while (_name == false);
+        if (_ask.size() >= 10) {
+            if (_ask.size() > 10) {
+                std::cout << "trop de commandes " << _ask.size() << std::endl;
+            }
+            continue;
+        }
         if (_isDead) {
             if (_pid != 0)
                 _process.waitProcess();
@@ -336,15 +344,21 @@ void IA::loopIA()
         if (_ritualAsked)
             continue;
         if (_level == 1 && _rituels[_level].getLinemate() == 0) {
+            if (_ask.size() > 6)
+                continue;
             incantation();
         }
         if (_canIncantation && _role == "leader" && _level > 1) {
+            if (_ask.size() > 6)
+                continue;
             assembleAllAI();
         }
         if (!_view.empty()) {
             bool here = false;
             if (goToRitual) {
                 here = true;
+                if (_ask.size() > 6)
+                    continue;
                 switch (_ritualDirection)
                 {
                 case 1:

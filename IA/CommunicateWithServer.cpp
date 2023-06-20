@@ -83,6 +83,7 @@ void IA::incantation()
         return;
     while (_cpRituels[_level].getLinemate() > 0 && _inventaire.getLinemate() > 0) {
         set(LINEMATE);
+        std::cout << _clientName << " Linemate" << std::endl;
         _inventaire.setLinemate(_inventaire.getLinemate() - 1);
         _cpRituels[_level].setLinemate(_cpRituels[_level].getLinemate() - 1);
     }
@@ -111,6 +112,7 @@ void IA::incantation()
         _inventaire.setThystame(_inventaire.getThystame() - 1);
         _cpRituels[_level].setThystame(_cpRituels[_level].getThystame() - 1);
     }
+    std::cout << _clientName << " Incantation" << std::endl;
     _network.sendMessage(_socket, "Incantation\n");
     _ask.push_back("Incantation");
     _ritualAsked = true;
@@ -120,6 +122,10 @@ void IA::parseCommande()
 {
     while (_commande.find("\n") != std::string::npos) {
         _line = _commande.substr(0, _commande.find("\n"));
+        // std::cout << _clientName << " Message received: " << _line << std::endl;
+        if (_line == "ko") {
+            std::cout << _clientName << " KO " << _ask.front() << " " << _ask.size() << std::endl;
+        }
         _commande.erase(0, _commande.find("\n") + 1);
         if (_line == "WELCOME") {
             _start = true;
@@ -385,7 +391,6 @@ void IA::getInventory()
             tmp.erase(0, 1);
         if (tmp[tmp.size() - 1] == ' ')
             tmp.erase(tmp.size(), 1);
-        std::cout << "erase = " << tmp << std::endl;
         if (tmp.substr(0, tmp.find(" ")) != "linemate")
             return getLook();
         _line.erase(0, _line.find(",") + 1);
