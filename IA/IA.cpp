@@ -97,11 +97,11 @@ void IA::calculeTilesPoids()
 bool IA::GetAllRessourcesTile()
 {
     std::string tile =_view[_numTilesPriority];
-    if (_ask.size() > 4)
+    if (_ask.size() > 9)
         return false;
     std::cout << _clientName << " tile = " << tile << " " << _numTilesPriority << " and " <<_ask.size() << std::endl;
     std::cout << "view[0] = " << _view[0] << std::endl;
-    size_t nbCommandLeft = 4 - _ask.size();
+    size_t nbCommandLeft = 9 - _ask.size();
     size_t nbFood = countSubStr(tile, FOOD);
     size_t nbLinemate = countSubStr(tile, LINEMATE);
     size_t nbDeraumere = countSubStr(tile, DERAUMERE);
@@ -176,7 +176,7 @@ bool IA::GetAllRessourcesTile()
 
 bool IA::moveTheIAToTheBestCase()
 {
-    size_t nbCommandLeft = 10 - _ask.size();
+    size_t nbCommandLeft = 9 - _ask.size();
 
     while (nbCommandLeft > 0 && _coordBestCase.second > 0) {
         forward();
@@ -228,37 +228,38 @@ void IA::isItForRitual(std::string materiaux)
     }
     if (materiaux == DERAUMERE && _rituels[_level].getDeraumere() > 0) {
         _rituels[_level].setDeraumere(_rituels[_level].getDeraumere() - 1);
-        broadcast(_teamName + " f 2");
+        broadcast(_teamName + " f 2 " + std::to_string(_level));
     }
     if (materiaux == SIBUR && _rituels[_level].getSibur() > 0) {
         _rituels[_level].setSibur(_rituels[_level].getSibur() - 1);
-        broadcast(_teamName + " f 3");
+        broadcast(_teamName + " f 3 " + std::to_string(_level));
     }
     if (materiaux == MENDIANE && _rituels[_level].getMendiane() > 0) {
         _rituels[_level].setMendiane(_rituels[_level].getMendiane() - 1);
-        broadcast(_teamName + " f 4");
+        broadcast(_teamName + " f 4 " + std::to_string(_level));
     }
     if (materiaux == PHIRAS && _rituels[_level].getPhiras() > 0) {
         _rituels[_level].setPhiras(_rituels[_level].getPhiras() - 1);
-        broadcast(_teamName + " f 5");
+        broadcast(_teamName + " f 5 " + std::to_string(_level));
     }
     if (materiaux == THYSTAME && _rituels[_level].getThystame() > 0) {
         _rituels[_level].setThystame(_rituels[_level].getThystame() - 1);
-        broadcast(_teamName + " f 6");
+        broadcast(_teamName + " f 6 " + std::to_string(_level));
     }
 }
 
-void IA::assembleAllAI()
+bool IA::assembleAllAI()
 {
     if (everyoneHere) {
         broadcast(_teamName + " startRitual");
         incantation();
-        return;
+        return true;
     }
     if (_rituels[_level].getLinemate() == 0 && _rituels[_level].getDeraumere() == 0 && _rituels[_level].getSibur() == 0 && _rituels[_level].getMendiane() == 0 && _rituels[_level].getPhiras() == 0 && _rituels[_level].getThystame() == 0) {
         broadcast(_teamName + " incantation");
-        return;
+        return true;
     }
+    return false;
 }
 
 void IA::removeMaterialForIncanation()
@@ -321,8 +322,8 @@ void IA::loopIA()
         do {
             IA::communicateWithServer();
         } while (_name == false);
-        if (_ask.size() >= 5) {
-            if (_ask.size() > 5) {
+        if (_ask.size() >= 9) {
+            if (_ask.size() > 9) {
                 // std::cout << "trop de commandes " << _ask.size() << std::endl;
             }
             continue;
@@ -347,66 +348,66 @@ void IA::loopIA()
             continue;
         if (_ritualAsked)
             continue;
-        if (_level == 1 && _rituels[_level].getLinemate() == 0) {
-            if (_ask.size() > 2)
-                continue;
-            incantation();
-        }
-        if (_canIncantation && _role == "leader" && _level > 1) {
-            if (_ask.size() > 2)
-                continue;
-            assembleAllAI();
-        }
+        // if (_level == 1 && _rituels[_level].getLinemate() == 0) {
+        //     if (_ask.size() > 5)
+        //         continue;
+        //     incantation();
+        // }
+        // if (_canIncantation && _role == "leader" && _level > 1) {
+        //     if (_ask.size() > 5)
+        //         continue;
+        //     if (assembleAllAI())
+        //         continue;
+        // }
         if (!_view.empty()) {
             bool here = false;
             if (goToRitual) {
                 here = true;
-                if (_ask.size() > 2)
+                if (_ask.size() > 5)
                     continue;
-                switch (_ritualDirection)
-                {
-                case 1:
-                    forward();
-                    break;
-                case 2:
-                    forward();
-                    turnLeft();
-                    forward();
-                    break;
-                case 3:
-                    turnLeft();
-                    forward();
-                    break;
-                case 4:
-                    turnLeft();
-                    forward();
-                    turnLeft();
-                    forward();
-                    break;
-                case 5:
-                    turnLeft();
-                    turnLeft();
-                    forward();
-                    break;
-                case 6:
-                    turnRight();
-                    forward();
-                    turnRight();
-                    forward();
-                    break;
-                case 7:
-                    turnRight();
-                    forward();
-                    break;
-                case 8:
-                    forward();
-                    turnRight();
-                    forward();
-                    break;
-                case 0:
-                    continue;
-                default:
-                    break;
+                switch (_ritualDirection) {
+                    case 1:
+                        forward();
+                        break;
+                    case 2:
+                        forward();
+                        turnLeft();
+                        forward();
+                        break;
+                    case 3:
+                        turnLeft();
+                        forward();
+                        break;
+                    case 4:
+                        turnLeft();
+                        forward();
+                        turnLeft();
+                        forward();
+                        break;
+                    case 5:
+                        turnLeft();
+                        turnLeft();
+                        forward();
+                        break;
+                    case 6:
+                        turnRight();
+                        forward();
+                        turnRight();
+                        forward();
+                        break;
+                    case 7:
+                        turnRight();
+                        forward();
+                        break;
+                    case 8:
+                        forward();
+                        turnRight();
+                        forward();
+                        break;
+                    case 0:
+                        continue;
+                    default:
+                        break;
                 }
             }else {
                 if (!calculated) {
@@ -447,7 +448,7 @@ void IA::loopIA()
             }
                  // faire une fonction qui check si on a toutes les ressources
         } else {
-            if (!sendlook && _ask.size() < 4) {
+            if (!sendlook && _ask.size() < 9) {
                 IA::look();
                 sendlook = true;
                 _numTilesPriority = 0;

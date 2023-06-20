@@ -28,7 +28,7 @@
 #define PHIRASRARETY 0.08
 #define THYSTAMERARETY 0.05
 #define MAXLEVEL 8
-#define FOOD "Food"
+#define FOOD "food"
 #define LINEMATE "linemate"
 #define DERAUMERE "deraumere"
 #define SIBUR "sibur"
@@ -45,7 +45,7 @@ class IA {
         void calculeMateriauxPoids();
         void calculeTilesPoids();
         bool moveTheIAToTheBestCase();
-        void assembleAllAI();
+        bool assembleAllAI();
 
         IA(int port, std::string name, std::string machine);
         void communicateWithServer();

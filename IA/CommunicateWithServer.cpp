@@ -251,13 +251,13 @@ void IA::ReceiveMessage()
         }
         if (cmd == "f")
             reduceForRitual(_line.substr(_line.find(" ") + 1, _line.size()));
-        if (cmd == "incantation") {
-            if (direction == 0) {
-                broadcast(_teamName + " here");
-            }
-            goToRitual = true;
-            _ritualDirection = direction;
-        }
+        // if (cmd == "incantation") {
+        //     if (direction == 0) {
+        //         broadcast(_teamName + " here");
+        //     }
+        //     goToRitual = true;
+        //     _ritualDirection = direction;
+        // }
         if (cmd == "startRitual") {
             _line.erase(0, _line.find(" ") + 1);
             size_t number = stoi(_line);
@@ -312,7 +312,6 @@ void IA::getTurnRight()
 
 void IA::getLook()
 {
-    std::cout << _clientName <<  " line = "<<  _line << std::endl;
     if (_line[0] == '[')
         _line.erase(0, 1);
     if (_line[_line.size() - 1] == ']')
@@ -347,9 +346,6 @@ void IA::getLook()
             break;
         }
     }
-    for (size_t i = 0; i < _maxCaseViewLevel[_level]; i++) {
-        std::cout  << _clientName << " view "<< _view[i] << std::endl;
-    }
     _validate = true;
     _line.clear();
     _ask.pop_front();
@@ -383,7 +379,6 @@ void IA::changeTheInventory(std::string material, int nb)
 
 void IA::getInventory()
 {
-    std::cout << _clientName << " inventory " << _line << std::endl;
     if (_line == "ok" || _line == "ko") {
         _validate = true;
         _line.clear();
