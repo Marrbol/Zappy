@@ -50,6 +50,11 @@ class GameWindow {
             bool laying = false;
         } playerT;
         std::map<size_t, playerT> _player;  // id -> player
+        sf::Text messageText;
+        sf::Text IDText;
+        sf::Font font;
+        sf::Texture bullText;
+        sf::Sprite bullSprite;
     public:
         GameWindow(int width, int height, const std::string& title, int port, std::string machine);
         ~GameWindow();
