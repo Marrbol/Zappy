@@ -22,6 +22,8 @@ IA::~IA()
 void IA::calculeMateriauxPoids()
 {
     size_t _poidFood =  (1 / FOODRARETY);
+    if (_inventaire.getFood() < 10)
+        _poidFood *= 10;
     size_t _poidLinemate = (_rituels[_level].getLinemate() - _inventaire.getLinemate()) * (1 / LINEMATERARETY);
     size_t _poidDeraumere = (_rituels[_level].getDeraumere() - _inventaire.getDeraumere()) * (1 / DERAUMERERARETY);
     size_t _poidSibur = (_rituels[_level].getSibur() - _inventaire.getSibur()) * (1 / SIBURRARETY);
@@ -87,7 +89,7 @@ void IA::calculeTilesPoids()
         _tilesPoid[i] = poidTmp;
         // std::cout << "poid de la case " << i << " = " << _tilesPoid[i] << std::endl;
     }
-    for (size_t i = 0; i <= _maxCaseViewLevel[_level]; i++)
+    for (size_t i = 1; i <= _maxCaseViewLevel[_level]; i++)
         if (_tilesPoid[i] > _tilesPoid[_numTilesPriority])
             _numTilesPriority = i;
 }
@@ -95,7 +97,11 @@ void IA::calculeTilesPoids()
 bool IA::GetAllRessourcesTile()
 {
     std::string tile =_view[_numTilesPriority];
-    size_t nbCommandLeft = 10 - _ask.size();
+    if (_ask.size() > 9)
+        return false;
+    std::cout << _clientName << " tile = " << tile << " " << _numTilesPriority << " and " <<_ask.size() << std::endl;
+    std::cout << "view[0] = " << _view[0] << std::endl;
+    size_t nbCommandLeft = 9 - _ask.size();
     size_t nbFood = countSubStr(tile, FOOD);
     size_t nbLinemate = countSubStr(tile, LINEMATE);
     size_t nbDeraumere = countSubStr(tile, DERAUMERE);
@@ -104,7 +110,6 @@ bool IA::GetAllRessourcesTile()
     size_t nbPhiras = countSubStr(tile, PHIRAS);
     size_t nbThystame = countSubStr(tile, THYSTAME);
     size_t nbMaterials = nbFood + nbLinemate + nbDeraumere + nbSibur + nbMendiane + nbPhiras + nbThystame;
-
     for (; nbCommandLeft > 0 && nbMaterials > 0; nbCommandLeft--) {
         if (nbFood > 0) {
             take(FOOD);
@@ -120,6 +125,14 @@ bool IA::GetAllRessourcesTile()
             nbMaterials--;
             _takeObject.push_back(LINEMATE);
             _view[_numTilesPriority].erase(_view[_numTilesPriority].find(LINEMATE), 8);
+            continue;
+        }
+        if (nbThystame > 0) {
+            take(THYSTAME);
+            nbThystame--;
+            nbMaterials--;
+            _takeObject.push_back(THYSTAME);
+            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(THYSTAME), 8);
             continue;
         }
         if (nbDeraumere > 0) {
@@ -154,15 +167,8 @@ bool IA::GetAllRessourcesTile()
             _view[_numTilesPriority].erase(_view[_numTilesPriority].find(PHIRAS), 6);
             continue;
         }
-        if (nbThystame > 0) {
-            take(THYSTAME);
-            nbThystame--;
-            nbMaterials--;
-            _takeObject.push_back(THYSTAME);
-            _view[_numTilesPriority].erase(_view[_numTilesPriority].find(THYSTAME), 8);
-            continue;
-        }
     }
+    // std::cout << "nbCommandLeft = " << _ask.size() << std::endl;
     if (nbMaterials == 0)
         return !false;
     return !true;
@@ -170,7 +176,7 @@ bool IA::GetAllRessourcesTile()
 
 bool IA::moveTheIAToTheBestCase()
 {
-    size_t nbCommandLeft = 10 - _ask.size();
+    size_t nbCommandLeft = 9 - _ask.size();
 
     while (nbCommandLeft > 0 && _coordBestCase.second > 0) {
         forward();
@@ -184,6 +190,8 @@ bool IA::moveTheIAToTheBestCase()
             turnLeft();
             _coordBestCase.first *= -1;
         }
+        if (_coordBestCase.first != 0)
+            nbCommandLeft--;
         isTurned = true;
     }
     while (nbCommandLeft > 0 && _coordBestCase.first > 0) {
@@ -208,15 +216,118 @@ void IA::ForkTheProgram()
     }
 }
 
+void IA::isItForRitual(std::string materiaux)
+{
+    if (!_canIncantation)
+        return;
+    if (materiaux == LINEMATE && _rituels[_level].getLinemate() > 0) {
+        _rituels[_level].setLinemate(_rituels[_level].getLinemate() - 1);
+        // std::cout << "Linemate left for ritual = " << _rituels[_level].getLinemate() << std::endl;
+        if (_level > 1)
+            broadcast(_teamName + " f 1");
+    }
+    if (materiaux == DERAUMERE && _rituels[_level].getDeraumere() > 0) {
+        _rituels[_level].setDeraumere(_rituels[_level].getDeraumere() - 1);
+        broadcast(_teamName + " f 2 " + std::to_string(_level));
+    }
+    if (materiaux == SIBUR && _rituels[_level].getSibur() > 0) {
+        _rituels[_level].setSibur(_rituels[_level].getSibur() - 1);
+        broadcast(_teamName + " f 3 " + std::to_string(_level));
+    }
+    if (materiaux == MENDIANE && _rituels[_level].getMendiane() > 0) {
+        _rituels[_level].setMendiane(_rituels[_level].getMendiane() - 1);
+        broadcast(_teamName + " f 4 " + std::to_string(_level));
+    }
+    if (materiaux == PHIRAS && _rituels[_level].getPhiras() > 0) {
+        _rituels[_level].setPhiras(_rituels[_level].getPhiras() - 1);
+        broadcast(_teamName + " f 5 " + std::to_string(_level));
+    }
+    if (materiaux == THYSTAME && _rituels[_level].getThystame() > 0) {
+        _rituels[_level].setThystame(_rituels[_level].getThystame() - 1);
+        broadcast(_teamName + " f 6 " + std::to_string(_level));
+    }
+}
+
+bool IA::assembleAllAI()
+{
+    if (everyoneHere) {
+        broadcast(_teamName + " startRitual");
+        incantation();
+        return true;
+    }
+    if (_rituels[_level].getLinemate() == 0 && _rituels[_level].getDeraumere() == 0 && _rituels[_level].getSibur() == 0 && _rituels[_level].getMendiane() == 0 && _rituels[_level].getPhiras() == 0 && _rituels[_level].getThystame() == 0) {
+        broadcast(_teamName + " incantation");
+        return true;
+    }
+    return false;
+}
+
+void IA::removeMaterialForIncanation()
+{
+    if (_rituels[_level].getLinemate() > 0 && _inventaire.getLinemate() > 0) {
+        int nbLinemate = _rituels[_level].getLinemate() - _inventaire.getLinemate();
+        if (nbLinemate < 0)
+            _rituels[_level].setLinemate(0);
+        else
+            _rituels[_level].setLinemate(nbLinemate);
+        if (_level > 1) {
+            for (int i = 0; i < nbLinemate; i++) {
+                broadcast(_teamName + " f 1 " + std::to_string(_level));
+            }
+        }
+    }
+    if (_rituels[_level].getDeraumere() > 0 && _inventaire.getDeraumere() > 0) {
+        int nbDeraumere = _rituels[_level].getDeraumere() - _inventaire.getDeraumere();
+        if (nbDeraumere < 0)
+            _rituels[_level].setDeraumere(0);
+        else
+            _rituels[_level].setDeraumere(nbDeraumere);
+    }
+    if (_rituels[_level].getSibur() > 0 && _inventaire.getSibur() > 0) {
+        int nbSibur = _rituels[_level].getSibur() - _inventaire.getSibur();
+        if (nbSibur < 0)
+            _rituels[_level].setSibur(0);
+        else
+            _rituels[_level].setSibur(nbSibur);
+    }
+    if (_rituels[_level].getMendiane() > 0 && _inventaire.getMendiane() > 0) {
+        int nbMendiane = _rituels[_level].getMendiane() - _inventaire.getMendiane();
+        if (nbMendiane < 0)
+            _rituels[_level].setMendiane(0);
+        else
+            _rituels[_level].setMendiane(nbMendiane);
+    }
+    if (_rituels[_level].getPhiras() > 0 && _inventaire.getPhiras() > 0) {
+        int nbPhiras = _rituels[_level].getPhiras() - _inventaire.getPhiras();
+        if (nbPhiras < 0)
+            _rituels[_level].setPhiras(0);
+        else
+            _rituels[_level].setPhiras(nbPhiras);
+    }
+    if (_rituels[_level].getThystame() > 0 && _inventaire.getThystame() > 0) {
+        int nbThystame = _rituels[_level].getThystame() - _inventaire.getThystame();
+        if (nbThystame < 0)
+            _rituels[_level].setThystame(0);
+        else
+            _rituels[_level].setThystame(nbThystame);
+    }
+}
+
 void IA::loopIA()
 {
     bool sendlook = false;
     bool calculated = false;
     std::signal(SIGINT, signal_handler);
-    while (1) {
+    while (!!!!!!!!1) {
         do {
             IA::communicateWithServer();
         } while (_name == false);
+        if (_ask.size() >= 9) {
+            if (_ask.size() > 9) {
+                // std::cout << "trop de commandes " << _ask.size() << std::endl;
+            }
+            continue;
+        }
         if (_isDead) {
             if (_pid != 0)
                 _process.waitProcess();
@@ -225,41 +336,119 @@ void IA::loopIA()
         if (!forked) {
             if (this->_clientName > 0) {
                 forkIA();
-            } else
+            } else {
                 broadcast(_teamName + " start");
+                _canIncantation = true;
+            }
             forked = true;
         }
         if (_role == "leader" && !_canIncantation)
             continue;
         if (_role == "")
             continue;
+        if (_ritualAsked)
+            continue;
+        // if (_level == 1 && _rituels[_level].getLinemate() == 0) {
+        //     if (_ask.size() > 5)
+        //         continue;
+        //     incantation();
+        // }
+        // if (_canIncantation && _role == "leader" && _level > 1) {
+        //     if (_ask.size() > 5)
+        //         continue;
+        //     if (assembleAllAI())
+        //         continue;
+        // }
         if (!_view.empty()) {
-            if (!calculated) {
-                IA::calculateCoordBestCase();
-                calculated = true;
-                if (_tilesPoid[_numTilesPriority] == 0) {
-                    _view.clear();
-                    sendlook = false;
-                    forward();
+            bool here = false;
+            if (goToRitual) {
+                here = true;
+                if (_ask.size() > 5)
+                    continue;
+                switch (_ritualDirection) {
+                    case 1:
+                        forward();
+                        break;
+                    case 2:
+                        forward();
+                        turnLeft();
+                        forward();
+                        break;
+                    case 3:
+                        turnLeft();
+                        forward();
+                        break;
+                    case 4:
+                        turnLeft();
+                        forward();
+                        turnLeft();
+                        forward();
+                        break;
+                    case 5:
+                        turnLeft();
+                        turnLeft();
+                        forward();
+                        break;
+                    case 6:
+                        turnRight();
+                        forward();
+                        turnRight();
+                        forward();
+                        break;
+                    case 7:
+                        turnRight();
+                        forward();
+                        break;
+                    case 8:
+                        forward();
+                        turnRight();
+                        forward();
+                        break;
+                    case 0:
+                        continue;
+                    default:
+                        break;
                 }
+            }else {
+                if (!calculated) {
+                    IA::calculateCoordBestCase();
+                    calculated = true;
+                    if (_tilesPoid[_numTilesPriority] == 0) {
+                        _view.clear();
+                        sendlook = false;
+                        forward();
+                        continue;
+                    }
+                }
+                here = moveTheIAToTheBestCase();
             }
-            bool here = moveTheIAToTheBestCase();
             if (here) {
                 if (GetAllRessourcesTile()) {
-                    // inventory();
-                    // std::cout << _inventaire.getFood() << std::endl;
+                    inventory();
+                    std::cout << _clientName << " linemate : "<< _inventaire.getLinemate() << std::endl;
+                    std::cout << _clientName << " deraumere : "<< _inventaire.getDeraumere() << std::endl;
+                    std::cout << _clientName << " sibur : "<< _inventaire.getSibur() << std::endl;
+                    std::cout << _clientName << " mendiane : "<< _inventaire.getMendiane() << std::endl;
+                    std::cout << _clientName << " phiras : "<< _inventaire.getPhiras() << std::endl;
+                    std::cout << _clientName << " thystame : "<< _inventaire.getThystame() << std::endl;
+                    std::cout << _clientName << " nourriture : "<< _inventaire.getFood() << std::endl;
                     // std::cout << _inventaire.getDeraumere() << std::endl;
                     // std::cout << _inventaire.getLinemate() << std::endl;
                     // std::cout << _inventaire.getMendiane() << std::endl;
                     // std::cout << _inventaire.getPhiras() << std::endl;
                     // std::cout << _inventaire.getSibur() << std::endl;
                     // std::cout << _inventaire.getThystame() << std::endl;
-                    _view.clear();
-                    sendlook = false;
+                    std::cout << std::endl;
+                    std::cout << std::endl;
+                    if (!goToRitual) {
+                        _view.clear();
+                        sendlook = false;
+                    }
                 }
             }
+                 // faire une fonction qui check si on a toutes les ressources
         } else {
-            if (!sendlook && _ask.size() < 10) {
+            if (!sendlook && _ask.size() < 9) {
                 IA::look();
                 sendlook = true;
                 _numTilesPriority = 0;
@@ -317,7 +506,7 @@ int main(int ac, char **av)
                 machine = av[i + 1];
                 break;
             default:
-                std::cout << "Invalid argument: " << flag << std::endl;
+                // std::cout << "Invalid argument: " << flag << std::endl;
                 printUsage();
                 return 84;
         }

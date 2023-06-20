@@ -45,6 +45,7 @@ class IA {
         void calculeMateriauxPoids();
         void calculeTilesPoids();
         bool moveTheIAToTheBestCase();
+        bool assembleAllAI();
 
         IA(int port, std::string name, std::string machine);
         void communicateWithServer();
@@ -53,6 +54,8 @@ class IA {
         void calculateCoordBestCase();
         bool GetAllRessourcesTile();
         void ForkTheProgram();
+        void isItForRitual(std::string materiaux);
+        void reduceForRitual(std::string materiaux);
 
         //send command
         void forward();
@@ -84,6 +87,7 @@ class IA {
         void getSet();
         void getIncantation();
         void ReceiveMessage();
+        void removeMaterialForIncanation();
         size_t countSubStr(std::string str, std::string subStr);
 
     private:
@@ -112,6 +116,11 @@ class IA {
         std::string _role = "";
         bool forked = false;
         bool _canIncantation = false;
+        bool everyoneHere = false;
+        bool goToRitual = false;
+        int _ritualDirection = 0;
+        bool _ritualAsked = false;
+        size_t nbPlayerHere = 0;
 
         using CommandFunction = std::function<void(void)>;
 
@@ -138,13 +147,14 @@ class IA {
         };
         std::map<size_t, Materiaux> _rituels = {
             {1, Materiaux(0,1,0,0,0,0,0)},
-            {2, Materiaux(0,1,1,1,0,0,0)},
-            {3, Materiaux(0,2,0,1,0,2,0)},
-            {4, Materiaux(0,1,1,2,0,1,0)},
-            {5, Materiaux(0,1,2,1,3,0,0)},
+            {2, Materiaux(0,4,4,4,0,0,0)},
+            {3, Materiaux(0,8,0,4,0,8,0)},
+            {4, Materiaux(0,2,2,4,0,2,0)},
+            {5, Materiaux(0,2,4,2,6,0,0)},
             {6, Materiaux(0,1,2,3,0,1,0)},
             {7, Materiaux(0,2,2,2,2,2,1)}
         };
+        std::map<size_t, Materiaux> _cpRituels = _rituels;
         std::map<size_t, size_t> _maxCaseViewLevel = {
             {1, 3},
             {2, 8},
@@ -155,13 +165,14 @@ class IA {
             {7, 63},
             {8, 80}
         };
-        Materiaux _inventaire = Materiaux(0,0,0,0,0,0,0);
+        Materiaux _inventaire = Materiaux(10,0,0,0,0,0,0);
         std::map<size_t, std::string> _materiauxPriority;
         size_t _numTilesPriority = 0;
         std::map<size_t, std::string> _view;
         std::list<std::string> _takeObject;
         Materiaux _poidMateriaux;
         bool isTurned = false;
+        bool _isFather = false;
         std::pair<int, size_t> _coordBestCase;
         std::map<size_t, size_t> _tilesPoid;
         std::map<size_t, size_t> _tilesDistance = { // index de la case et distance de la case
