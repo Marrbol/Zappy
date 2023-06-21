@@ -49,15 +49,16 @@ void send_all(client_manager_t *c, int nbClient, char *buff)
 
 void broadcast(client_manager_t *c, int nbClient, char *buff)
 {
-    int len = len_txt(buff);
-    char *tmp = malloc(sizeof(char) * (len + 1));
-    size_t index = 0;
-
-    memset(tmp, 0, (len + 1));
-    for (size_t i = (strlen(BRDTXT) + 1); i < (strlen(buff) - 1); i++) {
-        tmp[index] = buff[i];
-        index++;
-    }
-    send_all(c, nbClient, buff);
-    write(c->client_infos[nbClient].client_socket, "ok\n", 3);
+    //int len = len_txt(buff);
+    //char *tmp = malloc(sizeof(char) * (len + 1));
+    //size_t index = 0;
+//
+    //memset(tmp, 0, (len + 1));
+    //for (size_t i = (strlen(BRDTXT) + 1); i < (strlen(buff) - 1); i++) {
+    //    tmp[index] = buff[i];
+    //    index++;
+    //}
+    //send_all(c, nbClient, buff);
+    //write(c->client_infos[nbClient].client_socket, "ok\n", 3);
+    pbc(c, get_gui_id(c), cat(cat(my_atoi(nbClient), " "), buff));
 }
