@@ -20,9 +20,19 @@ void verif_coord(client_manager_t *c, int nbClient)
     //update char *coord
 }
 
+void set_forward(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff)
+{
+    c->client_infos[nbClient].time = 7;
+    c->client_infos[nbClient].fct = forward;
+    c->client_infos[nbClient].action_clock = clock();
+    c->client_infos[nbClient].exec_func = true;
+}
+
 void forward(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff)
 {
+    printf("forward\n");
     switch (c->client_infos[nbClient].d) {
         case NORTH:
             c->client_infos[nbClient].coord->x++;

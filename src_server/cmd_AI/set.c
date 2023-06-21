@@ -7,6 +7,14 @@
 
 #include "server.h"
 
+void set_set(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff)
+{
+    c->client_infos[nbClient].fct = set;
+    c->client_infos[nbClient].exec_func = true;
+    c->client_infos[nbClient].time = 7;
+}
+
 size_t len_objset(char *buff)
 {
     size_t i = (strlen(STO) + 1);

@@ -44,7 +44,7 @@ void send_all(client_manager_t *c, int nbClient, char *buff)
     for (size_t i = 0; i < (c->nb_clients * c->nb_teams); i++) {
         if (i != nbClient)
             write(c->client_infos[i].client_socket, txt, strlen(txt));
-    }   
+    }
 }
 
 void broadcast(client_manager_t *c, int nbClient, char *buff)

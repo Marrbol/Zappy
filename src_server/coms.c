@@ -51,7 +51,9 @@ void exec_cmd(client_manager_t *c, int nbClient, char *buff)
     if (!check_req(c, nbClient, buff)) {
         return;
     }
-    //BUFFFERIZED
+    //BUFFFERIZED put the command in chained list
+    if (c->client_infos[nbClient].exec_func)
+        return;
     if (c->client_infos[nbClient].type == GUI)
         exec_gui(c, nbClient, buff);
     else

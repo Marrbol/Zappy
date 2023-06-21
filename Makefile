@@ -33,6 +33,7 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
 				$(SRC_SERV)/map.c						\
 				$(SRC_SERV)/team.c						\
 				$(SRC_SERV)/login.c						\
+				$(SRC_SERV)/manage_clock.c	\
 				$(SRC_SERV)/$(CMD_AI)/broadcast.c		\
 				$(SRC_SERV)/$(CMD_AI)/connect_to.c		\
 				$(SRC_SERV)/$(CMD_AI)/eject.c			\
@@ -45,6 +46,7 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
 				$(SRC_SERV)/$(CMD_AI)/right.c			\
 				$(SRC_SERV)/$(CMD_AI)/set.c				\
 				$(SRC_SERV)/$(CMD_AI)/take.c			\
+				$(SRC_SERV)/$(CMD_AI)/set_broadcast.c	\
 				$(SRC_SERV)/$(CMD_GUI)/bct.c			\
 				$(SRC_SERV)/$(CMD_GUI)/edi.c			\
 				$(SRC_SERV)/$(CMD_GUI)/msz.c			\
@@ -69,7 +71,7 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
   				$(SRC_SERV)/$(CMD_GUI)/sgt.c			\
   				$(SRC_SERV)/$(CMD_GUI)/sst.c			\
   				$(SRC_SERV)/$(CMD_GUI)/tna.c			\
-  				$(SRC_SERV)/$(CMD_GUI)/mct.c
+  				$(SRC_SERV)/$(CMD_GUI)/mct.c			\
 
 SRCENCAPS = network/Network.cpp\
 

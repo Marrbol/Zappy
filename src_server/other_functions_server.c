@@ -45,8 +45,10 @@ void set_clients(client_manager_t *c)
         c->client_infos[i].new_connection = true;
         c->client_infos[i].team = NULL;
         c->client_infos[i].lvl = 1;
+        c->client_infos[i].exec_func = false;
         set_inventory(c->client_infos[i].inv);
         set_client_coord(c->client_infos[i].coord);
+        init_clock_client(c, i);
     };
     c->maxsd = 0;
 }
