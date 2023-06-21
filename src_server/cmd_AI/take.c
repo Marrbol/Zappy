@@ -38,6 +38,7 @@ void take(client_manager_t *c, int nbClient, char *buff)
         c->map[x][y][i]--;
         c->client_infos[nbClient].inv[i]++;
         write(c->client_infos[nbClient].client_socket, "ok\n", 3);
+        pgt(c, get_gui_id(c), cat(cat(my_atoi(nbClient), " "), my_atoi(i)));
     } else
         write(c->client_infos[nbClient].client_socket, "ko\n", 3);
 }
