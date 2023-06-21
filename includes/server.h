@@ -30,6 +30,8 @@
     #include <signal.h>
     #include "utils.h"
     #include "protocol.h"
+    #include <time.h>
+
     #define _GNU_SOURCE
     #define BUFFER_LEN (200)
     #define NB_CLIENTS (30)
@@ -50,6 +52,8 @@ typedef enum type_s {NONE, AI, GUI} type_t;
 
 typedef enum dir_s {NONE1, NORTH, EAST, SUD, OUEST, NONE2} dir_t;
 
+typedef struct client_manager_s client_manager_t;
+
 typedef struct coord_s {
     int x;
     int y;
@@ -68,11 +72,16 @@ typedef struct client_s {
     coord_t *coord;
     int client_socket;
     bool isauth;
+    bool isdead;
     bool new_connection;
     char *team;
     int *inv;
+    void (*fct)(client_manager_t *c, int nbClient, char *buff);
+    int time;
+    bool exec_func;
+    clock_t food_clock;
+    clock_t action_clock;
     size_t lvl;
-    char **buf;
 } client_t;
 
 typedef struct team_s {
@@ -99,6 +108,7 @@ typedef struct client_manager_s {
     int maxsd;
     int freq;
     egg_t *egg;
+    clock_t comet_clock;
 } client_manager_t;
 
 bool is_nb(char *buff);
@@ -128,6 +138,9 @@ void exec_cmd(client_manager_t *c, int nbClient, char *buff);
 bool com_login(client_manager_t *c, int nbClient, char *buff);
 void create_team(char *buff, client_manager_t *c, int nbClient);
 void list_folder(char *where, client_manager_t *c, int nbClient);
+void manage_clock_comet(client_manager_t *c);
+void init_clock_server(client_manager_t *c, int freq);
+
 
 int count_player(client_manager_t *c, int x, int y);
 int count_allitems(int ***map, client_manager_t *c);
@@ -148,6 +161,31 @@ void eject(client_manager_t *c, int nbClient, char *buff);
 void take(client_manager_t *c, int nbClient, char *buff);
 void set(client_manager_t *c, int nbClient, char *buff);
 void incantation(client_manager_t *c, int nbClient, char *buff);
+void init_clock_client(client_manager_t *c, int nbCLient);
+void manage_clock_client(client_manager_t *c, int nb_client, char *com);
+void manage_clock_food(client_manager_t *c, int nb_client);
+
+void set_forward(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff);
+void set_right(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff);
+void set_left(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff);
+void set_invent(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff);
+void set_broadcast(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff);
+void set_forks(client_manager_t *c,
+__attribute__((unused)) int nbClient,
+__attribute__((unused)) char *buff);
+void set_eject(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff);
+void set_take(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff);
+void set_set(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff);
+void set_incantation(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff);
 
 void msz(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff);
@@ -207,15 +245,15 @@ typedef struct coms_s {
 static const coms_t allcoms_AI[NB_COM_AI] = {
     {
         .name = FWRD,
-        .findcoms = &forward
+        .findcoms = &set_forward
     },
     {
         .name = RGHT,
-        .findcoms = &right
+        .findcoms = &set_right
     },
     {
         .name = LFT,
-        .findcoms = &left
+        .findcoms = &set_left
     },
     {
         .name = LK,
@@ -223,11 +261,11 @@ static const coms_t allcoms_AI[NB_COM_AI] = {
     },
     {
         .name = INVT,
-        .findcoms = &invent
+        .findcoms = &set_invent
     },
     {
         .name = BRDTXT,
-        .findcoms = &broadcast
+        .findcoms = &set_broadcast
     },
     {
         .name = CNCTNB,
@@ -235,23 +273,23 @@ static const coms_t allcoms_AI[NB_COM_AI] = {
     },
     {
         .name = FRK,
-        .findcoms = &forks
+        .findcoms = &set_forks
     },
     {
         .name = EJCT,
-        .findcoms = &eject
+        .findcoms = &set_eject
     },
     {
         .name = TKO,
-        .findcoms = &take
+        .findcoms = &set_take
     },
     {
         .name = STO,
-        .findcoms = &set
+        .findcoms = &set_set
     },
     {
         .name = INC,
-        .findcoms = &incantation
+        .findcoms = &set_incantation
     }
 };
 
