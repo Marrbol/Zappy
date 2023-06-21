@@ -128,6 +128,8 @@ bool com_login(client_manager_t *c, int nbClient, char *buff);
 void create_team(char *buff, client_manager_t *c, int nbClient);
 void list_folder(char *where, client_manager_t *c, int nbClient);
 
+int count_player(client_manager_t *c, int x, int y);
+
 void forward(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff);
 void right(client_manager_t *c, int nbClient,

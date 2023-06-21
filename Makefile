@@ -25,6 +25,7 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
 				$(SRC_SERV)/create_other.c				\
 				$(SRC_SERV)/utils.c						\
 				$(SRC_SERV)/utils2.c					\
+				$(SRC_SERV)/map_utils.c					\
 				$(SRC_SERV)/delete.c					\
 				$(SRC_SERV)/inventory.c					\
 				$(SRC_SERV)/set_coord_client.c			\
