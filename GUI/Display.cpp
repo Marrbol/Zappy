@@ -127,7 +127,7 @@ void GameWindow::run()
                 player.spritePlayer.setPosition((player.x - player.y) * 500 * 0.50f,(player.x + player.y) * 500 * 0.25f);
                 if (mobTile.second.id > 0) {
                     IDText.setPosition((player.x - (player.y - 1) ) * 500 * 0.50f, (player.x + (player.y - 1)) * 500 * 0.25f);
-                    IDText.setString(std::to_string(id));
+                    IDText.setString(std::to_string(player.id));
                     window.draw(IDText);
                 }
                 window.draw(player.spritePlayer);
