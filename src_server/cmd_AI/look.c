@@ -11,8 +11,11 @@ char *get_ob(int *ob, int x, int y, client_manager_t *c)
 {
     int sp = count_player(c, x, y);
     int size = find_itemsize(ob) + sp;
-    char *res = calloc(size * 12, sizeof(char));
+    char *res;
 
+    if (size == 0)
+        return "";
+    res = calloc(size * 12, sizeof(char));
     for (int i = 0; i < sp; i++)
         res += sprintf(res, "player ");
     for (int i = 0; i < LENINV; i++)
@@ -23,7 +26,21 @@ char *get_ob(int *ob, int x, int y, client_manager_t *c)
 
 static char *check_case_look(int ***map, int x, int y, client_manager_t *c)
 {
-    return get_ob(map[x][y], x, y, c);
+    int fx = x;
+    int fy = y;
+
+    if (x >= c->coord->x)
+        fx = x - c->coord->x;
+    if (x < 0)
+        fx = c->coord->x + x;
+    if (y >= c->coord->y)
+        fy = y - c->coord->y;
+    if (y < 0)
+        fy = c->coord->y + y;
+    if (fx >= 0 && fx < c->coord->x && fy >= 0 && fy < c->coord->y)
+        return get_ob(map[fx][fy], fx, fy, c);
+    else
+        return get_ob(map[0][0], 0, 0, c);
 }
 
 static char *find_case(client_t *player, int i, int j, client_manager_t *c)
@@ -52,20 +69,18 @@ void look(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient,
 __attribute__((unused)) char *buff)
 {
-    int size = count_allitems(c->map) + c->nb_clients;
+    int size = count_allitems(c->map, c) + c->nb_clients;
     char	*items = calloc(size * 15, sizeof (char));
     client_t *client = &c->client_infos[nbClient];
     char *tmp;
 
-    items += sprintf(items, "[ ");
+    sprintf(items, "[ ");
     for (int i = 0; i <= client->lvl; i++) {
         for (int j = 0; j < (2 * i) + 1; j++) {
             tmp = find_case(client, i, j - i, c);
-            items += sprintf(items, "%s, ", tmp);
-            free(tmp);
+            sprintf(items, "%s%s, ", items, tmp);
         }
     }
-    items += sprintf(items, "]\n");
+    sprintf(items, "%s]\n", items);
     write(c->client_infos[nbClient].client_socket, items, strlen(items));
-    free(items);
 }

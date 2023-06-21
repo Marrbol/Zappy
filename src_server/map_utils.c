@@ -10,17 +10,20 @@
 int find_itemsize(int *ob)
 {
     int result = 0;
-    for (int i = 0; i < LENINV; i++)
+    for (int i = 0; i < LENINV; i++) {
+        if (!ob[i])
+            break;
         result += ob[i];
+    }
     return result;
 }
 
-int count_allitems(int ***map)
+int count_allitems(int ***map, client_manager_t *c)
 {
     int result = 0;
 
-    for (int x = 0; map[x]; x++)
-        for (int y = 0; map[x][y]; y++)
+    for (int x = 0; x < c->coord->x; x++)
+        for (int y = 0; y < c->coord->y; y++)
            result += find_itemsize(map[x][y]);
     return result;
 }
