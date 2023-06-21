@@ -9,7 +9,7 @@
 
 void pdi(client_manager_t *c, int nbClient, char *buff) {
     char *base = "pdi ";
-    char *message = cat(base, buff);
+    char *message = cat(cat(base, buff), "\n");
 
     write(c->client_infos[nbClient].client_socket, message, strlen(message));
 }
