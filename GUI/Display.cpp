@@ -172,8 +172,7 @@ void GameWindow::initAll(draw_t food, draw_t linemate, draw_t deraumere, draw_t 
        return;
     }
     if (!font.loadFromFile("assets/arial.ttf")) {
-    // Gérer le cas où la police ne peut pas être chargée
-    return;
+        return;
     }
 
     messageText.setFont(font);
