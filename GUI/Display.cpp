@@ -125,9 +125,15 @@ void GameWindow::run()
                 playerT& player = mobTile.second;
 
                 player.spritePlayer.setPosition((player.x - player.y) * 500 * 0.50f,(player.x + player.y) * 500 * 0.25f);
+                if (mobTile.second.id > 0) {
+                    IDText.setPosition((player.x - (player.y - 1) ) * 500 * 0.50f, (player.x + (player.y - 1)) * 500 * 0.25f);
+                    IDText.setString(std::to_string(id));
+                    window.draw(IDText);
+                }
                 window.draw(player.spritePlayer);
             }
         }
+        window.draw(messageText);
         camera.update(window);
         window.display();
     }
@@ -161,6 +167,21 @@ void GameWindow::initAll(draw_t food, draw_t linemate, draw_t deraumere, draw_t 
 
     thystame.spriteRessources = sf::Sprite();
     thystame.textRessources = sf::Texture();
+
+    if (!bullText.loadFromFile("assets/Bulle.png")) {
+       return;
+    }
+    if (!font.loadFromFile("assets/arial.ttf")) {
+    // Gérer le cas où la police ne peut pas être chargée
+    return;
+    }
+
+    messageText.setFont(font);
+    messageText.setCharacterSize(150);
+    messageText.setFillColor(sf::Color::White);
+    IDText.setFont(font);
+    IDText.setCharacterSize(50);
+    IDText.setFillColor(sf::Color::White);
 }
 
 int main(int ac, char **av)
