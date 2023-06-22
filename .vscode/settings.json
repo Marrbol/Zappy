@@ -1,5 +1,6 @@
 {
     "files.associations": {
+<<<<<<< Updated upstream
         "array": "cpp",
         "atomic": "cpp",
         "bit": "cpp",
@@ -74,5 +75,19 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp"
+=======
+        "stdio.h": "c",
+        "inventory.h": "c",
+        "server.h": "c",
+        "array": "c",
+        "deque": "c",
+        "list": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "vector": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "ostream": "c"
+>>>>>>> Stashed changes
     }
 }

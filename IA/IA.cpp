@@ -99,8 +99,8 @@ bool IA::GetAllRessourcesTile()
     std::string tile =_view[_numTilesPriority];
     if (_ask.size() > 9)
         return false;
-    std::cout << _clientName << " tile = " << tile << " " << _numTilesPriority << " and " <<_ask.size() << std::endl;
-    std::cout << "view[0] = " << _view[0] << std::endl;
+    // std::cout << _clientName << " tile = " << tile << " " << _numTilesPriority << " and " <<_ask.size() << std::endl;
+    // std::cout << "view[0] = " << _view[0] << std::endl;
     size_t nbCommandLeft = 9 - _ask.size();
     size_t nbFood = countSubStr(tile, FOOD);
     size_t nbLinemate = countSubStr(tile, LINEMATE);
@@ -348,18 +348,20 @@ void IA::loopIA()
             continue;
         if (_ritualAsked)
             continue;
-        // if (_level == 1 && _rituels[_level].getLinemate() == 0) {
-        //     if (_ask.size() > 5)
-        //         continue;
-        //     incantation();
-        // }
-        // if (_canIncantation && _role == "leader" && _level > 1) {
-        //     if (_ask.size() > 5)
-        //         continue;
-        //     if (assembleAllAI())
-        //         continue;
-        // }
+        if (_level == 1 && _rituels[_level].getLinemate() == 0) {
+            if (_ask.size() > 5)
+                continue;
+            incantation();
+        }
+        if (_canIncantation && _role == "leader" && _level > 1) {
+            if (_ask.size() > 5)
+                continue;
+            if (assembleAllAI())
+                continue;
+        }
         if (!_view.empty()) {
+            if (_role == "leader")
+                std::cout << _clientName << " leader" << std::endl;
             bool here = false;
             if (goToRitual) {
                 here = true;
@@ -408,7 +410,11 @@ void IA::loopIA()
                         continue;
                     default:
                         break;
+
                 }
+                if (_ritualDirection != 0)
+                    _ritualDirection = 0;
+                continue;
             }else {
                 if (!calculated) {
                     IA::calculateCoordBestCase();
@@ -425,21 +431,21 @@ void IA::loopIA()
             if (here) {
                 if (GetAllRessourcesTile()) {
                     inventory();
-                    std::cout << _clientName << " linemate : "<< _inventaire.getLinemate() << std::endl;
-                    std::cout << _clientName << " deraumere : "<< _inventaire.getDeraumere() << std::endl;
-                    std::cout << _clientName << " sibur : "<< _inventaire.getSibur() << std::endl;
-                    std::cout << _clientName << " mendiane : "<< _inventaire.getMendiane() << std::endl;
-                    std::cout << _clientName << " phiras : "<< _inventaire.getPhiras() << std::endl;
-                    std::cout << _clientName << " thystame : "<< _inventaire.getThystame() << std::endl;
-                    std::cout << _clientName << " nourriture : "<< _inventaire.getFood() << std::endl;
+                    // std::cout << _clientName << " linemate : "<< _inventaire.getLinemate() << std::endl;
+                    // std::cout << _clientName << " deraumere : "<< _inventaire.getDeraumere() << std::endl;
+                    // std::cout << _clientName << " sibur : "<< _inventaire.getSibur() << std::endl;
+                    // std::cout << _clientName << " mendiane : "<< _inventaire.getMendiane() << std::endl;
+                    // std::cout << _clientName << " phiras : "<< _inventaire.getPhiras() << std::endl;
+                    // std::cout << _clientName << " thystame : "<< _inventaire.getThystame() << std::endl;
+                    // std::cout << _clientName << " nourriture : "<< _inventaire.getFood() << std::endl;
                     // std::cout << _inventaire.getDeraumere() << std::endl;
                     // std::cout << _inventaire.getLinemate() << std::endl;
                     // std::cout << _inventaire.getMendiane() << std::endl;
                     // std::cout << _inventaire.getPhiras() << std::endl;
                     // std::cout << _inventaire.getSibur() << std::endl;
                     // std::cout << _inventaire.getThystame() << std::endl;
-                    std::cout << std::endl;
-                    std::cout << std::endl;
+                    // std::cout << std::endl;
+                    // std::cout << std::endl;
                     if (!goToRitual) {
                         _view.clear();
                         sendlook = false;
@@ -470,7 +476,7 @@ void IA::calculateCoordBestCase()
                 _coordBestCase.first *= -1;
         }
     }
-    std::cout << "nb: " << _clientName << " the case and the coord for the best case are " << _numTilesPriority << " and the coord are " <<_coordBestCase.second << " and " << _coordBestCase.first << std::endl;
+    // std::cout << "nb: " << _clientName << " the case and the coord for the best case are " << _numTilesPriority << " and the coord are " <<_coordBestCase.second << " and " << _coordBestCase.first << std::endl;
 }
 
 void printUsage() {

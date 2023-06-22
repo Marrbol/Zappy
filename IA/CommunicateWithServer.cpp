@@ -12,18 +12,24 @@ void IA::forward()
 {
     _network.sendMessage(_socket, "Forward\n");
     _ask.push_back("Forward");
+    if (_role == "leader")
+        std::cout << _clientName << " Forward" << std::endl;
 }
 
 void IA::turnLeft()
 {
     _network.sendMessage(_socket, "Left\n");
     _ask.push_back("Left");
+    if (_role == "leader")
+        std::cout << _clientName << " Left" << std::endl;
 }
 
 void IA::turnRight()
 {
     _network.sendMessage(_socket, "Right\n");
     _ask.push_back("Right");
+    if (_role == "leader")
+        std::cout << _clientName << " Right" << std::endl;
 }
 
 void IA::look()
@@ -37,7 +43,7 @@ void IA::broadcast(std::string message)
 {
     _network.sendMessage(_socket, "Broadcast " + message + "\n");
     _ask.push_back("Broadcast");
-    std::cout << "Broadcast " + message + "\n" << std::endl;
+    std::cout << _clientName << " Broadcast " + message + "\n" << std::endl;
 }
 
 void IA::inventory()
@@ -251,13 +257,13 @@ void IA::ReceiveMessage()
         }
         if (cmd == "f")
             reduceForRitual(_line.substr(_line.find(" ") + 1, _line.size()));
-        // if (cmd == "incantation") {
-        //     if (direction == 0) {
-        //         broadcast(_teamName + " here");
-        //     }
-        //     goToRitual = true;
-        //     _ritualDirection = direction;
-        // }
+        if (cmd == "incantation") {
+            if (direction == 0) {
+                broadcast(_teamName + " here");
+            }
+            goToRitual = true;
+            _ritualDirection = direction;
+        }
         if (cmd == "startRitual") {
             _line.erase(0, _line.find(" ") + 1);
             size_t number = stoi(_line);
