@@ -12,21 +12,18 @@ void IA::forward()
 {
     _network.sendMessage(_socket, "Forward\n");
     _ask.push_back("Forward");
-        std::cout << _clientName << " Forward" << std::endl;
 }
 
 void IA::turnLeft()
 {
     _network.sendMessage(_socket, "Left\n");
     _ask.push_back("Left");
-        std::cout << _clientName << " Left" << std::endl;
 }
 
 void IA::turnRight()
 {
     _network.sendMessage(_socket, "Right\n");
     _ask.push_back("Right");
-        std::cout << _clientName << " Right" << std::endl;
 }
 
 void IA::look()
@@ -71,13 +68,12 @@ void IA::take(std::string object)
 {
     _network.sendMessage(_socket, "Take " + object + "\n");
     _ask.push_back("Take");
-    std::cout << _clientName << " Take " + object << std::endl;
 }
 
 void IA::set(std::string object)
 {
     _network.sendMessage(_socket, "Set " + object + "\n");
-
+    std::cout << _clientName << " Set " + object << std::endl;
     _ask.push_back("Set");
 }
 
@@ -85,41 +81,61 @@ void IA::incantation()
 {
     if (_inventaire.getFood() < 5)
         return;
-    while (_cpRituels[_level].getLinemate() > 0 && _inventaire.getLinemate() > 0) {
+    _ritualAfter = false;
+    bool end = false;
+    if (_level == 1) {
         set(LINEMATE);
-        // std::cout << _clientName << " Linemate" << std::endl;
-        _inventaire.setLinemate(_inventaire.getLinemate() - 1);
-        _cpRituels[_level].setLinemate(_cpRituels[_level].getLinemate() - 1);
+        end = true;
+    } else if (_role == "leader") {
+        while (_ask.size() < 9) {
+            if (_rituelsLeader[_level].getLinemate() > 0) {
+                _rituelsLeader[_level].setLinemate(_rituelsLeader[_level].getLinemate() - 1);
+                set(LINEMATE);
+                _inventaire.setLinemate(_inventaire.getLinemate() - 1);
+                continue;
+            }
+            if (_rituelsLeader[_level].getDeraumere() > 0) {
+                _rituelsLeader[_level].setDeraumere(_rituelsLeader[_level].getDeraumere() - 1);
+                set(DERAUMERE);
+                _inventaire.setDeraumere(_inventaire.getDeraumere() - 1);
+                continue;
+            }
+            if (_rituelsLeader[_level].getSibur() > 0) {
+                _rituelsLeader[_level].setSibur(_rituelsLeader[_level].getSibur() - 1);
+                set(SIBUR);
+                _inventaire.setSibur(_inventaire.getSibur() - 1);
+                continue;
+            }
+            if (_rituelsLeader[_level].getMendiane() > 0) {
+                _rituelsLeader[_level].setMendiane(_rituelsLeader[_level].getMendiane() - 1);
+                set(MENDIANE);
+                _inventaire.setMendiane(_inventaire.getMendiane() - 1);
+                continue;
+            }
+            if (_rituelsLeader[_level].getPhiras() > 0) {
+                _rituelsLeader[_level].setPhiras(_rituelsLeader[_level].getPhiras() - 1);
+                set(PHIRAS);
+                _inventaire.setPhiras(_inventaire.getPhiras() - 1);
+                continue;
+            }
+            if (_rituelsLeader[_level].getThystame() > 0) {
+                _rituelsLeader[_level].setThystame(_rituelsLeader[_level].getThystame() - 1);
+                set(THYSTAME);
+                _inventaire.setThystame(_inventaire.getThystame() - 1);
+                continue;
+            }
+            _rituelsLeader = _cpRituelsLeader;
+            _setEverythingRitual = false;
+            end = true;
+        }
+
     }
-    while (_cpRituels[_level].getDeraumere() > 0 && _inventaire.getDeraumere() > 0) {
-        set(DERAUMERE);
-        _inventaire.setDeraumere(_inventaire.getDeraumere() - 1);
-        _cpRituels[_level].setDeraumere(_cpRituels[_level].getDeraumere() - 1);
-    }
-    while (_cpRituels[_level].getSibur() > 0 && _inventaire.getSibur() > 0) {
-        set(SIBUR);
-        _inventaire.setSibur(_inventaire.getSibur() - 1);
-        _cpRituels[_level].setSibur(_cpRituels[_level].getSibur() - 1);
-    }
-    while (_cpRituels[_level].getMendiane() > 0 && _inventaire.getMendiane() > 0) {
-        set(MENDIANE);
-        _inventaire.setMendiane(_inventaire.getMendiane() - 1);
-        _cpRituels[_level].setMendiane(_cpRituels[_level].getMendiane() - 1);
-    }
-    while (_cpRituels[_level].getPhiras() > 0 && _inventaire.getPhiras() > 0) {
-        set(PHIRAS);
-        _inventaire.setPhiras(_inventaire.getPhiras() - 1);
-        _cpRituels[_level].setPhiras(_cpRituels[_level].getPhiras() - 1);
-    }
-    while (_cpRituels[_level].getThystame() > 0 && _inventaire.getThystame() > 0) {
-        set(THYSTAME);
-        _inventaire.setThystame(_inventaire.getThystame() - 1);
-        _cpRituels[_level].setThystame(_cpRituels[_level].getThystame() - 1);
-    }
-    // std::cout << _clientName << " Incantation" << std::endl;
+    if (!end || !_leaderRitual)
+        return;
     _network.sendMessage(_socket, "Incantation\n");
     _ask.push_back("Incantation");
     _ritualAsked = true;
+    std::cout << _clientName << " Incantation to level " << _level << std::endl;
 }
 
 void IA::parseCommande()
@@ -162,8 +178,7 @@ void IA::parseCommande()
             _level = std::stoi(_line.substr(0, _line.find("\n")));
             everyoneHere = false;
             _ritualAsked = false;
-            // std::cout << "Level: " << _level << std::endl;
-            // std::cout << "currentname = " << _clientName << std::endl;
+            std::cout << "Level: " << _level << " currentname = " << _clientName << std::endl;
             removeMaterialForIncanation();
             continue;
         }
@@ -226,8 +241,53 @@ void IA::reduceForRitual(std::string materiaux)
     }
 }
 
+bool IA::setRitual()
+{
+    while (_ask.size() < 9) {
+        if (_inventaire.getLinemate() > 0 && _cpRituels[_level].getLinemate() > 0) {
+            _cpRituels[_level].setLinemate(_cpRituels[_level].getLinemate() - 1);
+            set(LINEMATE);
+            _inventaire.setLinemate(_inventaire.getLinemate() - 1);
+            continue;
+        }
+        if (_inventaire.getDeraumere() > 0 && _cpRituels[_level].getDeraumere() > 0) {
+            _cpRituels[_level].setDeraumere(_cpRituels[_level].getDeraumere() - 1);
+            set(DERAUMERE);
+            _inventaire.setDeraumere(_inventaire.getDeraumere() - 1);
+            continue;
+        }
+        if (_inventaire.getSibur() > 0 && _cpRituels[_level].getSibur() > 0) {
+            _cpRituels[_level].setSibur(_cpRituels[_level].getSibur() - 1);
+            set(SIBUR);
+            _inventaire.setSibur(_inventaire.getSibur() - 1);
+            continue;
+        }
+        if (_inventaire.getMendiane() > 0 && _cpRituels[_level].getMendiane() > 0) {
+            _cpRituels[_level].setMendiane(_cpRituels[_level].getMendiane() - 1);
+            set(MENDIANE);
+            _inventaire.setMendiane(_inventaire.getMendiane() - 1);
+            continue;
+        }
+        if (_inventaire.getPhiras() > 0 && _cpRituels[_level].getPhiras() > 0) {
+            _cpRituels[_level].setPhiras(_cpRituels[_level].getPhiras() - 1);
+            set(PHIRAS);
+            _inventaire.setPhiras(_inventaire.getPhiras() - 1);
+            continue;
+        }
+        if (_inventaire.getThystame() > 0 && _cpRituels[_level].getThystame() > 0) {
+            _cpRituels[_level].setThystame(_cpRituels[_level].getThystame() - 1);
+            set(THYSTAME);
+            _inventaire.setThystame(_inventaire.getThystame() - 1);
+            continue;
+        }
+        return true;
+    }
+    return false;
+}
+
 void IA::ReceiveMessage()
 {
+    _ask.pop_front();
     _line.erase(0, _line.find(" ") + 1);
     size_t direction = std::stoi(_line.substr(0, _line.find(",")));
     _line.erase(0, _line.find(",") + 1);
@@ -255,9 +315,13 @@ void IA::ReceiveMessage()
         if (cmd == "f")
             reduceForRitual(_line.substr(_line.find(" ") + 1, _line.size()));
         if (cmd == "incantation") {
+            if (_saidHere) {
+                _ritualDirection = 0;
+                return;
+            }
             if (direction == 0 && !_readyIncantation) {
-                broadcast(_teamName + " here");
                 _readyIncantation = true;
+                _saidHere = false;
             }
             goToRitual = true;
             _ritualDirection = direction;
@@ -265,28 +329,32 @@ void IA::ReceiveMessage()
         if (cmd == "startRitual") {
             _line.erase(0, _line.find(" ") + 1);
             size_t number = stoi(_line);
-            if (number == _clientName)
+            if (number == _clientName) {
                 incantation();
+                goToRitual = false;
+            }
         }
         if (cmd == "come") {
             _line.erase(0, _line.find(" ") + 1);
-            size_t number = stoi(_line);
-            if (number == _clientName) {
+            size_t number = stoi(_line.substr(0, _line.find(" ")));
+            _line.erase(0, _line.find(" ") + 1);
+            size_t number2 = stoi(_line);
+            if (number == _clientName || number2 == _clientName) {
                 goToRitual = true;
                 _ritualDirection = direction;
+                _ritualAfter = true;
+                _readyIncantation = false;
             }
         }
         if (cmd == "here") {
             if (_role == "leader") {
                 nbPlayerHere++;
-                if (nbPlayerHere == _clientName) {
-                    everyoneHere = true;
-                }
+                _getRessources = true;
+                look();
             }
         }
     } else if (_role == "leader")
         broadcast(_line);
-    _ask.pop_front();
     _line.clear();
 }
 

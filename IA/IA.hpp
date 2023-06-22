@@ -56,6 +56,7 @@ class IA {
         void ForkTheProgram();
         void isItForRitual(std::string materiaux);
         void reduceForRitual(std::string materiaux);
+        bool setRitual();
 
         //send command
         void forward();
@@ -120,9 +121,14 @@ class IA {
         bool goToRitual = false;
         int _ritualDirection = 0;
         bool _ritualAsked = false;
-        bool _readyIncantation = true;
+        bool _readyIncantation = false;
+        bool _ritualAfter = false;
+        bool _saidHere = false;
         size_t nbPlayerHere = 0;
-
+        bool _getRessources = false;
+        bool _leaderRitual = true;
+        bool _setEverythingRitual = false;
+        size_t _assembleState = 0;
         using CommandFunction = std::function<void(void)>;
 
         typedef struct allCmdS {
@@ -155,7 +161,17 @@ class IA {
             {6, Materiaux(0,1,2,3,0,1,0)},
             {7, Materiaux(0,2,2,2,2,2,1)}
         };
+        std::map<size_t, Materiaux> _rituelsLeader = {
+            {1, Materiaux(0,1,0,0,0,0,0)},
+            {2, Materiaux(0,1,1,1,0,0,0)},
+            {3, Materiaux(0,2,0,1,0,2,0)},
+            {4, Materiaux(0,1,1,2,0,1,0)},
+            {5, Materiaux(0,1,2,1,2,0,0)},
+            {6, Materiaux(0,1,2,3,0,1,0)},
+            {7, Materiaux(0,2,2,2,2,2,1)}
+        };
         std::map<size_t, Materiaux> _cpRituels = _rituels;
+        std::map<size_t, Materiaux> _cpRituelsLeader = _rituelsLeader;
         std::map<size_t, size_t> _maxCaseViewLevel = {
             {1, 3},
             {2, 8},

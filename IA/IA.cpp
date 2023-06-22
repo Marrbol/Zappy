@@ -96,6 +96,8 @@ void IA::calculeTilesPoids()
 
 bool IA::GetAllRessourcesTile()
 {
+    if (_getRessources)
+        _numTilesPriority = 0;
     std::string tile =_view[_numTilesPriority];
     if (_ask.size() > 9)
         return false;
@@ -251,10 +253,52 @@ void IA::isItForRitual(std::string materiaux)
 bool IA::assembleAllAI()
 {
     if (everyoneHere) {
+        while (_ask.size() < 3) {
+            if (_level == 2 || _level == 3) {
+                switch (_assembleState) {
+                case 0:
+                    forward();
+                    broadcast(_teamName + " come " + std::to_string(_clientName - 7) + " " + std::to_string(_clientName - 6));
+                    _leaderRitual = false;
+                    incantation();
+                    _assembleState++;
+                    break;
+                case 1:
+                    turnRight();
+                    forward();
+                    turnRight();
+                    forward();
+                    broadcast(_teamName + " come " + std::to_string(_clientName - 5) + " " + std::to_string(_clientName - 4));
+                    _leaderRitual = false;
+                    incantation();
+                    _assembleState++;
+                    break;
+                case 2:
+                    forward();
+                    turnRight();
+                    forward();
+                    broadcast(_teamName + " come " + std::to_string(_clientName - 3) + " " + std::to_string(_clientName - 2));
+                    _leaderRitual = false;
+                    incantation();
+                    _assembleState++;
+                    break;
+                case 3:
+                    forward();
+                    turnRight();
+                    forward();
+                    broadcast(_teamName + " come " + std::to_string(_clientName - 1) + " " + std::to_string(_clientName));
+                    _leaderRitual = true;
+                    incantation();
+                    _assembleState = 0;
+                    everyoneHere = false;
+                    return true;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
         // broadcast(_teamName + " startRitual");
-        everyoneHere = false;
-        incantation();
-        return true;
     }
     if (_rituels[_level].getLinemate() == 0 && _rituels[_level].getDeraumere() == 0 && _rituels[_level].getSibur() == 0 && _rituels[_level].getMendiane() == 0 && _rituels[_level].getPhiras() == 0 && _rituels[_level].getThystame() == 0) {
         broadcast(_teamName + " incantation");
@@ -284,6 +328,9 @@ void IA::removeMaterialForIncanation()
             _rituels[_level].setDeraumere(0);
         else
             _rituels[_level].setDeraumere(nbDeraumere);
+        for (int i = 0; i < nbDeraumere; i++) {
+            broadcast(_teamName + " f 2 " + std::to_string(_level));
+        }
     }
     if (_rituels[_level].getSibur() > 0 && _inventaire.getSibur() > 0) {
         int nbSibur = _rituels[_level].getSibur() - _inventaire.getSibur();
@@ -291,6 +338,9 @@ void IA::removeMaterialForIncanation()
             _rituels[_level].setSibur(0);
         else
             _rituels[_level].setSibur(nbSibur);
+        for (int i = 0; i < nbSibur; i++) {
+            broadcast(_teamName + " f 3 " + std::to_string(_level));
+        }
     }
     if (_rituels[_level].getMendiane() > 0 && _inventaire.getMendiane() > 0) {
         int nbMendiane = _rituels[_level].getMendiane() - _inventaire.getMendiane();
@@ -298,6 +348,9 @@ void IA::removeMaterialForIncanation()
             _rituels[_level].setMendiane(0);
         else
             _rituels[_level].setMendiane(nbMendiane);
+        for (int i = 0; i < nbMendiane; i++) {
+            broadcast(_teamName + " f 4 " + std::to_string(_level));
+        }
     }
     if (_rituels[_level].getPhiras() > 0 && _inventaire.getPhiras() > 0) {
         int nbPhiras = _rituels[_level].getPhiras() - _inventaire.getPhiras();
@@ -305,6 +358,9 @@ void IA::removeMaterialForIncanation()
             _rituels[_level].setPhiras(0);
         else
             _rituels[_level].setPhiras(nbPhiras);
+        for (int i = 0; i < nbPhiras; i++) {
+            broadcast(_teamName + " f 5 " + std::to_string(_level));
+        }
     }
     if (_rituels[_level].getThystame() > 0 && _inventaire.getThystame() > 0) {
         int nbThystame = _rituels[_level].getThystame() - _inventaire.getThystame();
@@ -312,6 +368,9 @@ void IA::removeMaterialForIncanation()
             _rituels[_level].setThystame(0);
         else
             _rituels[_level].setThystame(nbThystame);
+        for (int i = 0; i < nbThystame; i++) {
+            broadcast(_teamName + " f 6 " + std::to_string(_level));
+        }
     }
 }
 
@@ -335,6 +394,16 @@ void IA::loopIA()
                 _process.waitProcess();
             break;
         }
+        if (_ritualAsked)
+            continue;
+       if (_getRessources) {
+            if (_view.empty())
+                continue;
+            if (GetAllRessourcesTile() && nbPlayerHere == _clientName) {
+                everyoneHere = true;
+                _getRessources = false;
+            }
+       }
         if (!forked) {
             if (this->_clientName > 0) {
                 forkIA();
@@ -344,12 +413,15 @@ void IA::loopIA()
             }
             forked = true;
         }
+        if (_role == "leader" && _setEverythingRitual) {
+            incantation();
+            continue;
+        }
         if (_role == "leader" && !_canIncantation)
             continue;
         if (_role == "")
             continue;
-        if (_ritualAsked)
-            continue;
+
         if (_level == 1 && _rituels[_level].getLinemate() == 0) {
             if (_ask.size() > 5)
                 continue;
@@ -361,44 +433,49 @@ void IA::loopIA()
             if (assembleAllAI())
                 continue;
         }
+        if (_readyIncantation && !_saidHere) {
+            if (setRitual()) {
+                broadcast(_teamName + " here");
+                _saidHere = true;
+            }
+        }
         if (!_view.empty()) {
-            if (_role == "leader")
-                std::cout << _clientName << " leader" << std::endl;
             bool here = false;
             if (goToRitual) {
                 if (_ask.size() > 5)
                     continue;
-                if  (_ritualDirection != 0)
-                    std::cout << _clientName << " _ritualDirection " << _ritualDirection << std::endl;
-                switch (_ritualDirection) {
-                    case 1:
-                    case 2:
-                    case 8:
-                        forward();
-                        break;
-                    case 3:
-                    case 4:
-                        turnLeft();
-                        forward();
-                        break;
-                    case 5:
-                        turnLeft();
-                        turnLeft();
-                        forward();
-                        break;
-                    case 6:
-                    case 7:
-                        turnRight();
-                        forward();
-                        break;
-                    case 0:
-                        continue;
-                    default:
-                        break;
-
+                if  (_ritualDirection != 0) {
+                    switch (_ritualDirection) {
+                        case 1:
+                        case 2:
+                        case 8:
+                            forward();
+                            break;
+                        case 3:
+                        case 4:
+                            turnLeft();
+                            forward();
+                            break;
+                        case 5:
+                            turnLeft();
+                            turnLeft();
+                            forward();
+                            break;
+                        case 6:
+                        case 7:
+                            turnRight();
+                            forward();
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 if (_ritualDirection != 0)
                     _ritualDirection = 0;
+                if (_ritualAfter)
+                    incantation();
                 continue;
             }else {
                 if (!calculated) {
