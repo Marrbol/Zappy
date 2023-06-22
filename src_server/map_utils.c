@@ -34,6 +34,8 @@ int count_player(client_manager_t *c, int x, int y)
     coord_t *tmp;
 
     for (int i = 0; i < c->nb_clients; i++) {
+        if (!c->client_infos[i].isauth)
+            continue;
         tmp = c->client_infos[i].coord;
         if (tmp->x == x && tmp->y == y)
             result++;

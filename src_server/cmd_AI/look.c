@@ -7,6 +7,13 @@
 
 #include "server.h"
 
+static void pr(char *res, int id)
+{
+    if (allInv[id].id == none)
+        return;
+    sprintf(res, "%s%s ", res, allInv[id].name);
+}
+
 char *get_ob(int *ob, int x, int y, client_manager_t *c)
 {
     int sp = count_player(c, x, y);
@@ -17,10 +24,10 @@ char *get_ob(int *ob, int x, int y, client_manager_t *c)
         return "";
     res = calloc(size * 12, sizeof(char));
     for (int i = 0; i < sp; i++)
-        res += sprintf(res, "player ");
+        sprintf(res, "%splayer ", res);
     for (int i = 0; i < LENINV; i++)
         for (int j = 0; j < ob[j]; j++)
-            res += sprintf(res, "%s ", allInv[i].name);
+            pr(res, i);
     return res;
 }
 
