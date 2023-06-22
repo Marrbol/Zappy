@@ -475,7 +475,8 @@ void GameWindow::playerDeath()
     size_t idPlayer = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
 
-    // _player[idPlayer].
+    _player[idPlayer].textPlayer.loadFromFile("assets/playerDeath.png");
+    _player[idPlayer].spritePlayer.setTexture(_player[idPlayer].textPlayer);
 }
 
 void GameWindow::endGame()
