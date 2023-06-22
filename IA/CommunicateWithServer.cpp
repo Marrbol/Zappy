@@ -12,7 +12,6 @@ void IA::forward()
 {
     _network.sendMessage(_socket, "Forward\n");
     _ask.push_back("Forward");
-    if (_role == "leader")
         std::cout << _clientName << " Forward" << std::endl;
 }
 
@@ -20,7 +19,6 @@ void IA::turnLeft()
 {
     _network.sendMessage(_socket, "Left\n");
     _ask.push_back("Left");
-    if (_role == "leader")
         std::cout << _clientName << " Left" << std::endl;
 }
 
@@ -28,7 +26,6 @@ void IA::turnRight()
 {
     _network.sendMessage(_socket, "Right\n");
     _ask.push_back("Right");
-    if (_role == "leader")
         std::cout << _clientName << " Right" << std::endl;
 }
 
@@ -258,8 +255,9 @@ void IA::ReceiveMessage()
         if (cmd == "f")
             reduceForRitual(_line.substr(_line.find(" ") + 1, _line.size()));
         if (cmd == "incantation") {
-            if (direction == 0) {
+            if (direction == 0 && !_readyIncantation) {
                 broadcast(_teamName + " here");
+                _readyIncantation = true;
             }
             goToRitual = true;
             _ritualDirection = direction;

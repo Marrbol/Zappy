@@ -251,12 +251,14 @@ void IA::isItForRitual(std::string materiaux)
 bool IA::assembleAllAI()
 {
     if (everyoneHere) {
-        broadcast(_teamName + " startRitual");
+        // broadcast(_teamName + " startRitual");
+        everyoneHere = false;
         incantation();
         return true;
     }
     if (_rituels[_level].getLinemate() == 0 && _rituels[_level].getDeraumere() == 0 && _rituels[_level].getSibur() == 0 && _rituels[_level].getMendiane() == 0 && _rituels[_level].getPhiras() == 0 && _rituels[_level].getThystame() == 0) {
         broadcast(_teamName + " incantation");
+        sleep(1);
         return true;
     }
     return false;
@@ -364,25 +366,18 @@ void IA::loopIA()
                 std::cout << _clientName << " leader" << std::endl;
             bool here = false;
             if (goToRitual) {
-                here = true;
                 if (_ask.size() > 5)
                     continue;
+                if  (_ritualDirection != 0)
+                    std::cout << _clientName << " _ritualDirection " << _ritualDirection << std::endl;
                 switch (_ritualDirection) {
                     case 1:
-                        forward();
-                        break;
                     case 2:
-                        forward();
-                        turnLeft();
+                    case 8:
                         forward();
                         break;
                     case 3:
-                        turnLeft();
-                        forward();
-                        break;
                     case 4:
-                        turnLeft();
-                        forward();
                         turnLeft();
                         forward();
                         break;
@@ -392,17 +387,7 @@ void IA::loopIA()
                         forward();
                         break;
                     case 6:
-                        turnRight();
-                        forward();
-                        turnRight();
-                        forward();
-                        break;
                     case 7:
-                        turnRight();
-                        forward();
-                        break;
-                    case 8:
-                        forward();
                         turnRight();
                         forward();
                         break;

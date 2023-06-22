@@ -120,6 +120,7 @@ class IA {
         bool goToRitual = false;
         int _ritualDirection = 0;
         bool _ritualAsked = false;
+        bool _readyIncantation = true;
         size_t nbPlayerHere = 0;
 
         using CommandFunction = std::function<void(void)>;
