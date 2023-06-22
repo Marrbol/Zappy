@@ -38,6 +38,7 @@ void check_inc_co(server_t *s, client_manager_t *c)
 void manage_clients(client_manager_t *c)
 {
     char buff[1024];
+    char *tmp;
 
     memset(buff, 0, sizeof(buff));
     for (size_t i = 0; i < NB_CLIENTS; i++) {
@@ -46,12 +47,12 @@ void manage_clients(client_manager_t *c)
         manage_clock_food(c, i);
         if (FD_ISSET(c->client_infos[i].client_socket, &c->read_fds) == 1) {
             read(c->client_infos[i].client_socket, buff, sizeof(buff));
-            //bufferisation here
-            exec_cmd(c, i, buff); //remove here
-            //bufferisation
+            addcmd_buff(c, buff, i);
             FD_CLR(c->client_infos[i].client_socket, &c->read_fds);
         }
-        //put exec_cmd here replace buff by first element of chained list
+        tmp = read_buff(c, i);
+        if (tmp != NULL)
+            exec_cmd(c, i, tmp);
     }
 }
 

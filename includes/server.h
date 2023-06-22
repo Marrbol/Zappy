@@ -66,6 +66,13 @@ typedef struct server_s {
     struct sockaddr_in servAd;
 } server_t;
 
+typedef struct buff_s {
+    char *buff;
+    bool isfull;
+    bool isdup;
+    struct buff_s *next;
+} buff_t;
+
 typedef struct client_s {
     type_t type;
     dir_t d;
@@ -82,6 +89,7 @@ typedef struct client_s {
     clock_t food_clock;
     clock_t action_clock;
     size_t lvl;
+    buff_t *buff;
 } client_t;
 
 typedef struct team_s {
@@ -141,9 +149,10 @@ void list_folder(char *where, client_manager_t *c, int nbClient);
 void manage_clock_comet(client_manager_t *c);
 void init_clock_server(client_manager_t *c, int freq);
 
-
 int count_player(client_manager_t *c, int x, int y);
 int count_allitems(int ***map, client_manager_t *c);
+char *read_buff(client_manager_t *c, int client);
+void addcmd_buff(client_manager_t *c, char *str, int client);
 
 void forward(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff);
