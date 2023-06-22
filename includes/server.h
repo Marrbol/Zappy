@@ -184,6 +184,12 @@ void set_take(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff);
 void set_set(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff);
+void elevation_lvltwo(__attribute__((unused)) client_manager_t *c, 
+__attribute__((unused)) int nbClient,
+__attribute__((unused)) char *buff);
+void elevation_lvlthree(__attribute__((unused)) client_manager_t *c, 
+__attribute__((unused)) int nbClient,
+__attribute__((unused)) char *buff);
 void set_incantation(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff);
 

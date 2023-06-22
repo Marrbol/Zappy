@@ -39,6 +39,8 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
 				$(SRC_SERV)/$(CMD_AI)/eject.c			\
 				$(SRC_SERV)/$(CMD_AI)/forks.c			\
 				$(SRC_SERV)/$(CMD_AI)/forward.c			\
+				$(SRC_SERV)/$(CMD_AI)/elevationlvl1.c 	\
+				$(SRC_SERV)/$(CMD_AI)/elevationlvl2.c 	\
 				$(SRC_SERV)/$(CMD_AI)/incantation.c		\
 				$(SRC_SERV)/$(CMD_AI)/invent.c			\
 				$(SRC_SERV)/$(CMD_AI)/left.c			\
