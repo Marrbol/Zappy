@@ -66,7 +66,6 @@ void IA::eject()
 
 void IA::take(std::string object)
 {
-    std::cout << _clientName << " Take : " << _ask.size() << std::endl;
     _network.sendMessage(_socket, "Take " + object + "\n");
     _ask.push_back("Take");
 }
@@ -74,8 +73,7 @@ void IA::take(std::string object)
 void IA::set(std::string object)
 {
     _network.sendMessage(_socket, "Set " + object + "\n");
-    if (_clientName == 8)
-        std::cout << _clientName << " Set " + object << std::endl;
+    std::cout << _clientName << " Set " + object << std::endl;
     _ask.push_back("Set");
 }
 
@@ -89,7 +87,7 @@ void IA::incantation()
         set(LINEMATE);
         end = true;
     } else if (_role == "leader") {
-        while (_ask.size() < 8) {
+        while (_ask.size() < 9) {
             if (_rituelsLeader[_level].getLinemate() > 0) {
                 _rituelsLeader[_level].setLinemate(_rituelsLeader[_level].getLinemate() - 1);
                 set(LINEMATE);
@@ -145,7 +143,8 @@ void IA::parseCommande()
         _line = _commande.substr(0, _commande.find("\n"));
         // std::cout << _clientName << " Message received: " << _line << std::endl;
         if (_line == "ko") {
-            std::cout << _clientName << " KO " << _ask.front() << " " << _ask.size() << std::endl;
+            if (!_ask.empty())
+                std::cout << _clientName << " KO " << _ask.front() << " " << _ask.size() << std::endl;
         }
         _commande.erase(0, _commande.find("\n") + 1);
         if (_line == "WELCOME") {
@@ -180,7 +179,9 @@ void IA::parseCommande()
             everyoneHere = false;
             _ritualAsked = false;
             _ritualAfter = false;
+            _readyIncantation = false;
             goToRitual = false;
+            _ritualDirection = 0;
             nbPlayerHere = 0;
             _saidHere = false;
             _readyIncantation = false;
@@ -589,6 +590,7 @@ void IA::getSet()
 
 void IA::getIncantation()
 {
+    std::cout << _clientName << "sever send : " << _line << std::endl;
     if (_line == "KO")
         _ritualAsked = false;
     if (_line == "Elevation underway")

@@ -88,6 +88,8 @@ void IA::calculeTilesPoids()
             poidTmp += countSubStr(_view[i], PHIRAS) * _poidMateriaux.getPhiras();
         if (_view[i].find(THYSTAME) != std::string::npos)
             poidTmp += countSubStr(_view[i], THYSTAME) * _poidMateriaux.getThystame();
+        if (_view[i].find("player") != std::string::npos)
+            poidTmp = 0;
         _tilesPoid[i] = poidTmp;
         // std::cout << "poid de la case " << i << " = " << _tilesPoid[i] << std::endl;
     }
@@ -103,7 +105,7 @@ bool IA::GetAllRessourcesTile()
     std::string tile =_view[_numTilesPriority];
     if (_ask.size() > 9)
         return false;
-    size_t nbCommandLeft = 6 - _ask.size();
+    size_t nbCommandLeft = 9 - _ask.size();
     size_t nbFood = countSubStr(tile, FOOD);
     size_t nbLinemate = countSubStr(tile, LINEMATE);
     size_t nbDeraumere = countSubStr(tile, DERAUMERE);
@@ -222,7 +224,6 @@ void IA::isItForRitual(std::string materiaux)
 {
     if (!_canIncantation)
         return;
-
     if (materiaux == LINEMATE && _rituels[_level].getLinemate() > 0) {
         _rituels[_level].setLinemate(_rituels[_level].getLinemate() - 1);
         // std::cout << "Linemate left for ritual = " << _rituels[_level].getLinemate() << std::endl;
@@ -259,9 +260,9 @@ bool IA::assembleAllAI()
                 switch (_assembleState) {
                 case 0:
                     forward();
-                    broadcast(_teamName + " come " + std::to_string(_clientName - 7) + " " + std::to_string(_clientName - 6));
                     _leaderRitual = false;
                     incantation();
+                    broadcast(_teamName + " come " + std::to_string(_clientName - 7) + " " + std::to_string(_clientName - 6));
                     _assembleState++;
                     break;
                 case 1:
@@ -269,18 +270,18 @@ bool IA::assembleAllAI()
                     forward();
                     turnRight();
                     forward();
-                    broadcast(_teamName + " come " + std::to_string(_clientName - 5) + " " + std::to_string(_clientName - 4));
                     _leaderRitual = false;
                     incantation();
+                    broadcast(_teamName + " come " + std::to_string(_clientName - 5) + " " + std::to_string(_clientName - 4));
                     _assembleState++;
                     break;
                 case 2:
                     forward();
                     turnRight();
                     forward();
-                    broadcast(_teamName + " come " + std::to_string(_clientName - 3) + " " + std::to_string(_clientName - 2));
                     _leaderRitual = false;
                     incantation();
+                    broadcast(_teamName + " come " + std::to_string(_clientName - 3) + " " + std::to_string(_clientName - 2));
                     _assembleState++;
                     break;
                 case 3:
@@ -302,8 +303,6 @@ bool IA::assembleAllAI()
         // broadcast(_teamName + " startRitual");
     }
     if (_rituels[_level].getLinemate() == 0 && _rituels[_level].getDeraumere() == 0 && _rituels[_level].getSibur() == 0 && _rituels[_level].getMendiane() == 0 && _rituels[_level].getPhiras() == 0 && _rituels[_level].getThystame() == 0) {
-        if (_ask.size() != 0)
-            return true;
         broadcast(_teamName + " incantation");
         sleep(1);
         return true;
@@ -377,6 +376,11 @@ void IA::removeMaterialForIncanation()
     }
 }
 
+void IA::verifyRitual()
+{
+    // _clock
+}
+
 void IA::loopIA()
 {
     bool sendlook = false;
@@ -397,9 +401,10 @@ void IA::loopIA()
                 _process.waitProcess();
             break;
         }
-        if (_ritualAsked)
+        if (_ritualAsked) {
+            verifyRitual();
             continue;
-
+        }
         if (everyoneHere && !_getRessources) {
             if (_view.empty())
                 continue;
@@ -426,21 +431,8 @@ void IA::loopIA()
             continue;
 
         if (_level == 1 && _rituels[_level].getLinemate() == 0) {
-            if (!_askView) {
-                _askView = true;
-                look();
-            }
-            if (_ask.size() > 5 || _view.empty())
+            if (_ask.size() > 5)
                 continue;
-            if (_view[0][0] == '[')
-                _view[0].erase(0, 1);
-            if (_view[0][0] == ' ')
-                _view[0].erase(0, 1);
-            _view[0].erase(0, 5);
-            if (_view[0].find("player")) {
-                forward();
-                _askView = false;
-            }
             incantation();
         }
         if (_canIncantation && _role == "leader" && _level > 1) {

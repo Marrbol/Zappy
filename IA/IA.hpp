@@ -20,6 +20,7 @@
 #include <error.h>
 #include "../Process/Process.hpp"
 #include <csignal>
+#include <time.h>
 #define FOODRARETY 0.5
 #define LINEMATERARETY 0.3
 #define DERAUMERERARETY 0.15
@@ -57,6 +58,7 @@ class IA {
         void isItForRitual(std::string materiaux);
         void reduceForRitual(std::string materiaux);
         bool setRitual();
+        void verifyRitual();
 
         //send command
         void forward();
@@ -123,13 +125,13 @@ class IA {
         bool _ritualAsked = false;
         bool _readyIncantation = false;
         bool _ritualAfter = false;
+        time_t _clock;
         bool _saidHere = false;
         size_t nbPlayerHere = 0;
         bool _getRessources = false;
         bool _leaderRitual = true;
         bool _setEverythingRitual = false;
         size_t _assembleState = 0;
-        bool _askView = false;
         using CommandFunction = std::function<void(void)>;
 
         typedef struct allCmdS {
