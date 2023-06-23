@@ -128,9 +128,8 @@ void IA::incantation()
             _setEverythingRitual = false;
             end = true;
         }
-
     }
-    if (!end || !_leaderRitual)
+    if ((_role == "leader" && !end) || !_leaderRitual)
         return;
     _network.sendMessage(_socket, "Incantation\n");
     _ask.push_back("Incantation");
@@ -178,6 +177,11 @@ void IA::parseCommande()
             _level = std::stoi(_line.substr(0, _line.find("\n")));
             everyoneHere = false;
             _ritualAsked = false;
+            _ritualAfter = false;
+            goToRitual = false;
+            nbPlayerHere = 0;
+            _saidHere = false;
+            _readyIncantation = false;
             std::cout << "Level: " << _level << " currentname = " << _clientName << std::endl;
             removeMaterialForIncanation();
             continue;
@@ -319,6 +323,8 @@ void IA::ReceiveMessage()
                 _ritualDirection = 0;
                 return;
             }
+            if (_inventaire.getFood() < 30)
+                return;
             if (direction == 0 && !_readyIncantation) {
                 _readyIncantation = true;
                 _saidHere = false;
@@ -343,14 +349,16 @@ void IA::ReceiveMessage()
                 goToRitual = true;
                 _ritualDirection = direction;
                 _ritualAfter = true;
+                std::cout << _clientName << " come" << std::endl;
                 _readyIncantation = false;
             }
         }
         if (cmd == "here") {
             if (_role == "leader") {
                 nbPlayerHere++;
-                _getRessources = true;
                 look();
+                if (nbPlayerHere == _clientName)
+                    everyoneHere = true;
             }
         }
     } else if (_role == "leader")

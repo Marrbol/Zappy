@@ -22,8 +22,10 @@ IA::~IA()
 void IA::calculeMateriauxPoids()
 {
     size_t _poidFood =  (1 / FOODRARETY);
+    if (_inventaire.getFood() < 50)
+        _poidFood *= 20;
     if (_inventaire.getFood() < 10)
-        _poidFood *= 10;
+        _poidFood *= 200;
     size_t _poidLinemate = (_rituels[_level].getLinemate() - _inventaire.getLinemate()) * (1 / LINEMATERARETY);
     size_t _poidDeraumere = (_rituels[_level].getDeraumere() - _inventaire.getDeraumere()) * (1 / DERAUMERERARETY);
     size_t _poidSibur = (_rituels[_level].getSibur() - _inventaire.getSibur()) * (1 / SIBURRARETY);
@@ -101,8 +103,6 @@ bool IA::GetAllRessourcesTile()
     std::string tile =_view[_numTilesPriority];
     if (_ask.size() > 9)
         return false;
-    // std::cout << _clientName << " tile = " << tile << " " << _numTilesPriority << " and " <<_ask.size() << std::endl;
-    // std::cout << "view[0] = " << _view[0] << std::endl;
     size_t nbCommandLeft = 9 - _ask.size();
     size_t nbFood = countSubStr(tile, FOOD);
     size_t nbLinemate = countSubStr(tile, LINEMATE);
@@ -396,13 +396,13 @@ void IA::loopIA()
         }
         if (_ritualAsked)
             continue;
-       if (_getRessources) {
+
+        if (everyoneHere && !_getRessources) {
             if (_view.empty())
                 continue;
-            if (GetAllRessourcesTile() && nbPlayerHere == _clientName) {
-                everyoneHere = true;
-                _getRessources = false;
-            }
+            if (GetAllRessourcesTile())
+                _getRessources = true;
+            continue;
        }
         if (!forked) {
             if (this->_clientName > 0) {
@@ -442,6 +442,7 @@ void IA::loopIA()
         if (!_view.empty()) {
             bool here = false;
             if (goToRitual) {
+                // std::cout << _clientName << " go to ritual" << std::endl;
                 if (_ask.size() > 5)
                     continue;
                 if  (_ritualDirection != 0) {
@@ -474,10 +475,13 @@ void IA::loopIA()
                 }
                 if (_ritualDirection != 0)
                     _ritualDirection = 0;
-                if (_ritualAfter)
+                // std::cout << _clientName << " here" << std::endl;
+                if (_ritualAfter) {
+                    std::cout << _clientName << " incantation" << std::endl;
                     incantation();
+                }
                 continue;
-            }else {
+            } else {
                 if (!calculated) {
                     IA::calculateCoordBestCase();
                     calculated = true;
@@ -538,7 +542,7 @@ void IA::calculateCoordBestCase()
                 _coordBestCase.first *= -1;
         }
     }
-    // std::cout << "nb: " << _clientName << " the case and the coord for the best case are " << _numTilesPriority << " and the coord are " <<_coordBestCase.second << " and " << _coordBestCase.first << std::endl;
+    std::cout << "nb: " << _clientName << " the case and the coord for the best case are " << _numTilesPriority << " and the coord are " <<_coordBestCase.second << " and " << _coordBestCase.first << std::endl;
 }
 
 void printUsage() {
