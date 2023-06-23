@@ -112,7 +112,7 @@ class IA {
         int _socket = 0;
         std::list<std::string> _ask;
         Process _process;
-        int _pid;
+        int _pid = 0;
         int _port;
         std::string _role = "";
         bool forked = false;
@@ -129,6 +129,7 @@ class IA {
         bool _leaderRitual = true;
         bool _setEverythingRitual = false;
         size_t _assembleState = 0;
+        bool _askView = false;
         using CommandFunction = std::function<void(void)>;
 
         typedef struct allCmdS {

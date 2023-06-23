@@ -66,6 +66,7 @@ void IA::eject()
 
 void IA::take(std::string object)
 {
+    std::cout << _clientName << " Take : " << _ask.size() << std::endl;
     _network.sendMessage(_socket, "Take " + object + "\n");
     _ask.push_back("Take");
 }
@@ -73,7 +74,8 @@ void IA::take(std::string object)
 void IA::set(std::string object)
 {
     _network.sendMessage(_socket, "Set " + object + "\n");
-    std::cout << _clientName << " Set " + object << std::endl;
+    if (_clientName == 8)
+        std::cout << _clientName << " Set " + object << std::endl;
     _ask.push_back("Set");
 }
 
@@ -87,7 +89,7 @@ void IA::incantation()
         set(LINEMATE);
         end = true;
     } else if (_role == "leader") {
-        while (_ask.size() < 9) {
+        while (_ask.size() < 8) {
             if (_rituelsLeader[_level].getLinemate() > 0) {
                 _rituelsLeader[_level].setLinemate(_rituelsLeader[_level].getLinemate() - 1);
                 set(LINEMATE);
@@ -323,8 +325,10 @@ void IA::ReceiveMessage()
                 _ritualDirection = 0;
                 return;
             }
-            if (_inventaire.getFood() < 30)
+            if (_inventaire.getFood() < 30) {
+                goToRitual = false;
                 return;
+            }
             if (direction == 0 && !_readyIncantation) {
                 _readyIncantation = true;
                 _saidHere = false;

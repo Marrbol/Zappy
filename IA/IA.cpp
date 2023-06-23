@@ -103,7 +103,7 @@ bool IA::GetAllRessourcesTile()
     std::string tile =_view[_numTilesPriority];
     if (_ask.size() > 9)
         return false;
-    size_t nbCommandLeft = 9 - _ask.size();
+    size_t nbCommandLeft = 6 - _ask.size();
     size_t nbFood = countSubStr(tile, FOOD);
     size_t nbLinemate = countSubStr(tile, LINEMATE);
     size_t nbDeraumere = countSubStr(tile, DERAUMERE);
@@ -222,6 +222,7 @@ void IA::isItForRitual(std::string materiaux)
 {
     if (!_canIncantation)
         return;
+
     if (materiaux == LINEMATE && _rituels[_level].getLinemate() > 0) {
         _rituels[_level].setLinemate(_rituels[_level].getLinemate() - 1);
         // std::cout << "Linemate left for ritual = " << _rituels[_level].getLinemate() << std::endl;
@@ -301,6 +302,8 @@ bool IA::assembleAllAI()
         // broadcast(_teamName + " startRitual");
     }
     if (_rituels[_level].getLinemate() == 0 && _rituels[_level].getDeraumere() == 0 && _rituels[_level].getSibur() == 0 && _rituels[_level].getMendiane() == 0 && _rituels[_level].getPhiras() == 0 && _rituels[_level].getThystame() == 0) {
+        if (_ask.size() != 0)
+            return true;
         broadcast(_teamName + " incantation");
         sleep(1);
         return true;
@@ -423,8 +426,21 @@ void IA::loopIA()
             continue;
 
         if (_level == 1 && _rituels[_level].getLinemate() == 0) {
-            if (_ask.size() > 5)
+            if (!_askView) {
+                _askView = true;
+                look();
+            }
+            if (_ask.size() > 5 || _view.empty())
                 continue;
+            if (_view[0][0] == '[')
+                _view[0].erase(0, 1);
+            if (_view[0][0] == ' ')
+                _view[0].erase(0, 1);
+            _view[0].erase(0, 5);
+            if (_view[0].find("player")) {
+                forward();
+                _askView = false;
+            }
             incantation();
         }
         if (_canIncantation && _role == "leader" && _level > 1) {
