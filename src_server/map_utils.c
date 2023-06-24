@@ -10,7 +10,7 @@
 int find_itemsize(int *ob)
 {
     int result = 0;
-    for (int i = 0; i < LENINV; i++) {
+    for (int i = 0; i < none; i++) {
         if (!ob[i])
             break;
         result += ob[i];
