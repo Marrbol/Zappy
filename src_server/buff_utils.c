@@ -67,17 +67,14 @@ void addcmd_buff(client_manager_t *c, char *str, int client)
         tmp->next = create_buff(str, c->client_infos[client].isauth);
 }
 
-char *read_buff(client_manager_t *c, int client)
+buff_t *read_buff(client_manager_t *c, int client)
 {
     buff_t *tmp = c->client_infos[client].buff;
-    char *result;
 
     if (tmp == NULL)
         return NULL;
     if (!tmp->isfull)
         return NULL;
-    result = tmp->buff;
     c->client_infos[client].buff = tmp->next;
-    free(tmp);
-    return result;
+    return tmp;
 }

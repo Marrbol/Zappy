@@ -38,7 +38,7 @@ void check_inc_co(server_t *s, client_manager_t *c)
 void manage_clients(client_manager_t *c)
 {
     char buff[1024];
-    char *tmp;
+    buff_t *tmp;
 
     memset(buff, 0, sizeof(buff));
     for (size_t i = 0; i < NB_CLIENTS; i++) {
@@ -47,12 +47,15 @@ void manage_clients(client_manager_t *c)
         manage_clock_food(c, i);
         if (FD_ISSET(c->client_infos[i].client_socket, &c->read_fds) == 1) {
             read(c->client_infos[i].client_socket, buff, sizeof(buff));
-        //    addcmd_buff(c, buff, i);
-            exec_cmd(c, i, buff);
+            addcmd_buff(c, buff, i);
             FD_CLR(c->client_infos[i].client_socket, &c->read_fds);
         }
-        //tmp = read_buff(c, i);
-        //if (tmp != NULL)
+        tmp = read_buff(c, i);
+        if (tmp != NULL && tmp->buff != NULL)
+            exec_cmd(c, i, tmp->buff);
+        if (tmp != NULL && tmp->buff != NULL && tmp->isdup)
+            free(tmp->buff);
+        free(tmp);
     }
 }
 
@@ -83,9 +86,9 @@ int server(int ac, char **argv)
     signal(SIGPIPE, SIG_IGN);
     srand((unsigned) time(&t));
     create_socket_server(s, argv[2]);
-    set_coord(c, argv);
     set_clients(c);
     set_teams(c, ac, argv);
+    set_coord(c, argv);
     set_map(c);
     init_clock_server(c, c->freq);
     loop_server(s, c);

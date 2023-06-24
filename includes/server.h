@@ -155,7 +155,7 @@ void init_clock_server(client_manager_t *c, int freq);
 
 int count_player(client_manager_t *c, int x, int y);
 int count_allitems(int ***map, client_manager_t *c);
-char *read_buff(client_manager_t *c, int client);
+buff_t *read_buff(client_manager_t *c, int client);
 void addcmd_buff(client_manager_t *c, char *str, int client);
 
 void forward(client_manager_t *c, int nbClient,
