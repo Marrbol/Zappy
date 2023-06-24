@@ -10,9 +10,11 @@
 void set_set(client_manager_t *c, int nbClient,
 __attribute__((unused)) char *buff)
 {
-    c->client_infos[nbClient].fct = set;
-    c->client_infos[nbClient].exec_func = true;
     c->client_infos[nbClient].time = 7;
+    c->client_infos[nbClient].fct = set;
+    c->client_infos[nbClient].buffer = strdup(buff);
+    c->client_infos[nbClient].action_clock = clock();
+    c->client_infos[nbClient].exec_func = true;
 }
 
 size_t len_objset(char *buff)
@@ -27,9 +29,11 @@ size_t len_objset(char *buff)
     return res;
 }
 
-void set(client_manager_t *c, int nbClient, char *buff)
+void set(client_manager_t *c, int nbClient,
+__attribute__((unused)) char *buff)
 {
-    int len = len_objset(buff);
+    char *replace = strdup(c->client_infos[nbClient].buffer);
+    int len = len_objset(replace);
     char *tmp = malloc(sizeof(char) * (len + 1));
     size_t index = 0;
     int x = c->client_infos[nbClient].coord->x;
@@ -37,8 +41,8 @@ void set(client_manager_t *c, int nbClient, char *buff)
     inv_t i = none;
 
     memset(tmp, 0, (len + 1));
-    for (size_t i = (strlen(STO) + 1); i < (strlen(buff) - 1); i++) {
-        tmp[index] = buff[i];
+    for (size_t i = (strlen(STO) + 1); i < (strlen(replace) - 1); i++) {
+        tmp[index] = replace[i];
         index++;
     }
     i = search_type(tmp);
