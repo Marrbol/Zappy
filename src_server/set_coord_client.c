@@ -7,9 +7,9 @@
 
 #include "server.h"
 
-void set_client_coord(coord_t *c)
+void set_client_coord(client_manager_t *c, coord_t *coord)
 {
-    c->coord = "0 0";
-    c->x = 0;
-    c->y = 0;
+    coord->x = (rand() % c->coord->x);
+    coord->y = (rand() % c->coord->y);
+    coord->coord = cat(cat(my_atoi(coord->x), " "), my_atoi(coord->y));
 }

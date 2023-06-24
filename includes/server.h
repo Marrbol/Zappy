@@ -24,6 +24,7 @@
     #include <unistd.h>
     #include <stdio.h>
     #include <errno.h>
+    #include <math.h>
     #include <string.h>
     #include <uuid/uuid.h>
     #include <dirent.h>
@@ -47,6 +48,7 @@
     #define MAX_DESCRIPTION_LENGTH 255
     #define MAX_BODY_LENGTH 512
     #define GUID ("GRAPHIC")
+    #define PI (3.14)
 
 typedef enum type_s {NONE, AI, GUI} type_t;
 
@@ -83,6 +85,7 @@ typedef struct client_s {
     bool new_connection;
     char *team;
     int *inv;
+    char *buffer;
     void (*fct)(client_manager_t *c, int nbClient, char *buff);
     int time;
     bool exec_func;
@@ -126,7 +129,6 @@ inv_t search_type(char *tmp);
 int server(int ac, char **argv);
 void comete(client_manager_t *c);
 char *cat(char *tmp, char *name);
-void set_client_coord(coord_t *c);
 void set_map(client_manager_t *c);
 int get_gui_id(client_manager_t *c);
 bool issearch(char *name, char *uid);
@@ -141,7 +143,9 @@ void create_socket_server(server_t *s, char *port);
 void set_readfds(server_t *s, client_manager_t *c);
 char *get_content(client_manager_t *c, int x, int y);
 size_t nb_state_def(client_manager_t *c, int nbClient);
+bool check_same(client_manager_t *c, int from, int to);
 void set_teams(client_manager_t *c, int ac, char **argv);
+void set_client_coord(client_manager_t *c, coord_t *coord);
 void exec_cmd(client_manager_t *c, int nbClient, char *buff);
 bool com_login(client_manager_t *c, int nbClient, char *buff);
 void create_team(char *buff, client_manager_t *c, int nbClient);

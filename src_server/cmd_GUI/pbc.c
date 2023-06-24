@@ -10,9 +10,7 @@
 char *do_rebuff(char *buff)
 {
     char *delete = "Broadcast ";
-    printf("len buff = %ld len delete = %ld\n", strlen(buff), strlen(delete));
     int len = ((strlen(buff) - strlen(delete) + 1));
-    printf("len = %d\n", len);
     char *rebuff = malloc(sizeof(char) * len);
     int index = (strlen(delete) + 2);
 

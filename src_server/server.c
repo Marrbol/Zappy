@@ -47,12 +47,12 @@ void manage_clients(client_manager_t *c)
         manage_clock_food(c, i);
         if (FD_ISSET(c->client_infos[i].client_socket, &c->read_fds) == 1) {
             read(c->client_infos[i].client_socket, buff, sizeof(buff));
-            addcmd_buff(c, buff, i);
+        //    addcmd_buff(c, buff, i);
+            exec_cmd(c, i, buff);
             FD_CLR(c->client_infos[i].client_socket, &c->read_fds);
         }
-        tmp = read_buff(c, i);
-        if (tmp != NULL)
-            exec_cmd(c, i, tmp);
+        //tmp = read_buff(c, i);
+        //if (tmp != NULL)
     }
 }
 
@@ -83,9 +83,9 @@ int server(int ac, char **argv)
     signal(SIGPIPE, SIG_IGN);
     srand((unsigned) time(&t));
     create_socket_server(s, argv[2]);
+    set_coord(c, argv);
     set_clients(c);
     set_teams(c, ac, argv);
-    set_coord(c, argv);
     set_map(c);
     init_clock_server(c, c->freq);
     loop_server(s, c);
