@@ -87,9 +87,9 @@ int server(int ac, char **argv)
     signal(SIGPIPE, SIG_IGN);
     srand((unsigned) time(&t));
     create_socket_server(s, argv[2]);
+    set_coord(c, argv);
     set_clients(c);
     set_teams(c, ac, argv);
-    set_coord(c, argv);
     set_map(c);
     init_clock_server(c, c->freq);
     loop_server(s, c);
