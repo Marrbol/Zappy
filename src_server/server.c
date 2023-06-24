@@ -55,7 +55,8 @@ void manage_clients(client_manager_t *c)
             exec_cmd(c, i, tmp->buff);
         if (tmp != NULL && tmp->buff != NULL && tmp->isdup)
             free(tmp->buff);
-        free(tmp);
+        if (tmp != NULL)
+            free(tmp);
     }
 }
 
