@@ -17,6 +17,7 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
 #include "Camera.hpp"
 #include "IsometricMap.hpp"
 

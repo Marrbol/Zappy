@@ -130,7 +130,7 @@ $(NAMEIA): $(OBJIA) $(OBJENCAPS)
 	$(CXX) $(OBJIA) $(OBJENCAPS) -o $(NAMEIA) $(CXXFLAGS)
 
 $(NAMEGUI): $(OBJGUI) $(OBJENCAPS)
-	$(CXX) $(OBJGUI) $(OBJENCAPS) -lsfml-graphics -lsfml-window -lsfml-system -o $(NAMEGUI) $(CXXFLAGS)
+	$(CXX) $(OBJGUI) $(OBJENCAPS) -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -o $(NAMEGUI) $(CXXFLAGS)
 
 $(NAME): $(OBJ)
 	$(CXX) $(OBJ) -o $(NAME) $(CXXFLAGS)
