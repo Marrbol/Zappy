@@ -330,7 +330,6 @@ void IA::ReceiveMessage()
                 _role = "leader";
             if (_role == "leader") {
                 _line.erase(0, _line.find(" ") + 1);
-                int numberWorker = std::stoi(_line.substr(_line.find(" ") + 1, _line.size()));
                 broadcast(_teamName + " Hola worker ");
             }
         }
