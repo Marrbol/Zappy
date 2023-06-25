@@ -121,7 +121,6 @@ void GameWindow::run()
                 window.draw(thystameS.spriteRessources);
             }
         for (auto& mobTile : _player) {
-                size_t id = mobTile.first;
                 playerT& player = mobTile.second;
 
                 player.spritePlayer.setPosition((player.x - player.y) * 500 * 0.50f,(player.x + player.y) * 500 * 0.25f);
