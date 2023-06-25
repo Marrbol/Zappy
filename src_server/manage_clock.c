@@ -7,7 +7,7 @@
 
 #include "../includes/server.h"
 
-void init_clock_server(client_manager_t *c, int freq)
+void init_clock_server(client_manager_t *c, __attribute__((unused)) int freq)
 {
     c->comet_clock = clock();
 }
