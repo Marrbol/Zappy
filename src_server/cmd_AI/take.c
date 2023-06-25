@@ -44,6 +44,10 @@ __attribute__((unused)) char *buff)
         index++;
     }
     i = search_type(tmp);
+    if (i == none) {
+        write(c->client_infos[nbClient].client_socket, "ko\n", 3);
+        return;
+    }
     if (c->map[x][y][i] != 0) {
         c->map[x][y][i]--;
         c->client_infos[nbClient].inv[i]++;
