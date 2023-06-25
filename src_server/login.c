@@ -34,6 +34,7 @@ bool client_base(client_manager_t *c, int nbClient, char *buff)
     write(c->client_infos[nbClient].client_socket, c->coord->coord,
     strlen(c->coord->coord));
     c->client_infos[nbClient].type = AI;
+    c->client_infos[nbClient].first_connection = true;
     c_pnw(c, nbClient);
     return true;
 }
@@ -43,6 +44,7 @@ void client_gui(client_manager_t *c, int nbClient, char *buff)
     c->client_infos[nbClient].isauth = true;
     c->client_infos[nbClient].team = buff;
     c->client_infos[nbClient].type = GUI;
+    c->client_infos[nbClient].first_connection = true;
 }
 
 bool com_login(client_manager_t *c, int nbClient, char *buff)

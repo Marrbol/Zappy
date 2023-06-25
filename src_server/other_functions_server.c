@@ -47,6 +47,7 @@ void set_clients(client_manager_t *c)
         c->client_infos[i].lvl = 1;
         c->client_infos[i].exec_func = false;
         c->client_infos[i].buff = NULL;
+        c->client_infos[i].first_connection = false;
         set_inventory(c->client_infos[i].inv);
         set_client_coord(c, c->client_infos[i].coord);
         init_clock_client(c, i);

@@ -27,6 +27,10 @@ void exec_client(client_manager_t *c, int nbClient, char *buff)
             exec = true;
         }
     }
+    if (c->client_infos[nbClient].first_connection) {
+        c->client_infos[nbClient].first_connection = false;
+        return;
+    }
     if (!exec)
         write(c->client_infos[nbClient].client_socket, "ko\n", 3);
 }
@@ -40,7 +44,12 @@ void exec_gui(client_manager_t *c, int nbClient, char *buff)
         strlen(allcoms_GUI[i].name)) == 0) {
             allcoms_GUI[i].findcoms(c, nbClient, buff);
             exec = true;
+            printf("GUI: %s\n", buff);
         }
+    }
+    if (c->client_infos[nbClient].first_connection) {
+        c->client_infos[nbClient].first_connection = false;
+        return;
     }
     if (!exec)
         write(c->client_infos[nbClient].client_socket, "ko\n", 3);
