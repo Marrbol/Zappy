@@ -125,6 +125,21 @@ void GameWindow::run()
                 playerT& player = mobTile.second;
 
                 player.spritePlayer.setPosition((player.x - player.y) * 500 * 0.50f,(player.x + player.y) * 500 * 0.25f);
+                    static std::unordered_map<std::string, sf::Color> teamColors;
+                sf::Color defaultColor = sf::Color::White;
+                IDText.setFont(font);
+                IDText.setCharacterSize(50);
+
+                if (std::find(_teamName.begin(), _teamName.end(), player.team) != _teamName.end()) {
+                    if (teamColors.find(player.team) == teamColors.end()) {
+                        sf::Color randomColor = sf::Color(std::rand() % 256, std::rand() % 256, std::rand() % 256);
+                        teamColors[player.team] = randomColor;
+                    }
+            
+                    IDText.setFillColor(teamColors[player.team]);
+                } else {
+                    IDText.setFillColor(defaultColor);
+                }
                 if (mobTile.second.id > 0) {
                     IDText.setPosition((player.x - (player.y - 1) ) * 500 * 0.50f, (player.x + (player.y - 1)) * 500 * 0.25f);
                     IDText.setString(std::to_string(id));
@@ -182,9 +197,6 @@ void GameWindow::initAll(draw_t food, draw_t linemate, draw_t deraumere, draw_t 
     messageText.setFont(font);
     messageText.setCharacterSize(150);
     messageText.setFillColor(sf::Color::White);
-    IDText.setFont(font);
-    IDText.setCharacterSize(50);
-    IDText.setFillColor(sf::Color::White);
 }
 
 int main(int ac, char **av)

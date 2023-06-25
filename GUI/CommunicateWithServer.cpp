@@ -288,7 +288,6 @@ void GameWindow::playerInventory()
 
 void GameWindow::broadcast()
 {
-    sf::Music music;
     size_t id = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
     _messageBroadcast = std::pair<size_t, std::string>(id, _line);
@@ -299,13 +298,6 @@ void GameWindow::broadcast()
     bullSprite.setPosition(((_mapSize.first+1) - (_mapSize.second+1)) * 500 * 0.50f, ((_mapSize.first+1) + (_mapSize.second+1)) * 500 * 0.25f);
     messageText.setPosition(((_mapSize.first+1) - (_mapSize.second+1)) * 500 * 0.50f, ((_mapSize.first+1) + (_mapSize.second+1)) * 500 * 0.25f);
     messageText.setString(_messageBroadcast.second); // Définir le contenu du texte
-
-    if (!music.openFromFile("assets/broadcast.wav"))
-    {
-        std::cerr << "Impossible de charger le fichier MP3." << std::endl;
-        return;
-    }
-    music.play();
 }
 
 void GameWindow::startIncantation()
