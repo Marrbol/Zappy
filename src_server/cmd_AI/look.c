@@ -88,7 +88,7 @@ __attribute__((unused)) char *buff)
     client_t *client = &c->client_infos[nbClient];
     char *tmp;
 
-    strcat(items, "[ ");
+    strcat(items, "[ player ");
     for (int i = 0; i <= client->lvl; i++) {
         for (int j = 0; j < (2 * i) + 1; j++) {
             tmp = find_case(client, i, j - i, c);

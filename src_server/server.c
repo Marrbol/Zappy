@@ -68,6 +68,7 @@ void loop_server(server_t *s, client_manager_t *c)
     struct timeval tv;
     tv.tv_sec = c->freq;
     tv.tv_usec = 0;
+    comete(c);
     while (1) {
         manage_clock_comet(c);
         set_readfds(s, c);
