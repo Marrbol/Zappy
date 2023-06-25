@@ -61,6 +61,7 @@ class GameWindow {
         GameWindow(int port, std::string machine);
         ~GameWindow();
         void run();
+        bool bufferisation();
 
         //send to server
         void askMapSize();
@@ -107,7 +108,7 @@ class GameWindow {
         void initAll(draw_t food, draw_t linemate, draw_t deraumere, draw_t sibur, draw_t mendiane, draw_t phiras, draw_t thystame);
         //ask map pdr pgt reinitialiser la map
 
-        //draw ressources player 
+        //draw ressources player
 
     protected:
     private:
@@ -115,6 +116,7 @@ class GameWindow {
         //GUI variable
         std::pair<int, int> _mapSize; // x, y
         std::vector<std::string> _teamName;
+        std::string _bufferisedCommand;
         std::pair<size_t, std::string> _messageBroadcast; // id, message
 
         using CommandFunction = std::function<void(void)>;
