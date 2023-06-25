@@ -67,9 +67,24 @@ void GameWindow::communicateWithServer()
         throw std::runtime_error("Error: select failed");
     if (_network.fdReady(_socket, &_readfds)) {
         _commande = _network.receiveMessage(_socket);
+        if (!_bufferisedCommand.empty()) {
+            _commande = _bufferisedCommand + _commande;
+            _bufferisedCommand.clear();
+        }
+        if (bufferisation())
+            return;
         if (!parseCommande())
             std::cout << "Unknown command" << std::endl;
     }
+}
+
+bool GameWindow::bufferisation()
+{
+    if (_commande.find("\n") == std::string::npos) {
+        _bufferisedCommand = _commande;
+        return true;
+    }
+    return false;
 }
 
 bool GameWindow::parseCommande()
@@ -215,7 +230,7 @@ void GameWindow::playerPosition()
     _line.erase(0, _line.find(" ") + 1);
     size_t orientation = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
-    
+
     _player[id].id = id;
     _player[id].x = x;
     _player[id].y = y;
