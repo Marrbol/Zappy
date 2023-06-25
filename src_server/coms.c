@@ -49,6 +49,10 @@ void exec_gui(client_manager_t *c, int nbClient, char *buff)
     }
     if (c->client_infos[nbClient].first_connection) {
         c->client_infos[nbClient].first_connection = false;
+        msz(c, nbClient, NULL);
+        sgt(c, nbClient, NULL);
+        mct(c, nbClient, NULL);
+        tna(c, nbClient, NULL);
         return;
     }
     if (!exec)
