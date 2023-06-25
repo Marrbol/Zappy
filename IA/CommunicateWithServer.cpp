@@ -38,7 +38,6 @@ void IA::broadcast(std::string message)
     _network.sendMessage(_socket, "Broadcast " + message + "\rnb" + std::to_string(_nbMessage) + "\rwho" + std::to_string(_clientName) + "\n");
     _ask.push_back("Broadcast");
     _nbMessage++;
-    // std::cout << _clientName << " Broadcast " + message << "\rnb" + std::to_string(_nbMessage) + "\rwho" + std::to_string(_clientName) << std::endl;
 }
 
 void IA::inventory()
@@ -135,7 +134,6 @@ void IA::incantation()
     _network.sendMessage(_socket, "Incantation\n");
     _ask.push_back("Incantation");
     _ritualAsked = true;
-    std::cout << _clientName << " Incantation to level " << _level << std::endl;
 }
 
 void IA::parseCommande()
@@ -143,7 +141,6 @@ void IA::parseCommande()
 
     while (_commande.find("\n") != std::string::npos) {
         _line = _commande.substr(0, _commande.find("\n"));
-        std::cout << " Message received: " << _line << std::endl;
         if (_line == "ko") {
             if (!_ask.empty())
                 std::cout << _clientName << " KO " << _ask.front() << " " << _ask.size() << std::endl;
@@ -170,7 +167,6 @@ void IA::parseCommande()
             continue;
         }
         if (_line == "dead") {
-            std::cout << "Dead" << std::endl;
             _isDead = true;
             break;
         }
@@ -187,7 +183,6 @@ void IA::parseCommande()
             nbPlayerHere = 0;
             _saidHere = false;
             _readyIncantation = false;
-            std::cout << "Level: " << _level << " currentname = " << _clientName << std::endl;
             removeMaterialForIncanation();
             continue;
         }
@@ -327,12 +322,6 @@ void IA::ReceiveMessage()
             }
         }
         _line.erase(_line.find("\r"), _line.size());
-        for (auto &i : _infoCommands) {
-            if (i.first == nbrMessage && i.second == clientName) {
-                std::cout <<  _clientName << " Message already received "<< nbrMessage << " " << clientName << std::endl;
-                return;
-            }
-        }
         _infoCommands.push_back(std::make_pair(nbrMessage, clientName));
         _line.erase(0, _line.find(" ") + 1);
         std::string cmd = _line.substr(0, _line.find(" "));
@@ -439,13 +428,8 @@ void IA::getLook()
         _line.erase(_line.size() - 1, 1);
     for (size_t x = 0; x <= _maxCaseViewLevel[_level] ; x++) {
         std::string tmp = _line.substr(0, _line.find(","));
-        if (x == 0 && tmp.substr(0, _line.find(" ")) != "player"){
-            // _ask.pop_front();
-            // _ask.pop_front();
-            // _ask.push_front("Look");
-            // _ask.push_front("Inventory");
+        if (x == 0 && tmp.substr(0, _line.find(" ")) != "player")
             return getInventory();
-        }
         _line.erase(0, _line.find(",") + 1);
         if (_line[0] == ' ')
             _line.erase(0, 1);
@@ -516,13 +500,8 @@ void IA::getInventory()
             tmp.erase(0, 1);
         if (tmp[tmp.size() - 1] == ' ')
             tmp.erase(tmp.size(), 1);
-        if (tmp.substr(0, tmp.find(" ")) == "player") {
-            // _ask.pop_front();
-            // _ask.pop_front();
-            // _ask.push_front("Inventory");
-            // _ask.push_front("Look");
+        if (tmp.substr(0, tmp.find(" ")) == "player")
             return getLook();
-        }
         _line.erase(0, _line.find(",") + 1);
         std::string material = tmp.substr(0, tmp.find(" "));
         tmp.erase(0, tmp.find(" ") + 1);
@@ -622,7 +601,6 @@ void IA::getSet()
 
 void IA::getIncantation()
 {
-    std::cout << _clientName << "sever send : " << _line << std::endl;
     if (_line == "KO")
         _ritualAsked = false;
     if (_line == "Elevation underway")
