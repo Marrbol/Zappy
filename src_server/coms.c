@@ -27,6 +27,10 @@ void exec_client(client_manager_t *c, int nbClient, char *buff)
             exec = true;
         }
     }
+    if (c->client_infos[nbClient].first_connection) {
+        c->client_infos[nbClient].first_connection = false;
+        return;
+    }
     if (!exec)
         write(c->client_infos[nbClient].client_socket, "ko\n", 3);
 }
@@ -40,7 +44,16 @@ void exec_gui(client_manager_t *c, int nbClient, char *buff)
         strlen(allcoms_GUI[i].name)) == 0) {
             allcoms_GUI[i].findcoms(c, nbClient, buff);
             exec = true;
+            printf("GUI: %s\n", buff);
         }
+    }
+    if (c->client_infos[nbClient].first_connection) {
+        c->client_infos[nbClient].first_connection = false;
+        msz(c, nbClient, NULL);
+        sgt(c, nbClient, NULL);
+        mct(c, nbClient, NULL);
+        tna(c, nbClient, NULL);
+        return;
     }
     if (!exec)
         write(c->client_infos[nbClient].client_socket, "ko\n", 3);
@@ -51,7 +64,9 @@ void exec_cmd(client_manager_t *c, int nbClient, char *buff)
     if (!check_req(c, nbClient, buff)) {
         return;
     }
-    //BUFFFERIZED
+    //BUFFFERIZED put the command in chained list
+    if (c->client_infos[nbClient].exec_func)
+        return;
     if (c->client_infos[nbClient].type == GUI)
         exec_gui(c, nbClient, buff);
     else

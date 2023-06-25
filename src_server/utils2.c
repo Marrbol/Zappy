@@ -19,7 +19,7 @@ char *my_atoi(int nb)
 inv_t search_type(char *tmp)
 {
     for (inv_t i = food; i < none; i++)
-        if (strcmp(allInv[i].name, tmp) == 0) {
+        if (strncmp(allInv[i].name, tmp, strlen(allInv[i].name)) == 0) {
             return allInv[i].id;
         }
     return none;
@@ -30,11 +30,20 @@ char *get_content(client_manager_t *c, int x, int y)
     char *content = "";
     inv_t i = food;
 
-    //cat(content, my_atoi(c->map[x][y].cont[i++]));
-    while (i < none) {
-        printf("here\n");
-//        cat(cat(content, " "), my_atoi(c->map[x][y].cont[i++]));
-    }
-    printf("content %s\n", content);
+    while (i < none)
+        content = cat(content, cat(" ", my_atoi(c->map[x][y][i++])));
+    content = cat(content, "\n");
     return content;
+}
+
+int get_gui_id(client_manager_t *c)
+{
+    int i = 0;
+
+    while (i < (c->nb_clients * c->nb_teams)) {
+        if (c->client_infos[i].type == GUI)
+            return i;
+        i++;
+    }
+    return 0;
 }

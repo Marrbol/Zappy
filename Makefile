@@ -25,6 +25,8 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
 				$(SRC_SERV)/create_other.c				\
 				$(SRC_SERV)/utils.c						\
 				$(SRC_SERV)/utils2.c					\
+				$(SRC_SERV)/map_utils.c					\
+				$(SRC_SERV)/buff_utils.c				\
 				$(SRC_SERV)/delete.c					\
 				$(SRC_SERV)/inventory.c					\
 				$(SRC_SERV)/set_coord_client.c			\
@@ -32,11 +34,15 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
 				$(SRC_SERV)/map.c						\
 				$(SRC_SERV)/team.c						\
 				$(SRC_SERV)/login.c						\
+				$(SRC_SERV)/manage_clock.c				\
+				$(SRC_SERV)/sound.c 					\
 				$(SRC_SERV)/$(CMD_AI)/broadcast.c		\
 				$(SRC_SERV)/$(CMD_AI)/connect_to.c		\
 				$(SRC_SERV)/$(CMD_AI)/eject.c			\
 				$(SRC_SERV)/$(CMD_AI)/forks.c			\
 				$(SRC_SERV)/$(CMD_AI)/forward.c			\
+				$(SRC_SERV)/$(CMD_AI)/elevationlvl1.c 	\
+				$(SRC_SERV)/$(CMD_AI)/elevationlvl2.c 	\
 				$(SRC_SERV)/$(CMD_AI)/incantation.c		\
 				$(SRC_SERV)/$(CMD_AI)/invent.c			\
 				$(SRC_SERV)/$(CMD_AI)/left.c			\
@@ -44,6 +50,7 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
 				$(SRC_SERV)/$(CMD_AI)/right.c			\
 				$(SRC_SERV)/$(CMD_AI)/set.c				\
 				$(SRC_SERV)/$(CMD_AI)/take.c			\
+				$(SRC_SERV)/$(CMD_AI)/set_broadcast.c	\
 				$(SRC_SERV)/$(CMD_GUI)/bct.c			\
 				$(SRC_SERV)/$(CMD_GUI)/edi.c			\
 				$(SRC_SERV)/$(CMD_GUI)/msz.c			\
@@ -68,7 +75,7 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
   				$(SRC_SERV)/$(CMD_GUI)/sgt.c			\
   				$(SRC_SERV)/$(CMD_GUI)/sst.c			\
   				$(SRC_SERV)/$(CMD_GUI)/tna.c			\
-  				$(SRC_SERV)/$(CMD_GUI)/mct.c
+  				$(SRC_SERV)/$(CMD_GUI)/mct.c			\
 
 SRCENCAPS = network/Network.cpp\
 			Process/Process.cpp

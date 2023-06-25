@@ -7,8 +7,9 @@
 
 #include "server.h"
 
-void pdi(__attribute__((unused)) client_manager_t *c,
-__attribute__((unused)) int nbClient,
-__attribute__((unused)) char *buff) {
+void pdi(client_manager_t *c, int nbClient, char *buff) {
+    char *base = "pdi ";
+    char *message = cat(cat(base, buff), "\n");
 
+    write(c->client_infos[nbClient].client_socket, message, strlen(message));
 }

@@ -7,6 +7,19 @@
 
 #include "server.h"
 
+void c_pnw(client_manager_t *c, int nbCLient)
+{
+    char *info = "";
+
+    info = cat(cat(cat(cat(cat(cat(cat(cat(cat(cat(my_atoi(nbCLient), " "),
+    my_atoi(c->client_infos[nbCLient].coord->x)), " "),
+    my_atoi(c->client_infos[nbCLient].coord->y)), " "),
+    my_atoi((int)c->client_infos[nbCLient].d)), " "),
+    my_atoi((int)c->client_infos[nbCLient].lvl)), " "),
+    c->client_infos[nbCLient].team);
+    pnw(c, get_gui_id(c), info);
+}
+
 bool client_base(client_manager_t *c, int nbClient, char *buff)
 {
     if (remain_team(c, buff) == 0)
@@ -21,6 +34,8 @@ bool client_base(client_manager_t *c, int nbClient, char *buff)
     write(c->client_infos[nbClient].client_socket, c->coord->coord,
     strlen(c->coord->coord));
     c->client_infos[nbClient].type = AI;
+    c->client_infos[nbClient].first_connection = true;
+    c_pnw(c, nbClient);
     return true;
 }
 
@@ -29,6 +44,7 @@ void client_gui(client_manager_t *c, int nbClient, char *buff)
     c->client_infos[nbClient].isauth = true;
     c->client_infos[nbClient].team = buff;
     c->client_infos[nbClient].type = GUI;
+    c->client_infos[nbClient].first_connection = true;
 }
 
 bool com_login(client_manager_t *c, int nbClient, char *buff)

@@ -10,5 +10,6 @@
     #include <sys/types.h>
 
 size_t count_words(char *buff);
+int find_itemsize(int *ob);
 
 #endif /* !UTILS_H_ */

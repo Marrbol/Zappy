@@ -7,6 +7,15 @@
 
 #include "server.h"
 
+void set_forks(client_manager_t *c,
+__attribute__((unused)) int nbClient,
+__attribute__((unused)) char *buff)
+{
+    c->client_infos[nbClient].fct = forks;
+    c->client_infos[nbClient].exec_func = true;
+    c->client_infos[nbClient].time = 42;
+}
+
 void forks(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient,
 __attribute__((unused)) char *buff)
