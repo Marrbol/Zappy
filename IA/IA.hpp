@@ -132,6 +132,8 @@ class IA {
         bool _leaderRitual = true;
         bool _setEverythingRitual = false;
         size_t _assembleState = 0;
+        size_t _nbMessage = 0;
+        std::list<std::pair<int, int>> _infoCommands;
         using CommandFunction = std::function<void(void)>;
 
         typedef struct allCmdS {

@@ -35,9 +35,10 @@ void IA::look()
 
 void IA::broadcast(std::string message)
 {
-    _network.sendMessage(_socket, "Broadcast " + message + "\n");
+    _network.sendMessage(_socket, "Broadcast " + message + "\rnb" + std::to_string(_nbMessage) + "\rwho" + std::to_string(_clientName) + "\n");
     _ask.push_back("Broadcast");
-    std::cout << _clientName << " Broadcast " + message + "\n" << std::endl;
+    _nbMessage++;
+    // std::cout << _clientName << " Broadcast " + message << "\rnb" + std::to_string(_nbMessage) + "\rwho" + std::to_string(_clientName) << std::endl;
 }
 
 void IA::inventory()
@@ -300,8 +301,23 @@ void IA::ReceiveMessage()
     _line.erase(0, _line.find(",") + 1);
     if (_line[0] == ' ')
         _line.erase(0, 1);
-    // _messageReceived.push_back(std::make_pair(direction, _line));
     if (_line.substr(0, _line.find(" ")) == _teamName) {
+        int nbrMessage = -1;
+        int clientName = -1;
+        if (_line.find("\rnb") != std::string::npos) {
+            nbrMessage = stoi(_line.substr(_line.find("\rnb") + 3, _line.find("\r")));
+            if (_line.find("\rwho") != std::string::npos) {
+                clientName = stoi(_line.substr(_line.find("\rwho") + 4, _line.find("\n")));
+            }
+        }
+        _line.erase(_line.find("\r"), _line.size());
+        for (auto &i : _infoCommands) {
+            if (i.first == nbrMessage && i.second == clientName) {
+                std::cout <<  _clientName << " Message already received "<< nbrMessage << " " << clientName << std::endl;
+                return;
+            }
+        }
+        _infoCommands.push_back(std::make_pair(nbrMessage, clientName));
         _line.erase(0, _line.find(" ") + 1);
         std::string cmd = _line.substr(0, _line.find(" "));
         if (cmd == "Hello") {
