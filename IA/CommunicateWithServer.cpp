@@ -35,9 +35,9 @@ void IA::look()
 
 void IA::broadcast(std::string message)
 {
-    _network.sendMessage(_socket, "Broadcast " + message + "\n");
+    _network.sendMessage(_socket, "Broadcast " + message + "\rnb" + std::to_string(_nbMessage) + "\rwho" + std::to_string(_clientName) + "\n");
     _ask.push_back("Broadcast");
-    std::cout << "Broadcast " + message + "\n" << std::endl;
+    _nbMessage++;
 }
 
 void IA::inventory()
@@ -68,13 +68,12 @@ void IA::take(std::string object)
 {
     _network.sendMessage(_socket, "Take " + object + "\n");
     _ask.push_back("Take");
-    std::cout << _clientName << " Take " + object << std::endl;
 }
 
 void IA::set(std::string object)
 {
     _network.sendMessage(_socket, "Set " + object + "\n");
-
+    std::cout << _clientName << " Set " + object << std::endl;
     _ask.push_back("Set");
 }
 
@@ -82,38 +81,56 @@ void IA::incantation()
 {
     if (_inventaire.getFood() < 5)
         return;
-    while (_cpRituels[_level].getLinemate() > 0 && _inventaire.getLinemate() > 0) {
+    _ritualAfter = false;
+    bool end = false;
+    if (_level == 1) {
         set(LINEMATE);
-        // std::cout << _clientName << " Linemate" << std::endl;
-        _inventaire.setLinemate(_inventaire.getLinemate() - 1);
-        _cpRituels[_level].setLinemate(_cpRituels[_level].getLinemate() - 1);
+        end = true;
+    } else if (_role == "leader") {
+        while (_ask.size() < 9) {
+            if (_rituelsLeader[_level].getLinemate() > 0) {
+                _rituelsLeader[_level].setLinemate(_rituelsLeader[_level].getLinemate() - 1);
+                set(LINEMATE);
+                _inventaire.setLinemate(_inventaire.getLinemate() - 1);
+                continue;
+            }
+            if (_rituelsLeader[_level].getDeraumere() > 0) {
+                _rituelsLeader[_level].setDeraumere(_rituelsLeader[_level].getDeraumere() - 1);
+                set(DERAUMERE);
+                _inventaire.setDeraumere(_inventaire.getDeraumere() - 1);
+                continue;
+            }
+            if (_rituelsLeader[_level].getSibur() > 0) {
+                _rituelsLeader[_level].setSibur(_rituelsLeader[_level].getSibur() - 1);
+                set(SIBUR);
+                _inventaire.setSibur(_inventaire.getSibur() - 1);
+                continue;
+            }
+            if (_rituelsLeader[_level].getMendiane() > 0) {
+                _rituelsLeader[_level].setMendiane(_rituelsLeader[_level].getMendiane() - 1);
+                set(MENDIANE);
+                _inventaire.setMendiane(_inventaire.getMendiane() - 1);
+                continue;
+            }
+            if (_rituelsLeader[_level].getPhiras() > 0) {
+                _rituelsLeader[_level].setPhiras(_rituelsLeader[_level].getPhiras() - 1);
+                set(PHIRAS);
+                _inventaire.setPhiras(_inventaire.getPhiras() - 1);
+                continue;
+            }
+            if (_rituelsLeader[_level].getThystame() > 0) {
+                _rituelsLeader[_level].setThystame(_rituelsLeader[_level].getThystame() - 1);
+                set(THYSTAME);
+                _inventaire.setThystame(_inventaire.getThystame() - 1);
+                continue;
+            }
+            _rituelsLeader = _cpRituelsLeader;
+            _setEverythingRitual = false;
+            end = true;
+        }
     }
-    while (_cpRituels[_level].getDeraumere() > 0 && _inventaire.getDeraumere() > 0) {
-        set(DERAUMERE);
-        _inventaire.setDeraumere(_inventaire.getDeraumere() - 1);
-        _cpRituels[_level].setDeraumere(_cpRituels[_level].getDeraumere() - 1);
-    }
-    while (_cpRituels[_level].getSibur() > 0 && _inventaire.getSibur() > 0) {
-        set(SIBUR);
-        _inventaire.setSibur(_inventaire.getSibur() - 1);
-        _cpRituels[_level].setSibur(_cpRituels[_level].getSibur() - 1);
-    }
-    while (_cpRituels[_level].getMendiane() > 0 && _inventaire.getMendiane() > 0) {
-        set(MENDIANE);
-        _inventaire.setMendiane(_inventaire.getMendiane() - 1);
-        _cpRituels[_level].setMendiane(_cpRituels[_level].getMendiane() - 1);
-    }
-    while (_cpRituels[_level].getPhiras() > 0 && _inventaire.getPhiras() > 0) {
-        set(PHIRAS);
-        _inventaire.setPhiras(_inventaire.getPhiras() - 1);
-        _cpRituels[_level].setPhiras(_cpRituels[_level].getPhiras() - 1);
-    }
-    while (_cpRituels[_level].getThystame() > 0 && _inventaire.getThystame() > 0) {
-        set(THYSTAME);
-        _inventaire.setThystame(_inventaire.getThystame() - 1);
-        _cpRituels[_level].setThystame(_cpRituels[_level].getThystame() - 1);
-    }
-    // std::cout << _clientName << " Incantation" << std::endl;
+    if ((_role == "leader" && !end) || !_leaderRitual)
+        return;
     _network.sendMessage(_socket, "Incantation\n");
     _ask.push_back("Incantation");
     _ritualAsked = true;
@@ -121,11 +138,12 @@ void IA::incantation()
 
 void IA::parseCommande()
 {
+
     while (_commande.find("\n") != std::string::npos) {
         _line = _commande.substr(0, _commande.find("\n"));
-        // std::cout << _clientName << " Message received: " << _line << std::endl;
         if (_line == "ko") {
-            std::cout << _clientName << " KO " << _ask.front() << " " << _ask.size() << std::endl;
+            if (!_ask.empty())
+                std::cout << _clientName << " KO " << _ask.front() << " " << _ask.size() << std::endl;
         }
         _commande.erase(0, _commande.find("\n") + 1);
         if (_line == "WELCOME") {
@@ -149,7 +167,6 @@ void IA::parseCommande()
             continue;
         }
         if (_line == "dead") {
-            std::cout << "Dead" << std::endl;
             _isDead = true;
             break;
         }
@@ -159,8 +176,13 @@ void IA::parseCommande()
             _level = std::stoi(_line.substr(0, _line.find("\n")));
             everyoneHere = false;
             _ritualAsked = false;
-            // std::cout << "Level: " << _level << std::endl;
-            // std::cout << "currentname = " << _clientName << std::endl;
+            _ritualAfter = false;
+            _readyIncantation = false;
+            goToRitual = false;
+            _ritualDirection = 0;
+            nbPlayerHere = 0;
+            _saidHere = false;
+            _readyIncantation = false;
             removeMaterialForIncanation();
             continue;
         }
@@ -175,12 +197,27 @@ void IA::parseCommande()
     }
 }
 
+bool IA::bufferisation()
+{
+    if (_commande.find("\n") == std::string::npos) {
+        _bufferisedCommand = _commande;
+        return true;
+    }
+    return false;
+}
+
 void IA::communicateWithServer()
 {
     if (_network.selectSocket(_socket, &_readfds) == -1)
         throw std::runtime_error("Error: select failed");
     if (_network.fdReady(_socket, &_readfds)) {
         _commande = _network.receiveMessage(_socket);
+        if (!_bufferisedCommand.empty()) {
+            _commande = _bufferisedCommand + _commande;
+            _bufferisedCommand.clear();
+        }
+        if (bufferisation())
+            return;
         parseCommande();
     }
 }
@@ -223,15 +260,69 @@ void IA::reduceForRitual(std::string materiaux)
     }
 }
 
+bool IA::setRitual()
+{
+    while (_ask.size() < 9) {
+        if (_inventaire.getLinemate() > 0 && _cpRituels[_level].getLinemate() > 0) {
+            _cpRituels[_level].setLinemate(_cpRituels[_level].getLinemate() - 1);
+            set(LINEMATE);
+            _inventaire.setLinemate(_inventaire.getLinemate() - 1);
+            continue;
+        }
+        if (_inventaire.getDeraumere() > 0 && _cpRituels[_level].getDeraumere() > 0) {
+            _cpRituels[_level].setDeraumere(_cpRituels[_level].getDeraumere() - 1);
+            set(DERAUMERE);
+            _inventaire.setDeraumere(_inventaire.getDeraumere() - 1);
+            continue;
+        }
+        if (_inventaire.getSibur() > 0 && _cpRituels[_level].getSibur() > 0) {
+            _cpRituels[_level].setSibur(_cpRituels[_level].getSibur() - 1);
+            set(SIBUR);
+            _inventaire.setSibur(_inventaire.getSibur() - 1);
+            continue;
+        }
+        if (_inventaire.getMendiane() > 0 && _cpRituels[_level].getMendiane() > 0) {
+            _cpRituels[_level].setMendiane(_cpRituels[_level].getMendiane() - 1);
+            set(MENDIANE);
+            _inventaire.setMendiane(_inventaire.getMendiane() - 1);
+            continue;
+        }
+        if (_inventaire.getPhiras() > 0 && _cpRituels[_level].getPhiras() > 0) {
+            _cpRituels[_level].setPhiras(_cpRituels[_level].getPhiras() - 1);
+            set(PHIRAS);
+            _inventaire.setPhiras(_inventaire.getPhiras() - 1);
+            continue;
+        }
+        if (_inventaire.getThystame() > 0 && _cpRituels[_level].getThystame() > 0) {
+            _cpRituels[_level].setThystame(_cpRituels[_level].getThystame() - 1);
+            set(THYSTAME);
+            _inventaire.setThystame(_inventaire.getThystame() - 1);
+            continue;
+        }
+        return true;
+    }
+    return false;
+}
+
 void IA::ReceiveMessage()
 {
+    _ask.pop_front();
     _line.erase(0, _line.find(" ") + 1);
     size_t direction = std::stoi(_line.substr(0, _line.find(",")));
     _line.erase(0, _line.find(",") + 1);
     if (_line[0] == ' ')
         _line.erase(0, 1);
-    // _messageReceived.push_back(std::make_pair(direction, _line));
     if (_line.substr(0, _line.find(" ")) == _teamName) {
+        int nbrMessage = -1;
+        int clientName = -1;
+        if (_line.find("\rnb") != std::string::npos) {
+            nbrMessage = stoi(_line.substr(_line.find("\rnb") + 3, _line.find("\r")));
+            if (_line.find("\rwho") != std::string::npos) {
+                clientName = stoi(_line.substr(_line.find("\rwho") + 4, _line.find("\n")));
+            }
+        }
+        _line.erase(_line.find("\r"), _line.size());
+        _infoCommands.push_back(std::make_pair(nbrMessage, clientName));
         _line.erase(0, _line.find(" ") + 1);
         std::string cmd = _line.substr(0, _line.find(" "));
         if (cmd == "Hello") {
@@ -251,38 +342,53 @@ void IA::ReceiveMessage()
         }
         if (cmd == "f")
             reduceForRitual(_line.substr(_line.find(" ") + 1, _line.size()));
-        // if (cmd == "incantation") {
-        //     if (direction == 0) {
-        //         broadcast(_teamName + " here");
-        //     }
-        //     goToRitual = true;
-        //     _ritualDirection = direction;
-        // }
+        if (cmd == "incantation") {
+            if (_saidHere) {
+                _ritualDirection = 0;
+                return;
+            }
+            if (_inventaire.getFood() < 30) {
+                goToRitual = false;
+                return;
+            }
+            if (direction == 0 && !_readyIncantation) {
+                _readyIncantation = true;
+                _saidHere = false;
+            }
+            goToRitual = true;
+            _ritualDirection = direction;
+        }
         if (cmd == "startRitual") {
             _line.erase(0, _line.find(" ") + 1);
             size_t number = stoi(_line);
-            if (number == _clientName)
+            if (number == _clientName) {
                 incantation();
+                goToRitual = false;
+            }
         }
         if (cmd == "come") {
             _line.erase(0, _line.find(" ") + 1);
-            size_t number = stoi(_line);
-            if (number == _clientName) {
+            size_t number = stoi(_line.substr(0, _line.find(" ")));
+            _line.erase(0, _line.find(" ") + 1);
+            size_t number2 = stoi(_line);
+            if (number == _clientName || number2 == _clientName) {
                 goToRitual = true;
                 _ritualDirection = direction;
+                _ritualAfter = true;
+                std::cout << _clientName << " come" << std::endl;
+                _readyIncantation = false;
             }
         }
         if (cmd == "here") {
             if (_role == "leader") {
                 nbPlayerHere++;
-                if (nbPlayerHere == _clientName) {
+                look();
+                if (nbPlayerHere == _clientName)
                     everyoneHere = true;
-                }
             }
         }
     } else if (_role == "leader")
         broadcast(_line);
-    _ask.pop_front();
     _line.clear();
 }
 
@@ -322,13 +428,8 @@ void IA::getLook()
         _line.erase(_line.size() - 1, 1);
     for (size_t x = 0; x <= _maxCaseViewLevel[_level] ; x++) {
         std::string tmp = _line.substr(0, _line.find(","));
-        if (x == 0 && tmp.substr(0, _line.find(" ")) != "player"){
-            // _ask.pop_front();
-            // _ask.pop_front();
-            // _ask.push_front("Look");
-            // _ask.push_front("Inventory");
+        if (x == 0 && tmp.substr(0, _line.find(" ")) != "player")
             return getInventory();
-        }
         _line.erase(0, _line.find(",") + 1);
         if (_line[0] == ' ')
             _line.erase(0, 1);
@@ -399,13 +500,8 @@ void IA::getInventory()
             tmp.erase(0, 1);
         if (tmp[tmp.size() - 1] == ' ')
             tmp.erase(tmp.size(), 1);
-        if (tmp.substr(0, tmp.find(" ")) == "player") {
-            // _ask.pop_front();
-            // _ask.pop_front();
-            // _ask.push_front("Inventory");
-            // _ask.push_front("Look");
+        if (tmp.substr(0, tmp.find(" ")) == "player")
             return getLook();
-        }
         _line.erase(0, _line.find(",") + 1);
         std::string material = tmp.substr(0, tmp.find(" "));
         tmp.erase(0, tmp.find(" ") + 1);

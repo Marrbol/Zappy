@@ -20,6 +20,7 @@
 #include <error.h>
 #include "../Process/Process.hpp"
 #include <csignal>
+#include <time.h>
 #define FOODRARETY 0.5
 #define LINEMATERARETY 0.3
 #define DERAUMERERARETY 0.15
@@ -47,6 +48,7 @@ class IA {
         bool moveTheIAToTheBestCase();
         bool assembleAllAI();
 
+        bool bufferisation();
         IA(int port, std::string name, std::string machine);
         void communicateWithServer();
         void parseCommande();
@@ -56,6 +58,8 @@ class IA {
         void ForkTheProgram();
         void isItForRitual(std::string materiaux);
         void reduceForRitual(std::string materiaux);
+        bool setRitual();
+        void verifyRitual();
 
         //send command
         void forward();
@@ -94,6 +98,7 @@ class IA {
         std::string _commande;
         std::string _machine;
         std::string _line;
+        std::string _bufferisedCommand;
         std::pair<size_t, size_t> _mapSize;
         size_t _level = 1;
         std::string _teamName;
@@ -111,7 +116,7 @@ class IA {
         int _socket = 0;
         std::list<std::string> _ask;
         Process _process;
-        int _pid;
+        int _pid = 0;
         int _port;
         std::string _role = "";
         bool forked = false;
@@ -120,8 +125,17 @@ class IA {
         bool goToRitual = false;
         int _ritualDirection = 0;
         bool _ritualAsked = false;
+        bool _readyIncantation = false;
+        bool _ritualAfter = false;
+        time_t _clock;
+        bool _saidHere = false;
         size_t nbPlayerHere = 0;
-
+        bool _getRessources = false;
+        bool _leaderRitual = true;
+        bool _setEverythingRitual = false;
+        size_t _assembleState = 0;
+        size_t _nbMessage = 0;
+        std::list<std::pair<int, int>> _infoCommands;
         using CommandFunction = std::function<void(void)>;
 
         typedef struct allCmdS {
@@ -154,7 +168,17 @@ class IA {
             {6, Materiaux(0,1,2,3,0,1,0)},
             {7, Materiaux(0,2,2,2,2,2,1)}
         };
+        std::map<size_t, Materiaux> _rituelsLeader = {
+            {1, Materiaux(0,1,0,0,0,0,0)},
+            {2, Materiaux(0,1,1,1,0,0,0)},
+            {3, Materiaux(0,2,0,1,0,2,0)},
+            {4, Materiaux(0,1,1,2,0,1,0)},
+            {5, Materiaux(0,1,2,1,2,0,0)},
+            {6, Materiaux(0,1,2,3,0,1,0)},
+            {7, Materiaux(0,2,2,2,2,2,1)}
+        };
         std::map<size_t, Materiaux> _cpRituels = _rituels;
+        std::map<size_t, Materiaux> _cpRituelsLeader = _rituelsLeader;
         std::map<size_t, size_t> _maxCaseViewLevel = {
             {1, 3},
             {2, 8},
