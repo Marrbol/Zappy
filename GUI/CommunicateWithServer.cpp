@@ -67,9 +67,24 @@ void GameWindow::communicateWithServer()
         throw std::runtime_error("Error: select failed");
     if (_network.fdReady(_socket, &_readfds)) {
         _commande = _network.receiveMessage(_socket);
+        if (!_bufferisedCommand.empty()) {
+            _commande = _bufferisedCommand + _commande;
+            _bufferisedCommand.clear();
+        }
+        if (bufferisation())
+            return;
         if (!parseCommande())
             std::cout << "Unknown command" << std::endl;
     }
+}
+
+bool GameWindow::bufferisation()
+{
+    if (_commande.find("\n") == std::string::npos) {
+        _bufferisedCommand = _commande;
+        return true;
+    }
+    return false;
 }
 
 bool GameWindow::parseCommande()
@@ -157,7 +172,7 @@ void GameWindow::newPlayer()
     _line.erase(0, _line.find(" ") + 1);
 
     ressourcesT inventory;
-    inventory.food = 0; // Initialize each member of the inventory struct
+    inventory.food = 0;
     inventory.linemate = 0;
     inventory.deraumere = 0;
     inventory.sibur = 0;
@@ -215,7 +230,7 @@ void GameWindow::playerPosition()
     _line.erase(0, _line.find(" ") + 1);
     size_t orientation = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
-    
+
     _player[id].id = id;
     _player[id].x = x;
     _player[id].y = y;
@@ -291,13 +306,10 @@ void GameWindow::broadcast()
     size_t id = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
     _messageBroadcast = std::pair<size_t, std::string>(id, _line);
-    int playerX = _player[id].x;
-    int playerY = _player[id].y;
 
-    // Positionner le texte à la position du joueur
     bullSprite.setPosition(((_mapSize.first+1) - (_mapSize.second+1)) * 500 * 0.50f, ((_mapSize.first+1) + (_mapSize.second+1)) * 500 * 0.25f);
     messageText.setPosition(((_mapSize.first+1) - (_mapSize.second+1)) * 500 * 0.50f, ((_mapSize.first+1) + (_mapSize.second+1)) * 500 * 0.25f);
-    messageText.setString(_messageBroadcast.second); // Définir le contenu du texte
+    messageText.setString(_messageBroadcast.second);
 }
 
 void GameWindow::startIncantation()
@@ -339,11 +351,8 @@ void GameWindow::endIncantation()
 
 void GameWindow::startLaying()
 {
-    size_t id = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
-    size_t x = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
-    size_t y = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
     std::string team = _line.substr(0, _line.find(" "));
     _line.erase(0, _line.find(" ") + 1);
@@ -395,7 +404,6 @@ void GameWindow::deathEgg()
 
 void GameWindow::expulsion()
 {
-    size_t idPlayer = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
 }
 
