@@ -132,13 +132,13 @@ void GameWindow::run()
                 }
                 window.draw(player.spritePlayer);
             }
-        for (auto& eggTile : _egg) {
+        /*for (auto& eggTile : _egg) {
                 size_t id = eggTile.first;
                 eggT& egg = eggTile.second;
 
                 egg.spriteEgg.setPosition((egg.x - egg.y) * 500 * 0.50f,(egg.x + egg.y) * 500 * 0.25f);
                 window.draw(egg.spriteEgg);
-            }
+            /*/
         }
         window.draw(messageText);
         camera.update(window);
