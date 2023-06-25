@@ -48,6 +48,7 @@ class IA {
         bool moveTheIAToTheBestCase();
         bool assembleAllAI();
 
+        bool bufferisation();
         IA(int port, std::string name, std::string machine);
         void communicateWithServer();
         void parseCommande();
@@ -97,6 +98,7 @@ class IA {
         std::string _commande;
         std::string _machine;
         std::string _line;
+        std::string _bufferisedCommand;
         std::pair<size_t, size_t> _mapSize;
         size_t _level = 1;
         std::string _teamName;

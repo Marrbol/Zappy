@@ -140,9 +140,10 @@ void IA::incantation()
 
 void IA::parseCommande()
 {
+
     while (_commande.find("\n") != std::string::npos) {
         _line = _commande.substr(0, _commande.find("\n"));
-        // std::cout << _clientName << " Message received: " << _line << std::endl;
+        std::cout << " Message received: " << _line << std::endl;
         if (_line == "ko") {
             if (!_ask.empty())
                 std::cout << _clientName << " KO " << _ask.front() << " " << _ask.size() << std::endl;
@@ -201,12 +202,27 @@ void IA::parseCommande()
     }
 }
 
+bool IA::bufferisation()
+{
+    if (_commande.find("\n") == std::string::npos) {
+        _bufferisedCommand = _commande;
+        return true;
+    }
+    return false;
+}
+
 void IA::communicateWithServer()
 {
     if (_network.selectSocket(_socket, &_readfds) == -1)
         throw std::runtime_error("Error: select failed");
     if (_network.fdReady(_socket, &_readfds)) {
         _commande = _network.receiveMessage(_socket);
+        if (!_bufferisedCommand.empty()) {
+            _commande = _bufferisedCommand + _commande;
+            _bufferisedCommand.clear();
+        }
+        if (bufferisation())
+            return;
         parseCommande();
     }
 }
