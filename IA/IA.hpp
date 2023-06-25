@@ -18,6 +18,9 @@
 #include "../network/Network.hpp"
 #include <iostream>
 #include <error.h>
+#include "../Process/Process.hpp"
+#include <csignal>
+#include <time.h>
 #define FOODRARETY 0.5
 #define LINEMATERARETY 0.3
 #define DERAUMERERARETY 0.15
@@ -36,19 +39,27 @@
 #define OK "ok"
 #define KO "ko"
 
+
 class IA {
     public:
         ~IA();
         void calculeMateriauxPoids();
         void calculeTilesPoids();
         bool moveTheIAToTheBestCase();
+        bool assembleAllAI();
 
+        bool bufferisation();
         IA(int port, std::string name, std::string machine);
         void communicateWithServer();
         void parseCommande();
         void loopIA();
         void calculateCoordBestCase();
         bool GetAllRessourcesTile();
+        void ForkTheProgram();
+        void isItForRitual(std::string materiaux);
+        void reduceForRitual(std::string materiaux);
+        bool setRitual();
+        void verifyRitual();
 
         //send command
         void forward();
@@ -58,11 +69,12 @@ class IA {
         void broadcast(std::string message);
         void inventory();
         void connectNbr();
-        void fork();
+        void forkIA();
         void eject();
         void take(std::string object);
         void set(std::string object);
         void incantation();
+        static void signal_handler(int signal);
 
         //get command
         void getForward();
@@ -79,12 +91,14 @@ class IA {
         void getSet();
         void getIncantation();
         void ReceiveMessage();
+        void removeMaterialForIncanation();
         size_t countSubStr(std::string str, std::string subStr);
 
     private:
         std::string _commande;
         std::string _machine;
         std::string _line;
+        std::string _bufferisedCommand;
         std::pair<size_t, size_t> _mapSize;
         size_t _level = 1;
         std::string _teamName;
@@ -101,7 +115,27 @@ class IA {
         Network _network;
         int _socket = 0;
         std::list<std::string> _ask;
-
+        Process _process;
+        int _pid = 0;
+        int _port;
+        std::string _role = "";
+        bool forked = false;
+        bool _canIncantation = false;
+        bool everyoneHere = false;
+        bool goToRitual = false;
+        int _ritualDirection = 0;
+        bool _ritualAsked = false;
+        bool _readyIncantation = false;
+        bool _ritualAfter = false;
+        time_t _clock;
+        bool _saidHere = false;
+        size_t nbPlayerHere = 0;
+        bool _getRessources = false;
+        bool _leaderRitual = true;
+        bool _setEverythingRitual = false;
+        size_t _assembleState = 0;
+        size_t _nbMessage = 0;
+        std::list<std::pair<int, int>> _infoCommands;
         using CommandFunction = std::function<void(void)>;
 
         typedef struct allCmdS {
@@ -122,17 +156,29 @@ class IA {
             {"Take", std::bind(&IA::getTake, this)},
             {"Set", std::bind(&IA::getSet, this)},
             {"Incantation", std::bind(&IA::getIncantation, this)},
+            {"message", std::bind(&IA::ReceiveMessage, this)},
             {"NULL", NULL},
         };
         std::map<size_t, Materiaux> _rituels = {
             {1, Materiaux(0,1,0,0,0,0,0)},
-            {2, Materiaux(0,1,1,1,0,0,0)},
-            {3, Materiaux(0,2,0,1,0,2,0)},
-            {4, Materiaux(0,1,1,2,0,1,0)},
-            {5, Materiaux(0,1,2,1,3,0,0)},
+            {2, Materiaux(0,4,4,4,0,0,0)},
+            {3, Materiaux(0,8,0,4,0,8,0)},
+            {4, Materiaux(0,2,2,4,0,2,0)},
+            {5, Materiaux(0,2,4,2,6,0,0)},
             {6, Materiaux(0,1,2,3,0,1,0)},
             {7, Materiaux(0,2,2,2,2,2,1)}
         };
+        std::map<size_t, Materiaux> _rituelsLeader = {
+            {1, Materiaux(0,1,0,0,0,0,0)},
+            {2, Materiaux(0,1,1,1,0,0,0)},
+            {3, Materiaux(0,2,0,1,0,2,0)},
+            {4, Materiaux(0,1,1,2,0,1,0)},
+            {5, Materiaux(0,1,2,1,2,0,0)},
+            {6, Materiaux(0,1,2,3,0,1,0)},
+            {7, Materiaux(0,2,2,2,2,2,1)}
+        };
+        std::map<size_t, Materiaux> _cpRituels = _rituels;
+        std::map<size_t, Materiaux> _cpRituelsLeader = _rituelsLeader;
         std::map<size_t, size_t> _maxCaseViewLevel = {
             {1, 3},
             {2, 8},
@@ -143,13 +189,14 @@ class IA {
             {7, 63},
             {8, 80}
         };
-        Materiaux _inventaire = Materiaux(0,0,0,0,0,0,0);
+        Materiaux _inventaire = Materiaux(10,0,0,0,0,0,0);
         std::map<size_t, std::string> _materiauxPriority;
         size_t _numTilesPriority = 0;
         std::map<size_t, std::string> _view;
         std::list<std::string> _takeObject;
         Materiaux _poidMateriaux;
         bool isTurned = false;
+        bool _isFather = false;
         std::pair<int, size_t> _coordBestCase;
         std::map<size_t, size_t> _tilesPoid;
         std::map<size_t, size_t> _tilesDistance = { // index de la case et distance de la case

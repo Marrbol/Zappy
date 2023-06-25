@@ -17,6 +17,8 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
+#include <unordered_map>
 #include "Camera.hpp"
 #include "IsometricMap.hpp"
 
@@ -50,10 +52,16 @@ class GameWindow {
             bool laying = false;
         } playerT;
         std::map<size_t, playerT> _player;  // id -> player
+        sf::Text messageText;
+        sf::Text IDText;
+        sf::Font font;
+        sf::Texture bullText;
+        sf::Sprite bullSprite;
     public:
-        GameWindow(int width, int height, const std::string& title, int port, std::string machine);
+        GameWindow(int port, std::string machine);
         ~GameWindow();
         void run();
+        bool bufferisation();
 
         //send to server
         void askMapSize();
@@ -97,17 +105,18 @@ class GameWindow {
         void modifInventory(size_t id_player, size_t id_ressource, int nb);
 
         //init struct sprite
-        void initAll(draw_t food, draw_t linemate, draw_t deraumere, draw_t sibur, draw_t mendiane, draw_t phiras, draw_t thystame, playerT player);
+        void initAll(draw_t food, draw_t linemate, draw_t deraumere, draw_t sibur, draw_t mendiane, draw_t phiras, draw_t thystame);
         //ask map pdr pgt reinitialiser la map
 
-        //draw ressources player 
+        //draw ressources player
 
     protected:
     private:
         sf::RenderWindow window;
         //GUI variable
-        std::pair<size_t, size_t> _mapSize; // x, y
+        std::pair<int, int> _mapSize; // x, y
         std::vector<std::string> _teamName;
+        std::string _bufferisedCommand;
         std::pair<size_t, std::string> _messageBroadcast; // id, message
 
         using CommandFunction = std::function<void(void)>;
@@ -132,8 +141,10 @@ class GameWindow {
             size_t id = 0;
             size_t x = 0;
             size_t y = 0;
+            sf::Sprite spriteEgg;
+            sf::Texture textEgg;
         } eggT;
-        std::vector<eggT> _egg;
+        std::map<size_t, eggT> _egg;
 
         //communication
         fd_set _readfds;

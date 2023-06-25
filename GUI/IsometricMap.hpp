@@ -14,10 +14,10 @@ class Cube;
 // IsometricMap.h
 class IsometricMap {
 private:
-    std::map <std::pair<size_t, size_t>, Cube*> map;
+    std::map <std::pair<int, int>, Cube*> map;
     float cubeSize;
-    size_t _i;
-    size_t _j;
+    int _i;
+    int _j;
 
 public:
     IsometricMap(float size);

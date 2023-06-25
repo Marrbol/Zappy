@@ -78,6 +78,7 @@ SRCSERV = 		$(SRC_SERV)/main.c						\
   				$(SRC_SERV)/$(CMD_GUI)/mct.c			\
 
 SRCENCAPS = network/Network.cpp\
+			Process/Process.cpp
 
 SRCIA = IA/IA.cpp\
 		Materiaux/Materiaux.cpp\
@@ -136,7 +137,7 @@ $(NAMEIA): $(OBJIA) $(OBJENCAPS)
 	$(CXX) $(OBJIA) $(OBJENCAPS) -o $(NAMEIA) $(CXXFLAGS)
 
 $(NAMEGUI): $(OBJGUI) $(OBJENCAPS)
-	$(CXX) $(OBJGUI) $(OBJENCAPS) -lsfml-graphics -lsfml-window -lsfml-system -o $(NAMEGUI) $(CXXFLAGS)
+	$(CXX) $(OBJGUI) $(OBJENCAPS) -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -o $(NAMEGUI) $(CXXFLAGS)
 
 $(NAME): $(OBJ)
 	$(CXX) $(OBJ) -o $(NAME) $(CXXFLAGS)

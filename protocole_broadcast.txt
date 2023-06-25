@@ -1,0 +1,13 @@
+protocole IA broadcast
+
+nom de la team: NM
+Niveau incantation: NI
+
+
+
+
+NM Bonjour  -> NM Hola
+
+NM NI Rassemblement -> NM OK //répéter jusqu'à ce que tous le monde viennent
+
+_teamName + " Bonjour " + _clientName -> NM Hola + role

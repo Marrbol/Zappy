@@ -67,9 +67,24 @@ void GameWindow::communicateWithServer()
         throw std::runtime_error("Error: select failed");
     if (_network.fdReady(_socket, &_readfds)) {
         _commande = _network.receiveMessage(_socket);
+        if (!_bufferisedCommand.empty()) {
+            _commande = _bufferisedCommand + _commande;
+            _bufferisedCommand.clear();
+        }
+        if (bufferisation())
+            return;
         if (!parseCommande())
             std::cout << "Unknown command" << std::endl;
     }
+}
+
+bool GameWindow::bufferisation()
+{
+    if (_commande.find("\n") == std::string::npos) {
+        _bufferisedCommand = _commande;
+        return true;
+    }
+    return false;
 }
 
 bool GameWindow::parseCommande()
@@ -157,7 +172,7 @@ void GameWindow::newPlayer()
     _line.erase(0, _line.find(" ") + 1);
 
     ressourcesT inventory;
-    inventory.food = 0; // Initialize each member of the inventory struct
+    inventory.food = 0;
     inventory.linemate = 0;
     inventory.deraumere = 0;
     inventory.sibur = 0;
@@ -202,7 +217,6 @@ void GameWindow::newPlayer()
             return;
     }
     _player[id].spritePlayer.setTexture(_player[id].textPlayer);
-    _player[id].spritePlayer.setScale(sf::Vector2f(1.5, 1.5));
 }
 
 
@@ -216,7 +230,7 @@ void GameWindow::playerPosition()
     _line.erase(0, _line.find(" ") + 1);
     size_t orientation = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
-    
+
     _player[id].id = id;
     _player[id].x = x;
     _player[id].y = y;
@@ -248,7 +262,6 @@ void GameWindow::playerPosition()
             return;
     }
     _player[id].spritePlayer.setTexture(_player[id].textPlayer);
-    _player[id].spritePlayer.setScale(sf::Vector2f(1.5, 1.5));
 }
 
 
@@ -293,6 +306,10 @@ void GameWindow::broadcast()
     size_t id = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
     _messageBroadcast = std::pair<size_t, std::string>(id, _line);
+
+    bullSprite.setPosition(((_mapSize.first+1) - (_mapSize.second+1)) * 500 * 0.50f, ((_mapSize.first+1) + (_mapSize.second+1)) * 500 * 0.25f);
+    messageText.setPosition(((_mapSize.first+1) - (_mapSize.second+1)) * 500 * 0.50f, ((_mapSize.first+1) + (_mapSize.second+1)) * 500 * 0.25f);
+    messageText.setString(_messageBroadcast.second);
 }
 
 void GameWindow::startIncantation()
@@ -334,11 +351,8 @@ void GameWindow::endIncantation()
 
 void GameWindow::startLaying()
 {
-    size_t id = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
-    size_t x = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
-    size_t y = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
     std::string team = _line.substr(0, _line.find(" "));
     _line.erase(0, _line.find(" ") + 1);
@@ -355,7 +369,13 @@ void GameWindow::eggLaid()
     size_t y = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
     _player[idPlayer].laying = false;
-    _egg.push_back({idEgg, x, y});
+    _egg[idEgg].id = idEgg;
+    _egg[idEgg].x = x;
+    _egg[idEgg].y = y;
+
+    if (!_egg[idEgg].textEgg.loadFromFile("assets/egg.png"))
+        return;
+    _egg[idEgg].spriteEgg.setTexture(_egg[idEgg].textEgg);
 }
 
 void GameWindow::playerConnectionEgg()
@@ -364,11 +384,10 @@ void GameWindow::playerConnectionEgg()
     _line.erase(0, _line.find(" ") + 1);
     for (size_t i = 0; i < _egg.size(); i++) {
         if (_egg[i].id == idEgg) {
-            _egg.erase(_egg.begin() + i);
+            _egg.erase(idEgg);
             break;
         }
     }
-    //peux etre créer un player ici
 }
 
 void GameWindow::deathEgg()
@@ -377,7 +396,7 @@ void GameWindow::deathEgg()
     _line.erase(0, _line.find(" ") + 1);
     for (size_t i = 0; i < _egg.size(); i++) {
         if (_egg[i].id == idEgg) {
-            _egg.erase(_egg.begin() + i);
+            _egg.erase(idEgg);
             break;
         }
     }
@@ -385,7 +404,6 @@ void GameWindow::deathEgg()
 
 void GameWindow::expulsion()
 {
-    size_t idPlayer = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
 }
 
@@ -470,7 +488,8 @@ void GameWindow::playerDeath()
     size_t idPlayer = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
 
-    // _player[idPlayer].
+    _player[idPlayer].textPlayer.loadFromFile("assets/playerDeath.png");
+    _player[idPlayer].spritePlayer.setTexture(_player[idPlayer].textPlayer);
 }
 
 void GameWindow::endGame()
