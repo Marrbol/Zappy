@@ -36,48 +36,48 @@ char *get_ob(int *ob, int x, int y, client_manager_t *c) {
     return res;
 }
 
-static char *check_case_look(int ***map, int x, int y, client_manager_t *c)
-{
-    int fx = x;
-    int fy = y;
+// static char *check_case_look(int ***map, int x, int y, client_manager_t *c)
+// {
+//     int fx = x;
+//     int fy = y;
 
-    if (x >= c->coord->x)
-        fx = x - c->coord->x;
-    if (x < 0)
-        fx = c->coord->x + x;
-    if (y >= c->coord->y)
-        fy = y - c->coord->y;
-    if (y < 0)
-        fy = c->coord->y + y;
-    if (fx >= 0 && fx < c->coord->x && fy >= 0 && fy < c->coord->y)
-        return get_ob(map[fx][fy], fx, fy, c);
-    else
-        return get_ob(map[0][0], 0, 0, c);
-}
+//     if (x >= c->coord->x)
+//         fx = x - c->coord->x;
+//     if (x < 0)
+//         fx = c->coord->x + x;
+//     if (y >= c->coord->y)
+//         fy = y - c->coord->y;
+//     if (y < 0)
+//         fy = c->coord->y + y;
+//     if (fx >= 0 && fx < c->coord->x && fy >= 0 && fy < c->coord->y)
+//         return get_ob(map[fx][fy], fx, fy, c);
+//     else
+//         return get_ob(map[0][0], 0, 0, c);
+// }
 
-static char *find_case(client_t *player, int i, int j, client_manager_t *c)
-{
+// static char *find_case(client_t *player, int i, int j, client_manager_t *c)
+// {
 
-    char *vo = calloc(3, sizeof(char));
-    strcat(vo, " ");
-    switch (player->d) {
-        case (NORTH):
-            return (check_case_look(c->map,
-                                    player->coord->y - i, player->coord->x + j, c));
-        case (EAST):
-            return (check_case_look(c->map,
-                                    player->coord->y + j, player->coord->x + i, c));
-        case (OUEST):
-            return (check_case_look(c->map,
-                                    player->coord->y + i, player->coord->x - j, c));
-        case (SUD):
-            return (check_case_look(c->map,
-                                    player->coord->y - j, player->coord->x - i, c));
-        default: {
-            return vo;
-        }
-    }
-}
+//     char *vo = calloc(3, sizeof(char));
+//     strcat(vo, " ");
+//     switch (player->d) {
+//         case (NORTH):
+//             return (check_case_look(c->map,
+//                                     player->coord->y - i, player->coord->x + j, c));
+//         case (EAST):
+//             return (check_case_look(c->map,
+//                                     player->coord->y + j, player->coord->x + i, c));
+//         case (OUEST):
+//             return (check_case_look(c->map,
+//                                     player->coord->y + i, player->coord->x - j, c));
+//         case (SUD):
+//             return (check_case_look(c->map,
+//                                     player->coord->y - j, player->coord->x - i, c));
+//         default: {
+//             return vo;
+//         }
+//     }
+// }
 
 void look(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient,
