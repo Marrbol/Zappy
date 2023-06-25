@@ -132,6 +132,13 @@ void GameWindow::run()
                 }
                 window.draw(player.spritePlayer);
             }
+        /*for (auto& eggTile : _egg) {
+                size_t id = eggTile.first;
+                eggT& egg = eggTile.second;
+
+                egg.spriteEgg.setPosition((egg.x - egg.y) * 500 * 0.50f,(egg.x + egg.y) * 500 * 0.25f);
+                window.draw(egg.spriteEgg);
+            /*/
         }
         window.draw(messageText);
         camera.update(window);
@@ -168,9 +175,6 @@ void GameWindow::initAll(draw_t food, draw_t linemate, draw_t deraumere, draw_t 
     thystame.spriteRessources = sf::Sprite();
     thystame.textRessources = sf::Texture();
 
-    if (!bullText.loadFromFile("assets/Bulle.png")) {
-       return;
-    }
     if (!font.loadFromFile("assets/arial.ttf")) {
         return;
     }

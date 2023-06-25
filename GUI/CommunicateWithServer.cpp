@@ -360,7 +360,13 @@ void GameWindow::eggLaid()
     size_t y = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
     _player[idPlayer].laying = false;
-    _egg.push_back({idEgg, x, y});
+    _egg[idEgg].id = idEgg;
+    _egg[idEgg].x = x;
+    _egg[idEgg].y = y;
+
+    if (!_egg[idEgg].textEgg.loadFromFile("assets/egg.png"))
+        return;
+    _egg[idEgg].spriteEgg.setTexture(_egg[idEgg].textEgg);
 }
 
 void GameWindow::playerConnectionEgg()
@@ -369,11 +375,10 @@ void GameWindow::playerConnectionEgg()
     _line.erase(0, _line.find(" ") + 1);
     for (size_t i = 0; i < _egg.size(); i++) {
         if (_egg[i].id == idEgg) {
-            _egg.erase(_egg.begin() + i);
+            _egg.erase(idEgg);
             break;
         }
     }
-    //peux etre créer un player ici
 }
 
 void GameWindow::deathEgg()
@@ -382,7 +387,7 @@ void GameWindow::deathEgg()
     _line.erase(0, _line.find(" ") + 1);
     for (size_t i = 0; i < _egg.size(); i++) {
         if (_egg[i].id == idEgg) {
-            _egg.erase(_egg.begin() + i);
+            _egg.erase(idEgg);
             break;
         }
     }
@@ -475,7 +480,8 @@ void GameWindow::playerDeath()
     size_t idPlayer = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
 
-    // _player[idPlayer].
+    _player[idPlayer].textPlayer.loadFromFile("assets/playerDeath.png");
+    _player[idPlayer].spritePlayer.setTexture(_player[idPlayer].textPlayer);
 }
 
 void GameWindow::endGame()

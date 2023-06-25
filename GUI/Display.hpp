@@ -137,8 +137,10 @@ class GameWindow {
             size_t id = 0;
             size_t x = 0;
             size_t y = 0;
+            sf::Sprite spriteEgg;
+            sf::Texture textEgg;
         } eggT;
-        std::vector<eggT> _egg;
+        std::map<size_t, eggT> _egg;
 
         //communication
         fd_set _readfds;
