@@ -40,14 +40,6 @@ void IA::calculeMateriauxPoids()
     _poidMateriaux.setPhiras(_poidPhiras);
     _poidMateriaux.setSibur(_poidSibur);
     _poidMateriaux.setThystame(_poidThystame);
-    // std::cout << "poid food = " << _poidFood << std::endl;
-    // std::cout << "poid linemate = " << _poidLinemate << std::endl;
-    // std::cout << "poid deraumere = " << _poidDeraumere << std::endl;
-    // std::cout << "poid sibur = " << _poidSibur << std::endl;
-    // std::cout << "poid mendiane = " << _poidMendiane << std::endl;
-    // std::cout << "poid phiras = " << _poidPhiras << std::endl;
-    // std::cout << "poid thystame = " << _poidThystame << std::endl;
-    // std::cout << std::endl;
 }
 
 size_t IA::countSubStr(std::string str, std::string subStr)
@@ -91,7 +83,6 @@ void IA::calculeTilesPoids()
         if (_view[i].find("player") != std::string::npos)
             poidTmp = 0;
         _tilesPoid[i] = poidTmp;
-        // std::cout << "poid de la case " << i << " = " << _tilesPoid[i] << std::endl;
     }
     for (size_t i = 1; i <= _maxCaseViewLevel[_level]; i++)
         if (_tilesPoid[i] > _tilesPoid[_numTilesPriority])
@@ -172,7 +163,6 @@ bool IA::GetAllRessourcesTile()
             continue;
         }
     }
-    // std::cout << "nbCommandLeft = " << _ask.size() << std::endl;
     if (nbMaterials == 0)
         return !false;
     return !true;
@@ -226,7 +216,6 @@ void IA::isItForRitual(std::string materiaux)
         return;
     if (materiaux == LINEMATE && _rituels[_level].getLinemate() > 0) {
         _rituels[_level].setLinemate(_rituels[_level].getLinemate() - 1);
-        // std::cout << "Linemate left for ritual = " << _rituels[_level].getLinemate() << std::endl;
         if (_level > 1)
             broadcast(_teamName + " f 1");
     }
@@ -300,7 +289,6 @@ bool IA::assembleAllAI()
                 }
             }
         }
-        // broadcast(_teamName + " startRitual");
     }
     if (_rituels[_level].getLinemate() == 0 && _rituels[_level].getDeraumere() == 0 && _rituels[_level].getSibur() == 0 && _rituels[_level].getMendiane() == 0 && _rituels[_level].getPhiras() == 0 && _rituels[_level].getThystame() == 0) {
         broadcast(_teamName + " incantation");
@@ -378,7 +366,6 @@ void IA::removeMaterialForIncanation()
 
 void IA::verifyRitual()
 {
-    // _clock
 }
 
 void IA::loopIA()
@@ -391,9 +378,6 @@ void IA::loopIA()
             IA::communicateWithServer();
         } while (_name == false);
         if (_ask.size() >= 9) {
-            if (_ask.size() > 9) {
-                // std::cout << "trop de commandes " << _ask.size() << std::endl;
-            }
             continue;
         }
         if (_isDead) {
@@ -450,7 +434,6 @@ void IA::loopIA()
         if (!_view.empty()) {
             bool here = false;
             if (goToRitual) {
-                // std::cout << _clientName << " go to ritual" << std::endl;
                 if (_ask.size() > 5)
                     continue;
                 if  (_ritualDirection != 0) {
@@ -483,9 +466,7 @@ void IA::loopIA()
                 }
                 if (_ritualDirection != 0)
                     _ritualDirection = 0;
-                // std::cout << _clientName << " here" << std::endl;
                 if (_ritualAfter) {
-                    std::cout << _clientName << " incantation" << std::endl;
                     incantation();
                 }
                 continue;
@@ -505,28 +486,12 @@ void IA::loopIA()
             if (here) {
                 if (GetAllRessourcesTile()) {
                     inventory();
-                    // std::cout << _clientName << " linemate : "<< _inventaire.getLinemate() << std::endl;
-                    // std::cout << _clientName << " deraumere : "<< _inventaire.getDeraumere() << std::endl;
-                    // std::cout << _clientName << " sibur : "<< _inventaire.getSibur() << std::endl;
-                    // std::cout << _clientName << " mendiane : "<< _inventaire.getMendiane() << std::endl;
-                    // std::cout << _clientName << " phiras : "<< _inventaire.getPhiras() << std::endl;
-                    // std::cout << _clientName << " thystame : "<< _inventaire.getThystame() << std::endl;
-                    // std::cout << _clientName << " nourriture : "<< _inventaire.getFood() << std::endl;
-                    // std::cout << _inventaire.getDeraumere() << std::endl;
-                    // std::cout << _inventaire.getLinemate() << std::endl;
-                    // std::cout << _inventaire.getMendiane() << std::endl;
-                    // std::cout << _inventaire.getPhiras() << std::endl;
-                    // std::cout << _inventaire.getSibur() << std::endl;
-                    // std::cout << _inventaire.getThystame() << std::endl;
-                    // std::cout << std::endl;
-                    // std::cout << std::endl;
                     if (!goToRitual) {
                         _view.clear();
                         sendlook = false;
                     }
                 }
             }
-                 // faire une fonction qui check si on a toutes les ressources
         } else {
             if (!sendlook && _ask.size() < 9) {
                 IA::look();
@@ -550,7 +515,6 @@ void IA::calculateCoordBestCase()
                 _coordBestCase.first *= -1;
         }
     }
-    std::cout << "nb: " << _clientName << " the case and the coord for the best case are " << _numTilesPriority << " and the coord are " <<_coordBestCase.second << " and " << _coordBestCase.first << std::endl;
 }
 
 void printUsage() {
@@ -562,10 +526,10 @@ void printUsage() {
 
 int main(int ac, char **av)
 {
-    size_t port = 0;
-    std::string name;
-    std::string machine;
-    if (ac != 7 || std::string(av[1]) == "-help") {
+    int port = -1;
+    std::string name = "";
+    std::string machine = "127.0.0.1";
+    if (ac < 5 || std::string(av[1]) == "-help") {
         printUsage();
         return 84;
     }
@@ -586,10 +550,14 @@ int main(int ac, char **av)
                 machine = av[i + 1];
                 break;
             default:
-                // std::cout << "Invalid argument: " << flag << std::endl;
+                std::cout << "Invalid argument: " << flag << std::endl;
                 printUsage();
                 return 84;
         }
+    }
+    if (port == -1 || name == "") {
+        printUsage();
+        return 84;
     }
     try {
         IA IA(port, name, machine);
