@@ -291,13 +291,10 @@ void GameWindow::broadcast()
     size_t id = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
     _messageBroadcast = std::pair<size_t, std::string>(id, _line);
-    int playerX = _player[id].x;
-    int playerY = _player[id].y;
 
-    // Positionner le texte à la position du joueur
     bullSprite.setPosition(((_mapSize.first+1) - (_mapSize.second+1)) * 500 * 0.50f, ((_mapSize.first+1) + (_mapSize.second+1)) * 500 * 0.25f);
     messageText.setPosition(((_mapSize.first+1) - (_mapSize.second+1)) * 500 * 0.50f, ((_mapSize.first+1) + (_mapSize.second+1)) * 500 * 0.25f);
-    messageText.setString(_messageBroadcast.second); // Définir le contenu du texte
+    messageText.setString(_messageBroadcast.second);
 }
 
 void GameWindow::startIncantation()
@@ -339,11 +336,8 @@ void GameWindow::endIncantation()
 
 void GameWindow::startLaying()
 {
-    size_t id = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
-    size_t x = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
-    size_t y = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
     std::string team = _line.substr(0, _line.find(" "));
     _line.erase(0, _line.find(" ") + 1);
@@ -395,7 +389,6 @@ void GameWindow::deathEgg()
 
 void GameWindow::expulsion()
 {
-    size_t idPlayer = std::stoi(_line.substr(0, _line.find(" ")));
     _line.erase(0, _line.find(" ") + 1);
 }
 

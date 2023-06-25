@@ -58,7 +58,7 @@ class GameWindow {
         sf::Texture bullText;
         sf::Sprite bullSprite;
     public:
-        GameWindow(int width, int height, const std::string& title, int port, std::string machine);
+        GameWindow(int port, std::string machine);
         ~GameWindow();
         void run();
 
@@ -104,7 +104,7 @@ class GameWindow {
         void modifInventory(size_t id_player, size_t id_ressource, int nb);
 
         //init struct sprite
-        void initAll(draw_t food, draw_t linemate, draw_t deraumere, draw_t sibur, draw_t mendiane, draw_t phiras, draw_t thystame, playerT player);
+        void initAll(draw_t food, draw_t linemate, draw_t deraumere, draw_t sibur, draw_t mendiane, draw_t phiras, draw_t thystame);
         //ask map pdr pgt reinitialiser la map
 
         //draw ressources player 
@@ -113,7 +113,7 @@ class GameWindow {
     private:
         sf::RenderWindow window;
         //GUI variable
-        std::pair<size_t, size_t> _mapSize; // x, y
+        std::pair<int, int> _mapSize; // x, y
         std::vector<std::string> _teamName;
         std::pair<size_t, std::string> _messageBroadcast; // id, message
 

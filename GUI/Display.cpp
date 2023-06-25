@@ -7,7 +7,7 @@
 
 #include "Display.hpp"
 
-GameWindow::GameWindow(int width, int height, const std::string& title, int port, std::string machine) : _machine(machine)
+GameWindow::GameWindow(int port, std::string machine) : _machine(machine)
 {
     _network = Network();
     _socket = _network.connectSocketClient(machine, port);
@@ -24,9 +24,9 @@ void GameWindow::run()
     draw_t thystameS;
     playerT playerS;
 
-    initAll(foodS, linemateS, deraumereS, siburS, mendianeS, phirasS, thystameS, playerS);
+    initAll(foodS, linemateS, deraumereS, siburS, mendianeS, phirasS, thystameS);
 
-    sf::RenderWindow window(sf::VideoMode(1600, 900), "Camera Test");
+    sf::RenderWindow window(sf::VideoMode(1600, 900), "ZappyGANG");
     IsometricMap map(500.f);
     Camera camera(window, 50.f, 1.1f);
     bool loadMap = false;
@@ -167,7 +167,7 @@ void printUsage() {
               << "machine is the name of the machine; localhost by default\n";
 }
 
-void GameWindow::initAll(draw_t food, draw_t linemate, draw_t deraumere, draw_t sibur, draw_t mendiane, draw_t phiras, draw_t thystame, playerT player)
+void GameWindow::initAll(draw_t food, draw_t linemate, draw_t deraumere, draw_t sibur, draw_t mendiane, draw_t phiras, draw_t thystame)
 {
     food.spriteRessources = sf::Sprite();
     food.textRessources = sf::Texture();
@@ -228,7 +228,7 @@ int main(int ac, char **av)
         }
     }
 
-    GameWindow display(1600, 900, "Zappy", port, machine);
+    GameWindow display(port, machine);
     display.run();
     return 0;
 }
