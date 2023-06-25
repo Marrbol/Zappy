@@ -42,6 +42,7 @@ void set_clients(client_manager_t *c)
         c->client_infos[i].type = NONE;
         c->client_infos[i].client_socket = 0;
         c->client_infos[i].isauth = false;
+        c->client_infos[i].isdead = false;
         c->client_infos[i].new_connection = true;
         c->client_infos[i].team = NULL;
         c->client_infos[i].lvl = 1;

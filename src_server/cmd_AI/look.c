@@ -83,21 +83,21 @@ void look(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient,
 __attribute__((unused)) char *buff)
 {
-    int size = count_allitems(c->map, c) + c->nb_clients;
-    char	*items = calloc(size * 15, sizeof (char));
-    client_t *client = &c->client_infos[nbClient];
-    char *tmp;
+    //int size = count_allitems(c->map, c) + c->nb_clients;
+    //char	*items = calloc(size * 15, sizeof (char));
+    //client_t *client = &c->client_infos[nbClient];
+    //char *tmp;
 
-    strcat(items, "[ player ");
-    for (int i = 0; i <= client->lvl; i++) {
-        for (int j = 0; j < (2 * i) + 1; j++) {
-            tmp = find_case(client, i, j - i, c);
-            strcat(items, tmp);
-            strcat(items, ", ");
-            free(tmp);
-        }
-    }
-    strcat(items, "]\n\0");
-    write(c->client_infos[nbClient].client_socket, items, strlen(items));
-    free(items);
+    //strcat(items, "[ player ");
+    //for (int i = 0; i <= client->lvl; i++) {
+    //    for (int j = 0; j < (2 * i) + 1; j++) {
+    //        tmp = find_case(client, i, j - i, c);
+    //        strcat(items, tmp);
+    //        strcat(items, ", ");
+    //        free(tmp);
+    //    }
+    //}
+    //strcat(items, "]\n\0");
+    //write(c->client_infos[nbClient].client_socket, items, strlen(items));
+    //free(items);
 }
