@@ -150,6 +150,7 @@ void set_client_coord(client_manager_t *c, coord_t *coord);
 void exec_cmd(client_manager_t *c, int nbClient, char *buff);
 bool com_login(client_manager_t *c, int nbClient, char *buff);
 void create_team(char *buff, client_manager_t *c, int nbClient);
+int count_players(client_manager_t* c, int numPlayersLevel2, client_t *client1, client_t *client2);
 void list_folder(char *where, client_manager_t *c, int nbClient);
 void manage_clock_comet(client_manager_t *c);
 void init_clock_server(client_manager_t *c, int freq);
@@ -202,6 +203,9 @@ void elevation_lvltwo(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient,
 __attribute__((unused)) char *buff);
 void elevation_lvlthree(__attribute__((unused)) client_manager_t *c,
+__attribute__((unused)) int nbClient,
+__attribute__((unused)) char *buff);
+void elevation_lvlfour(__attribute__((unused)) client_manager_t *c,
 __attribute__((unused)) int nbClient,
 __attribute__((unused)) char *buff);
 void set_incantation(client_manager_t *c, int nbClient,

@@ -27,7 +27,9 @@ __attribute__((unused)) char *buff)
     case 1:
         elevation_lvltwo(c, nbClient, buff);
         break;
-    
+    case 2:
+        elevation_lvlthree(c, nbClient, buff);
+        break;
     default:
         break;
     }
